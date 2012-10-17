@@ -8,6 +8,7 @@ InstalledFiles
 _yardoc
 coverage
 doc/
+lib/nugrant_debug.rb
 lib/bundler/man
 pkg
 rdoc

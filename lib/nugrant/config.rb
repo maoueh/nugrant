@@ -1,4 +1,3 @@
-
 class Nugrant::Config
   def initialize(options = {})
     @params_filename = options.fetch(:params_filename, ".vagrantparams")
