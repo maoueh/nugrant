@@ -1,4 +1,6 @@
+require 'nugrant'
 require 'nugrant/config'
+require 'nugrant/parameter_bag'
 require 'nugrant/parameters'
 
 module Nugrant
