@@ -4,6 +4,8 @@ require 'tmpdir'
 
 class Nugrant::TestConfig < Test::Unit::TestCase
   def setup
+    @default_param_filename = Nugrant::Config::DEFAULT_PARAMS_FILENAME
+
     @old_working_dir = Dir.getwd()
     @temp_dir = Dir.tmpdir()
     @home_dir = File.expand_path('~')
@@ -25,9 +27,9 @@ class Nugrant::TestConfig < Test::Unit::TestCase
   def test_default_values
     config = Nugrant::Config.new
 
-    assert_equal(".vagrantparams", config.params_filename())
-    assert_equal("#{@working_dir}/.vagrantparams", config.local_params_path())
-    assert_equal("#{@home_dir}/.vagrantparams", config.global_params_path())
+    assert_equal(@default_param_filename, config.params_filename())
+    assert_equal("#{@working_dir}/#{@default_param_filename}", config.local_params_path())
+    assert_equal("#{@home_dir}/#{@default_param_filename}", config.global_params_path())
   end
 
   def test_custom_params_filename
