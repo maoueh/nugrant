@@ -51,6 +51,10 @@ module Nugrant
     end
 
     def load_parameters_file(file_path)
+      if not File.exists?(file_path)
+        return nil
+      end
+
       begin
         File.open(file_path) do |file|
           return YAML::load(file)

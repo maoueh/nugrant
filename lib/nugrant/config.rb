@@ -3,6 +3,8 @@ module Nugrant
     DEFAULT_PARAMS_FILENAME = ".vagrantuser"
 
     def initialize(options = {})
+      options.delete_if { |key, value| value == nil }
+
       @params_filename = options.fetch(:params_filename, DEFAULT_PARAMS_FILENAME)
       @local_params_path = options.fetch(:local_params_path, "./#{@params_filename}")
       @global_params_path = options.fetch(:global_params_path, "~/#{@params_filename}")

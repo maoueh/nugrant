@@ -73,4 +73,42 @@ class Nugrant::TestConfig < Test::Unit::TestCase
     assert_equal("#{@home_dir}/.localcustomparams", config.local_params_path())
     assert_equal("#{@working_dir}/.globalcustomparams", config.global_params_path())
   end
+
+  def test_nil_local
+    config = Nugrant::Config.new({
+      :params_filename => ".customparams",
+      :local_params_path => nil,
+      :global_params_path => "#{@home_dir}/.globalcustomparams"
+    })
+
+    puts "Home: #{@home_dir}"
+
+    assert_equal(".customparams", config.params_filename())
+    assert_not_nil(config.local_params_path())
+    assert_equal("#{@home_dir}/.customparams", config.global_params_path())
+  end
+
+  def test_nil_local
+    config = Nugrant::Config.new({
+      :params_filename => ".customparams",
+      :local_params_path => nil,
+      :global_params_path => "#{@working_dir}/.globalcustomparams"
+    })
+
+    assert_equal(".customparams", config.params_filename())
+    assert_not_nil("#{@working_dir}/.customparams", config.local_params_path())
+    assert_equal("#{@working_dir}/.globalcustomparams", config.global_params_path())
+  end
+
+  def test_nil_global
+    config = Nugrant::Config.new({
+      :params_filename => ".customparams",
+      :local_params_path => "#{@home_dir}/.localcustomparams",
+      :global_params_path => nil
+    })
+
+    assert_equal(".customparams", config.params_filename())
+    assert_not_nil("#{@home_dir}/.localcustomparams", config.local_params_path())
+    assert_equal("#{@home_dir}/.customparams", config.global_params_path())
+  end
 end
