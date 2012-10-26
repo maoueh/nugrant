@@ -1,6 +1,7 @@
 require 'deep_merge'
 require 'json'
 require 'ostruct'
+require 'yaml'
 
 module Nugrant
   class Parameters < Nugrant::ParameterBag
