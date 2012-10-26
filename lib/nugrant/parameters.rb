@@ -1,13 +1,9 @@
 require 'deep_merge'
+require 'json'
 require 'ostruct'
 
 module Nugrant
   class Parameters < Nugrant::ParameterBag
-    @config = nil
-    @parameters = nil
-    @local_parameters = nil
-    @global_parameters = nil
-
     def initialize(config = nil)
       if config == nil
         config = Nugrant::Config.new()
@@ -56,12 +52,24 @@ module Nugrant
       end
 
       begin
-        File.open(file_path) do |file|
-          return YAML::load(file)
+        File.open(file_path, "rb") do |file|
+          parsing_method = "parse_#{@config.params_filetype}"
+
+          return send(parsing_method, file.read)
         end
-      rescue
-        return nil
+      rescue => error
+        throw "Could not parse the user #{@config.params_filetype} parameters file '#{file_path}': #{error}"
       end
+    end
+
+    def parse_json(data_string)
+      JSON.parse(data_string)
+    end
+
+    def parse_yml(data_string)
+      YAML::ENGINE.yamler= 'syck' if defined?(YAML::ENGINE)
+
+      YAML.load(data_string)
     end
   end
 end

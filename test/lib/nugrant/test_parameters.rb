@@ -3,10 +3,18 @@ require 'nugrant/parameters'
 require 'test/unit'
 
 class Nugrant::TestParameters < Test::Unit::TestCase
-  def create_parameters(local_params_filename, global_params_filename = nil)
-    resource_path = File.expand_path("#{File.dirname(__FILE__)}/../../resources")
+  def create_parameters(local_params_filename, global_params_filename)
+    params_filetype = "yml"
+    resource_path = File.expand_path("#{File.dirname(__FILE__)}/../../resources/#{params_filetype}")
 
-    return Nugrant::create_parameters(resource_path, local_params_filename, global_params_filename)
+    local_params_path = "#{resource_path}/#{local_params_filename}.#{params_filetype}" if local_params_filename
+    global_params_path = "#{resource_path}/#{global_params_filename}.#{params_filetype}" if local_params_filename and global_params_filename
+
+    return Nugrant::create_parameters({
+      :params_filetype => params_filetype,
+      :local_params_path => local_params_path,
+      :global_params_path => global_params_path,
+    })
   end
 
   def assert_level(parameters, level_name)
@@ -22,7 +30,7 @@ class Nugrant::TestParameters < Test::Unit::TestCase
   end
 
   def test_params_level_1()
-    parameters = create_parameters("params_local_1.yml", "params_global_1.yml")
+    parameters = create_parameters("params_local_1", "params_global_1")
 
     assert_equal("overriden1", parameters.first)
     assert_equal("value2", parameters.second)
@@ -34,7 +42,7 @@ class Nugrant::TestParameters < Test::Unit::TestCase
   end
 
   def test_params_level_2()
-    parameters = create_parameters("params_local_2.yml", "params_global_2.yml")
+    parameters = create_parameters("params_local_2", "params_global_2")
 
     assert_level(parameters, "level1")
     assert_level(parameters, "level2")
@@ -50,11 +58,11 @@ class Nugrant::TestParameters < Test::Unit::TestCase
   end
 
   def run_test_file_invalid(invalid_value)
-    parameters = create_parameters(invalid_value, "params_simple.yml")
+    parameters = create_parameters(invalid_value, "params_simple")
     assert_equal("value", parameters.test)
     assert_equal("value", parameters["test"])
 
-    parameters = create_parameters("params_simple.yml", invalid_value)
+    parameters = create_parameters("params_simple", invalid_value)
     assert_equal("value", parameters.test)
     assert_equal("value", parameters["test"])
 
@@ -63,15 +71,15 @@ class Nugrant::TestParameters < Test::Unit::TestCase
   end
 
   def test_params_windows_eol()
-    run_test_params_eol("params_windows_eol.yml")
+    run_test_params_eol("params_windows_eol")
   end
 
   def test_params_unix_eol()
-    run_test_params_eol("params_unix_eol.yml")
+    run_test_params_eol("params_unix_eol")
   end
 
   def run_test_params_eol(file_path)
-    parameters = create_parameters("params_unix_eol.yml")
+    parameters = create_parameters("params_unix_eol", "impossible_file_path.yml.impossible")
 
     assert_equal("value1", parameters.level1)
     assert_equal("value2", parameters.level2.first)

@@ -23,8 +23,10 @@ Vagrantfile
 *.buildpath text
 
 # Those have specific eol for testing purpose
-test/resources/params_unix_eol.yml eol=lf
-test/resources/params_windows_eol.yml eol=crlf
+test/resources/json/params_unix_eol.json eol=lf
+test/resources/json/params_windows_eol.json eol=crlf
+test/resources/yml/params_unix_eol.yml eol=lf
+test/resources/yml/params_windows_eol.yml eol=crlf
 
 # These files are binary and should be left untouched
 # (binary is a macro for -text -diff)
