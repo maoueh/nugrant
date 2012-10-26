@@ -3,8 +3,10 @@ require 'nugrant/parameters'
 require 'test/unit'
 
 class Nugrant::TestParameters < Test::Unit::TestCase
-  def create_parameters(project_params_filename, user_params_filename)
-    params_filetype = "json"
+
+  @@PARAMS_FILETYPES = ["json", "yml"]
+
+  def create_parameters(params_filetype, project_params_filename, user_params_filename)
     resource_path = File.expand_path("#{File.dirname(__FILE__)}/../../resources/#{params_filetype}")
 
     project_params_path = "#{resource_path}/#{project_params_filename}.#{params_filetype}" if project_params_filename
@@ -30,23 +32,27 @@ class Nugrant::TestParameters < Test::Unit::TestCase
   end
 
   def test_params_level_1()
-    parameters = create_parameters("params_project_1", "params_user_1")
+    filetypes.each do |params_filetype|
+      parameters = create_parameters(params_filetype, "params_project_1", "params_user_1")
 
-    assert_equal("overriden1", parameters.first)
-    assert_equal("value2", parameters.second)
-    assert_equal("added3", parameters.third)
+      assert_equal("overriden1", parameters.first)
+      assert_equal("value2", parameters.second)
+      assert_equal("added3", parameters.third)
 
-    assert_equal("overriden1", parameters["first"])
-    assert_equal("value2", parameters["second"])
-    assert_equal("added3", parameters["third"])
+      assert_equal("overriden1", parameters["first"])
+      assert_equal("value2", parameters["second"])
+      assert_equal("added3", parameters["third"])
+    end
   end
 
   def test_params_level_2()
-    parameters = create_parameters("params_project_2", "params_user_2")
+    filetypes.each do |params_filetype|
+      parameters = create_parameters(params_filetype, "params_project_2", "params_user_2")
 
-    assert_level(parameters, "level1")
-    assert_level(parameters, "level2")
-    assert_level(parameters, "level3")
+      assert_level(parameters, "level1")
+      assert_level(parameters, "level2")
+      assert_level(parameters, "level3")
+    end
   end
 
   def test_file_nil()
@@ -58,16 +64,18 @@ class Nugrant::TestParameters < Test::Unit::TestCase
   end
 
   def run_test_file_invalid(invalid_value)
-    parameters = create_parameters(invalid_value, "params_simple")
-    assert_equal("value", parameters.test)
-    assert_equal("value", parameters["test"])
+    filetypes.each do |params_filetype|
+      parameters = create_parameters(params_filetype, invalid_value, "params_simple")
+      assert_equal("value", parameters.test)
+      assert_equal("value", parameters["test"])
 
-    parameters = create_parameters("params_simple", invalid_value)
-    assert_equal("value", parameters.test)
-    assert_equal("value", parameters["test"])
+      parameters = create_parameters(params_filetype, "params_simple", invalid_value)
+      assert_equal("value", parameters.test)
+      assert_equal("value", parameters["test"])
 
-    parameters = create_parameters(invalid_value, invalid_value)
-    assert_not_nil(parameters)
+      parameters = create_parameters(params_filetype, invalid_value, invalid_value)
+      assert_not_nil(parameters)
+    end
   end
 
   def test_params_windows_eol()
@@ -79,9 +87,15 @@ class Nugrant::TestParameters < Test::Unit::TestCase
   end
 
   def run_test_params_eol(file_path)
-    parameters = create_parameters("params_unix_eol", "impossible_file_path.yml.impossible")
+    filetypes.each do |params_filetype|
+      parameters = create_parameters(params_filetype, "params_unix_eol", "impossible_file_path.yml.impossible")
 
-    assert_equal("value1", parameters.level1)
-    assert_equal("value2", parameters.level2.first)
+      assert_equal("value1", parameters.level1)
+      assert_equal("value2", parameters.level2.first)
+    end
+  end
+
+  def filetypes()
+    @@PARAMS_FILETYPES
   end
 end
