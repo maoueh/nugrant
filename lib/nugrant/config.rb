@@ -11,16 +11,16 @@ module Nugrant
 
       @params_filetype = options.fetch(:params_filetype, DEFAULT_PARAMS_FILETYPE)
       @params_filename = options.fetch(:params_filename, DEFAULT_PARAMS_FILENAME)
-      @local_params_path = options.fetch(:local_params_path, "./#{@params_filename}")
-      @global_params_path = options.fetch(:global_params_path, "~/#{@params_filename}")
+      @project_params_path = options.fetch(:project_params_path, "./#{@params_filename}")
+      @user_params_path = options.fetch(:user_params_path, "~/#{@params_filename}")
     end
 
-    def local_params_path()
-      File.expand_path(@local_params_path)
+    def project_params_path()
+      File.expand_path(@project_params_path)
     end
 
-    def global_params_path()
-      File.expand_path(@global_params_path)
+    def user_params_path()
+      File.expand_path(@user_params_path)
     end
 
     def homedir()

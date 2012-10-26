@@ -3,17 +3,17 @@ require 'nugrant/parameters'
 require 'test/unit'
 
 class Nugrant::TestParameters < Test::Unit::TestCase
-  def create_parameters(local_params_filename, global_params_filename)
-    params_filetype = "yml"
+  def create_parameters(project_params_filename, user_params_filename)
+    params_filetype = "json"
     resource_path = File.expand_path("#{File.dirname(__FILE__)}/../../resources/#{params_filetype}")
 
-    local_params_path = "#{resource_path}/#{local_params_filename}.#{params_filetype}" if local_params_filename
-    global_params_path = "#{resource_path}/#{global_params_filename}.#{params_filetype}" if local_params_filename and global_params_filename
+    project_params_path = "#{resource_path}/#{project_params_filename}.#{params_filetype}" if project_params_filename
+    user_params_path = "#{resource_path}/#{user_params_filename}.#{params_filetype}" if project_params_filename and user_params_filename
 
     return Nugrant::create_parameters({
       :params_filetype => params_filetype,
-      :local_params_path => local_params_path,
-      :global_params_path => global_params_path,
+      :project_params_path => project_params_path,
+      :user_params_path => user_params_path,
     })
   end
 
@@ -30,7 +30,7 @@ class Nugrant::TestParameters < Test::Unit::TestCase
   end
 
   def test_params_level_1()
-    parameters = create_parameters("params_local_1", "params_global_1")
+    parameters = create_parameters("params_project_1", "params_user_1")
 
     assert_equal("overriden1", parameters.first)
     assert_equal("value2", parameters.second)
@@ -42,7 +42,7 @@ class Nugrant::TestParameters < Test::Unit::TestCase
   end
 
   def test_params_level_2()
-    parameters = create_parameters("params_local_2", "params_global_2")
+    parameters = create_parameters("params_project_2", "params_user_2")
 
     assert_level(parameters, "level1")
     assert_level(parameters, "level2")

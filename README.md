@@ -76,8 +76,8 @@ values can be specified. The `.vagrantuser` should be ignored by you
 version control system so it is to committed with the project.
 
 Additionally, you can also have a `.vagrantuser` under your user home
-directory. This way, you can set parameters that would be globally
-available to all your `Vagrantfile'. The local `.vagrantuser`
+directory. This way, you can set parameters that would be userly
+available to all your `Vagrantfile'. The project `.vagrantuser`
 file will overrides parameters defined in the `.vagrantuser` file
 defined in the user home directory
 
@@ -113,8 +113,8 @@ That would be equivalent to:
     end
 
 As you can see, the parameters defined in the second `.vagrantuser` file
-(the local one) overrides settings defined in the `.vagrantuser` found
-in the home directory (the global one).
+(the project one) overrides settings defined in the `.vagrantuser` found
+in the home directory (the user one).
 
 ### Parameters access
 
