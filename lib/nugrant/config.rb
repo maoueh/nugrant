@@ -1,16 +1,17 @@
 module Nugrant
   class Config
     DEFAULT_PARAMS_FILENAME = ".vagrantuser"
-    DEFAULT_PARAMS_FILETYPE = "json"
+    DEFAULT_PARAMS_FILETYPE = "yml"
 
-    attr :params_filetype, true
     attr :params_filename, true
+    attr :params_filetype, true
 
     def initialize(options = {})
       options.delete_if { |key, value| value == nil }
 
-      @params_filetype = options.fetch(:params_filetype, DEFAULT_PARAMS_FILETYPE)
       @params_filename = options.fetch(:params_filename, DEFAULT_PARAMS_FILENAME)
+      @params_filetype = options.fetch(:params_filetype, DEFAULT_PARAMS_FILETYPE)
+
       @project_params_path = options.fetch(:project_params_path, nil)
       @user_params_path = options.fetch(:user_params_path, nil)
       @system_params_path = options.fetch(:system_params_path, nil)
