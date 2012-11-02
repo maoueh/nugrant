@@ -57,11 +57,17 @@ module Nugrant
       begin
         File.open(file_path, "rb") do |file|
           parsing_method = "parse_#{@config.params_filetype}"
+          result = send(parsing_method, file.read)
 
-          return send(parsing_method, file.read)
+          restricted_key = has_restricted_keys?(result)
+          if restricted_key
+            throw ArgumentError, "The key '#{restricted_key}' has restricted usage and cannot be defined"
+          end
+
+          return result
         end
       rescue => error
-        throw "Could not parse the user #{@config.params_filetype} parameters file '#{file_path}': #{error}"
+        throw RuntimeError, "Could not parse the user #{@config.params_filetype} parameters file '#{file_path}': #{error}"
       end
     end
 
@@ -73,6 +79,21 @@ module Nugrant
       YAML::ENGINE.yamler= 'syck' if defined?(YAML::ENGINE)
 
       YAML.load(data_string)
+    end
+
+    def has_restricted_keys?(parameters)
+      parameters.each do |key, value|
+        if key == "defaults"
+          return "defaults"
+        end
+
+        if value.is_a?(Hash)
+          result = has_restricted_keys?(value)
+          return result if result
+        end
+      end
+
+      return false
     end
   end
 end

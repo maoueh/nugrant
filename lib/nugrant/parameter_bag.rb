@@ -6,7 +6,13 @@ module Nugrant
       end
 
       @bag = {}
+      @defaults = {}
+
       parameters.each do |key, value|
+        if key == "defaults"
+          throw ArgumentError, "The key 'defaults' has restricted usage and cannot be defined"
+        end
+
         if not value.is_a?(Hash)
           @bag[key] = value
           next
@@ -31,7 +37,11 @@ module Nugrant
 
     def get_param(param_name)
       if not has_param?(param_name)
-        raise "Undefined parameter: '#{param_name}'"
+        if @defaults[param_name]
+          return @defaults[param_name]
+        end
+
+        throw KeyError, "Undefined parameter: '#{param_name}'"
       end
 
       return @bag[param_name]
@@ -39,6 +49,20 @@ module Nugrant
 
     def get_params()
       return @bag
+    end
+
+    def defaults(parameters)
+      parameters.each do |key, value|
+        if value.is_a?(Hash) and has_param?(key)
+          @bag[key].defaults(value)
+        end
+      end
+
+      @defaults = self.class.new(parameters)
+    end
+
+    def defaults=(parameters)
+      defaults(parameters)
     end
   end
 end

@@ -69,4 +69,79 @@ class Nugrant::TestParameterBag < Test::Unit::TestCase
       "third" => "value11"
     })
   end
+
+  def test_undefined_value()
+    bag = create_bag({"value" => "one"})
+
+    assert_throws(KeyError) do
+      bag.invalid_value
+    end
+
+    assert_throws(KeyError) do
+      bag["invalid_value"]
+    end
+  end
+
+  def test_restricted_key_defaults()
+    assert_throws(ArgumentError) do
+      results = create_bag({"defaults" => "one"})
+      puts("Results: #{results.inspect} (Should have thrown!)")
+    end
+
+    assert_throws(ArgumentError) do
+      results = create_bag({"level" => {"defaults" => "value"}})
+      puts("Results: #{results.inspect} (Should have thrown!)")
+    end
+  end
+
+  def test_defaults()
+    run_test_defaults({
+      "first" => {
+        "level1" => "value1",
+        "level2" => "value2",
+        "deeper" => {
+          "level3" => "value3"
+        }
+      },
+    }, {
+      "first" => {
+        "level1" => "default1",
+        "level3" => "default3",
+        "deeper" => {
+          "level3" => "default3",
+          "level4" => "value4"
+        }
+      },
+      "second" => {
+        "level1" => "default1"
+      },
+      "third" => "default3"
+    }, {
+      "first" => {
+        "level1" => "value1",
+        "level2" => "value2",
+        "level3" => "default3",
+        "deeper" => {
+          "level3" => "value3",
+          "level4" => "value4"
+        }
+      },
+      "second" => {
+        "level1" => "default1"
+      },
+      "third" => "default3"
+    })
+  end
+
+  def run_test_defaults(parameters, parameters_defaults, expected)
+    bag = create_bag(parameters)
+    bag.defaults(parameters_defaults)
+
+    assert_bag(expected, bag)
+
+    bag = create_bag(parameters)
+    bag.defaults = parameters_defaults
+
+    assert_bag(expected, bag)
+  end
 end
