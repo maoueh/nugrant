@@ -6,6 +6,15 @@ module Nugrant
     attr :params_filename, true
     attr :params_filetype, true
 
+    def self.user_base_path()
+      return File.expand_path("~")
+    end
+
+    def self.system_base_path()
+      # TODO: Fixme, changed location on windows ...
+      return "/etc"
+    end
+
     def initialize(options = {})
       options.delete_if { |key, value| value == nil }
 
@@ -22,16 +31,11 @@ module Nugrant
     end
 
     def user_params_path()
-      File.expand_path(@user_params_path || "~/#{@params_filename}")
+      File.expand_path(@user_params_path || "#{Config.user_base_path()}/#{@params_filename}")
     end
 
-    # TODO: Fixme, changed location on windows ...
     def system_params_path()
-      File.expand_path(@system_params_path || "/etc/#{@params_filename}")
-    end
-
-    def homedir()
-      return File.expand_path("~")
+      File.expand_path(@system_params_path || "#{Config.system_base_path()}/#{@params_filename}")
     end
   end
 end

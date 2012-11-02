@@ -7,7 +7,8 @@ class Nugrant::TestConfig < Test::Unit::TestCase
     @default_param_filename = Nugrant::Config::DEFAULT_PARAMS_FILENAME
 
     @old_working_dir = Dir.getwd()
-    @user_dir = File.expand_path('~')
+    @user_dir = Nugrant::Config.user_base_path()
+    @system_dir = Nugrant::Config.system_base_path()
 
     Dir.chdir(Dir.tmpdir())
 
@@ -29,6 +30,7 @@ class Nugrant::TestConfig < Test::Unit::TestCase
     assert_equal(@default_param_filename, config.params_filename())
     assert_equal("#{@project_dir}/#{@default_param_filename}", config.project_params_path())
     assert_equal("#{@user_dir}/#{@default_param_filename}", config.user_params_path())
+    assert_equal("#{@system_dir}/#{@default_param_filename}", config.system_params_path())
   end
 
   def test_custom_params_filename
@@ -37,6 +39,7 @@ class Nugrant::TestConfig < Test::Unit::TestCase
     assert_equal(".customparams", config.params_filename())
     assert_equal("#{@project_dir}/.customparams", config.project_params_path())
     assert_equal("#{@user_dir}/.customparams", config.user_params_path())
+    assert_equal("#{@system_dir}/.customparams", config.system_params_path())
   end
 
   def test_custom_params_filename_after_creation
@@ -47,6 +50,7 @@ class Nugrant::TestConfig < Test::Unit::TestCase
     assert_equal(".customparams", config.params_filename())
     assert_equal("#{@project_dir}/.customparams", config.project_params_path())
     assert_equal("#{@user_dir}/.customparams", config.user_params_path())
+    assert_equal("#{@system_dir}/.customparams", config.system_params_path())
   end
 
   def test_custom_project_params_path
@@ -57,67 +61,65 @@ class Nugrant::TestConfig < Test::Unit::TestCase
 
     assert_equal(".customparams", config.params_filename())
     assert_equal("#{@user_dir}/.projectcustomparams", config.project_params_path())
-    assert_equal("#{@user_dir}/.customparams", config.user_params_path())
   end
 
   def test_custom_user_params_path
     config = Nugrant::Config.new({
       :params_filename => ".customparams",
-      :user_params_path => "#{@project_dir}/.usercustomparams"
+      :user_params_path => "#{@system_dir}/.usercustomparams"
     })
 
     assert_equal(".customparams", config.params_filename())
-    assert_equal("#{@project_dir}/.customparams", config.project_params_path())
-    assert_equal("#{@project_dir}/.usercustomparams", config.user_params_path())
+    assert_equal("#{@system_dir}/.usercustomparams", config.user_params_path())  end
+
+  def test_custom_system_params_path
+    config = Nugrant::Config.new({
+      :params_filename => ".customparams",
+      :system_params_path => "#{@project_dir}/.systemcustomparams"
+    })
+
+    assert_equal(".customparams", config.params_filename())
+    assert_equal("#{@project_dir}/.systemcustomparams", config.system_params_path())
   end
 
   def test_custom_all
     config = Nugrant::Config.new({
       :params_filename => ".customparams",
       :project_params_path => "#{@user_dir}/.projectcustomparams",
-      :user_params_path => "#{@project_dir}/.usercustomparams"
+      :user_params_path => "#{@system_dir}/.usercustomparams",
+      :system_params_path => "#{@project_dir}/.systemcustomparams"
     })
 
     assert_equal(".customparams", config.params_filename())
     assert_equal("#{@user_dir}/.projectcustomparams", config.project_params_path())
-    assert_equal("#{@project_dir}/.usercustomparams", config.user_params_path())
+    assert_equal("#{@system_dir}/.usercustomparams", config.user_params_path())
+    assert_equal("#{@project_dir}/.systemcustomparams", config.system_params_path())
   end
 
   def test_nil_project
     config = Nugrant::Config.new({
       :params_filename => ".customparams",
       :project_params_path => nil,
-      :user_params_path => "#{@user_dir}/.usercustomparams"
     })
 
-    puts "Home: #{@user_dir}"
-
-    assert_equal(".customparams", config.params_filename())
-    assert_not_nil(config.project_params_path())
-    assert_equal("#{@user_dir}/.customparams", config.user_params_path())
-  end
-
-  def test_nil_project
-    config = Nugrant::Config.new({
-      :params_filename => ".customparams",
-      :project_params_path => nil,
-      :user_params_path => "#{@project_dir}/.usercustomparams"
-    })
-
-    assert_equal(".customparams", config.params_filename())
     assert_not_nil("#{@project_dir}/.customparams", config.project_params_path())
-    assert_equal("#{@project_dir}/.usercustomparams", config.user_params_path())
   end
 
   def test_nil_user
     config = Nugrant::Config.new({
       :params_filename => ".customparams",
-      :project_params_path => "#{@user_dir}/.projectcustomparams",
-      :user_params_path => nil
+      :user_params_path => nil,
     })
 
-    assert_equal(".customparams", config.params_filename())
-    assert_not_nil("#{@user_dir}/.projectcustomparams", config.project_params_path())
     assert_equal("#{@user_dir}/.customparams", config.user_params_path())
+  end
+
+  def test_nil_system
+    config = Nugrant::Config.new({
+      :params_filename => ".customparams",
+      :system_params_path => nil,
+    })
+
+    assert_equal("#{@system_dir}/.customparams", config.system_params_path())
   end
 end
