@@ -1,3 +1,5 @@
+require 'rbconfig'
+
 module Nugrant
   class Config
     DEFAULT_PARAMS_FILENAME = ".vagrantuser"
@@ -11,10 +13,18 @@ module Nugrant
     end
 
     def self.system_base_path()
-      # TODO: Fixme, changed location on windows ...
+      # TODO: Fixme, find the right location to put system wide settings on windows...
+      if Config.on_windows?
+        return "C:/etc"
+      end
+
       return "/etc"
     end
 
+	def self.on_windows?()
+		return (RbConfig::CONFIG['host_os'] =~ /mswin|mingw|cygwin/) != nil
+	end
+	
     def initialize(options = {})
       options.delete_if { |key, value| value == nil }
 
