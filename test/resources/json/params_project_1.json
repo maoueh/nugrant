@@ -1,4 +1,6 @@
 {
-    "first": "overriden1",
-    "third": "added3"
+    "1.1.1": "project",
+    "1.1.0": "project",
+    "1.0.1": "project",
+    "1.0.0": "project"
 }

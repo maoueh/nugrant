@@ -1,7 +1,23 @@
-level1:
-  first: "level1_value1"
-  second: "level1_value2"
-level2:
-  first: "level2_value1"
-  second: "level2_value2"
+"1.1.1":
+    "1.1.1": "user"
+    "1.1.0": "user"
+    "0.1.1": "user"
+    "0.1.0": "user"
 
+"1.1.0":
+    "1.1.1": "user"
+    "1.1.0": "user"
+    "0.1.1": "user"
+    "0.1.0": "user"
+
+"0.1.1":
+    "1.1.1": "user"
+    "1.1.0": "user"
+    "0.1.1": "user"
+    "0.1.0": "user"
+
+"0.1.0":
+    "1.1.1": "user"
+    "1.1.0": "user"
+    "0.1.1": "user"
+    "0.1.0": "user"

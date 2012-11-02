@@ -42,9 +42,9 @@ module Nugrant
       end
 
       parameters = Hash.new()
+      parameters.deep_merge!(@system_parameters) if @system_parameters != nil
       parameters.deep_merge!(@user_parameters) if @user_parameters != nil
       parameters.deep_merge!(@project_parameters) if @project_parameters != nil
-      parameters.deep_merge!(@system_parameters) if @system_parameters != nil
 
       return parameters
     end

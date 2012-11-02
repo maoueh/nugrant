@@ -1,15 +1,29 @@
 {
-    "level1": {
-      "first": "level1_overriden1",
-      "third": "level1_added3"
+    "1.1.1": {
+        "1.1.1": "project",
+        "1.1.0": "project",
+        "1.0.1": "project",
+        "1.0.0": "project"
     },
-    "level2": {
-      "first": "level2_overriden1",
-      "third": "level2_added3"
+
+    "1.1.0": {
+        "1.1.1": "project",
+        "1.1.0": "project",
+        "1.0.1": "project",
+        "1.0.0": "project"
     },
-    "level3": {
-      "first": "level3_overriden1",
-      "second": "level3_value2",
-      "third": "level3_added3"
+
+    "1.0.1": {
+        "1.1.1": "project",
+        "1.1.0": "project",
+        "1.0.1": "project",
+        "1.0.0": "project"
+    },
+
+    "1.0.0": {
+        "1.1.1": "project",
+        "1.1.0": "project",
+        "1.0.1": "project",
+        "1.0.0": "project"
     }
 }
