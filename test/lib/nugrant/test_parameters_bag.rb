@@ -133,6 +133,23 @@ class Nugrant::TestParameterBag < Test::Unit::TestCase
     })
   end
 
+  def test_defaults_empty()
+    defaults = {
+      "first" => {
+        "second" => {
+          "third" => {
+            "value1" => "one",
+            "value2" => "two"
+          },
+          "fourth" => "third",
+        },
+        "fifth" => "four"
+      }
+    }
+
+    run_test_defaults({}, defaults, defaults)
+  end
+
   def run_test_defaults(parameters, parameters_defaults, expected)
     bag = create_bag(parameters)
     bag.defaults(parameters_defaults)
