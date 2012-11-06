@@ -15,6 +15,14 @@ module Nugrant
       def method_missing(method, *args, &block)
         return @parameters.method_missing(method, *args, &block)
       end
+
+      def defaults(parameters)
+        @parameters.defaults(parameters)
+      end
+
+      def defaults=(parameters)
+        @parameters.defaults=(parameters)
+      end
     end
   end
 end
