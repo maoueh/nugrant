@@ -1,6 +1,11 @@
 Vagrant::Config.run do |config|
+  config.user.defaults = {
+    "test" => "value"
+  }
+
   puts "#{config.user.vm_port}"
 
   puts "#{config.user['repository'].project}"
   puts "#{config.user.repository['personal']}"
+  puts "#{config.user.test}"
 end
