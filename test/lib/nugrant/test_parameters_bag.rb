@@ -73,22 +73,22 @@ class Nugrant::TestParameterBag < Test::Unit::TestCase
   def test_undefined_value()
     bag = create_bag({"value" => "one"})
 
-    assert_throws(KeyError) do
+    assert_raise(KeyError) do
       bag.invalid_value
     end
 
-    assert_throws(KeyError) do
+    assert_raise(KeyError) do
       bag["invalid_value"]
     end
   end
 
   def test_restricted_key_defaults()
-    assert_throws(ArgumentError) do
+    assert_raise(ArgumentError) do
       results = create_bag({"defaults" => "one"})
       puts("Results: #{results.inspect} (Should have thrown!)")
     end
 
-    assert_throws(ArgumentError) do
+    assert_raise(ArgumentError) do
       results = create_bag({"level" => {"defaults" => "value"}})
       puts("Results: #{results.inspect} (Should have thrown!)")
     end

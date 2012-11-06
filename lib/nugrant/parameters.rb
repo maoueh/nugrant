@@ -61,7 +61,7 @@ module Nugrant
 
           restricted_key = has_restricted_keys?(result)
           if restricted_key
-            throw ArgumentError, "The key '#{restricted_key}' has restricted usage and cannot be defined"
+            raise ArgumentError, "The key '#{restricted_key}' has restricted usage and cannot be defined"
           end
 
           return result

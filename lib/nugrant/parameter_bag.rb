@@ -10,7 +10,7 @@ module Nugrant
 
       parameters.each do |key, value|
         if key == "defaults"
-          throw ArgumentError, "The key 'defaults' has restricted usage and cannot be defined"
+          raise ArgumentError, "The key 'defaults' has restricted usage and cannot be defined"
         end
 
         if not value.is_a?(Hash)
@@ -41,7 +41,7 @@ module Nugrant
           return @defaults[param_name]
         end
 
-        throw KeyError, "Undefined parameter: '#{param_name}'"
+        raise KeyError, "Undefined parameter '#{param_name}'"
       end
 
       return @bag[param_name]
