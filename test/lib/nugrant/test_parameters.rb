@@ -166,14 +166,14 @@ class Nugrant::TestParameters < Test::Unit::TestCase
 
   def test_restricted_defaults_usage()
     filetypes.each do |params_filetype|
-      assert_throws(RuntimeError) do
+      assert_raise(RuntimeError) do
         results = create_parameters(params_filetype, "params_defaults_at_root", invalid_path, invalid_path)
         puts("Results: #{results.inspect} (Should have thrown!)")
       end
     end
 
     filetypes.each do |params_filetype|
-      assert_throws(RuntimeError) do
+      assert_raise(RuntimeError) do
         results = create_parameters(params_filetype, "params_defaults_not_at_root", invalid_path, invalid_path)
         puts("Results: #{results.inspect} (Should have thrown!)")
       end

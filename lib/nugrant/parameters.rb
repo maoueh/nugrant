@@ -67,7 +67,7 @@ module Nugrant
           return result
         end
       rescue => error
-        throw RuntimeError, "Could not parse the user #{@config.params_filetype} parameters file '#{file_path}': #{error}"
+        raise RuntimeError, "Could not parse the user #{@config.params_filetype} parameters file '#{file_path}': #{error}"
       end
     end
 
