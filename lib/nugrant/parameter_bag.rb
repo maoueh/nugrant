@@ -58,7 +58,7 @@ module Nugrant
         end
       end
 
-      @defaults = self.class.new(parameters)
+      @defaults = Nugrant::ParameterBag.new(parameters)
     end
 
     def defaults=(parameters)

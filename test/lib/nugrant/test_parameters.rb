@@ -180,6 +180,21 @@ class Nugrant::TestParameters < Test::Unit::TestCase
     end
   end
 
+  def test_defaults()
+    filetypes.each do |params_filetype|
+      parameters = create_parameters(params_filetype, "params_simple", invalid_path, invalid_path)
+      parameters.defaults({"test" => "override", "level" => "new"})
+
+      assert_equal("value", parameters.test)
+      assert_equal("new", parameters.level)
+
+      parameters.defaults = {"test" => "override1", "level" => "new1"}
+
+      assert_equal("value", parameters.test)
+      assert_equal("new1", parameters.level)
+    end
+  end
+
   def filetypes()
     @@PARAMS_FILETYPES
   end
