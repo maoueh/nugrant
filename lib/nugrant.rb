@@ -10,5 +10,3 @@ module Nugrant
     return Nugrant::Parameters.new(config)
   end
 end
-
-
