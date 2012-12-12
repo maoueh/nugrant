@@ -1,3 +1,12 @@
+# 0.0.10
+
+* Added a subcommand `parameters` for vagrant command `user`.
+* Added a vagrant command `vagrant user subcommand [options]`.
+
+# 0.0.9
+
+* Fixed a bug with the new default values implementation
+
 # 0.0.8
 
 * Introduced possibility to set default values
