@@ -190,4 +190,11 @@ Usage:
 
 ## Contributing
 
-There is no direct way to contribute right now.
+You can contribute by filling issues when something goes
+wrong or was not what you expected. I will do my best
+to fix the issue either in the code or in the documentation,
+where applicable.
+
+You can also send pull requests for any feature or improvement
+you think should be included in this plugin. I will evaluate
+each of them and merge them as fast as possible.
