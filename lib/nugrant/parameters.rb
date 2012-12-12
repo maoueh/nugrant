@@ -32,16 +32,21 @@ module Nugrant
       return @user_parameters
     end
 
+    def get_system_params()
+      return @system_parameters
+    end
+
     def load_parameters()
       @project_parameters = load_parameters_file(@config.project_params_path)
       @user_parameters = load_parameters_file(@config.user_params_path)
       @system_parameters = load_parameters_file(@config.system_params_path)
 
+      parameters = Hash.new()
+
       if @project_parameters == nil and @user_parameters == nil and @system_parameters == nil
-        return nil
+        return parameters
       end
 
-      parameters = Hash.new()
       parameters.deep_merge!(@system_parameters) if @system_parameters != nil
       parameters.deep_merge!(@user_parameters) if @user_parameters != nil
       parameters.deep_merge!(@project_parameters) if @project_parameters != nil
