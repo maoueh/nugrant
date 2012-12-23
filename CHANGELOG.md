@@ -1,5 +1,7 @@
 # 0.0.12
 
+* Added travis configuration file
+
 # 0.0.11
 
 * Updated README file for installation via rubygems.org
