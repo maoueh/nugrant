@@ -34,14 +34,12 @@ chance for this gem's dependencies, even if they are minimal,
 to clash with gems already installed on your system. This is the
 recommended installation method. To install, simply run:
 
-    > vagrant gem install nugrant-x.x.x.gem
+    > vagrant gem install nugrant
 
 If you prefer to install the gem in a system wide matters,
 please use this command instead:
 
-    > gem install nugrant-x.x.x.gem
-
-Where x.x.x is the version of the gem you wish to install.
+    > gem install nugrant
 
 ## Usage
 
