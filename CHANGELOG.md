@@ -1,3 +1,7 @@
+# 0.0.11
+
+* Updated README file for installation via rubygems.org
+
 # 0.0.10
 
 * Added a subcommand `parameters` for vagrant command `user`.
