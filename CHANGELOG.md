@@ -1,3 +1,5 @@
+# 0.0.12
+
 # 0.0.11
 
 * Updated README file for installation via rubygems.org
