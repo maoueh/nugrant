@@ -1,4 +1,4 @@
-# Nugrant
+# Nugrant [![Build Status](https://travis-ci.org/maoueh/nugrant.png)](https://travis-ci.org/maoueh/nugrant)
 
 Vagrant plugin that brings user specific configuration
 options. It will enable a `.vagrantuser` at different
