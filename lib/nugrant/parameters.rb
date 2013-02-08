@@ -55,24 +55,29 @@ module Nugrant
     end
 
     def load_parameters_file(file_path)
-      if not File.exists?(file_path)
-        return nil
+      data = parse(file_path)
+      if data == nil || !data.kind_of?(Hash)
+        return
       end
+
+      restricted_key = has_restricted_keys?(data)
+      if restricted_key
+        raise ArgumentError, "The key '#{restricted_key}' has restricted usage and cannot be defined"
+      end
+
+      return data
+    end
+
+    def parse(file_path)
+      return if not File.exists?(file_path)
 
       begin
         File.open(file_path, "rb") do |file|
           parsing_method = "parse_#{@config.params_filetype}"
-          result = send(parsing_method, file.read)
-
-          restricted_key = has_restricted_keys?(result)
-          if restricted_key
-            raise ArgumentError, "The key '#{restricted_key}' has restricted usage and cannot be defined"
-          end
-
-          return result
+          return send(parsing_method, file.read)
         end
       rescue => error
-        raise RuntimeError, "Could not parse the user #{@config.params_filetype} parameters file '#{file_path}': #{error}"
+        # TODO: log this message "Could not parse the user #{@config.params_filetype} parameters file '#{file_path}': #{error}"
       end
     end
 

@@ -1,6 +1,8 @@
 # 0.0.12
 
 * Added travis configuration file
+* Added travis build status icon to readme
+* Fixed a bug when `.vagrantuser` file is empty or not a hash type
 
 # 0.0.11
 

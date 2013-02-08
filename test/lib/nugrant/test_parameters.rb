@@ -166,14 +166,14 @@ class Nugrant::TestParameters < Test::Unit::TestCase
 
   def test_restricted_defaults_usage()
     filetypes.each do |params_filetype|
-      assert_raise(RuntimeError) do
+      assert_raise(ArgumentError) do
         results = create_parameters(params_filetype, "params_defaults_at_root", invalid_path, invalid_path)
         puts("Results: #{results.inspect} (Should have thrown!)")
       end
     end
 
     filetypes.each do |params_filetype|
-      assert_raise(RuntimeError) do
+      assert_raise(ArgumentError) do
         results = create_parameters(params_filetype, "params_defaults_not_at_root", invalid_path, invalid_path)
         puts("Results: #{results.inspect} (Should have thrown!)")
       end
@@ -192,6 +192,26 @@ class Nugrant::TestParameters < Test::Unit::TestCase
 
       assert_equal("value", parameters.test)
       assert_equal("new1", parameters.level)
+    end
+  end
+
+  def test_empty_file()
+    filetypes.each do |params_filetype|
+      parameters = create_parameters(params_filetype, "params_empty", invalid_path, invalid_path)
+      parameters.defaults({"test" => "value"})
+
+      assert_equal("value", parameters.test)
+    end
+  end
+
+  def test_file_not_hash()
+    ["boolean", "list"].each do |wrong_type|
+      filetypes.each do |params_filetype|
+        parameters = create_parameters(params_filetype, "params_#{wrong_type}", invalid_path, invalid_path)
+        parameters.defaults({"test" => "value"})
+
+        assert_equal("value", parameters.test)
+      end
     end
   end
 
