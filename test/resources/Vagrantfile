@@ -2,4 +2,7 @@ Vagrant::Config.run do |config|
   config.user.defaults = {
     "test" => "value"
   }
+
+  puts config.user.repository.personal
+  puts config.user.test
 end
