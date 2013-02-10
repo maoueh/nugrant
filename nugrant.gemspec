@@ -12,9 +12,9 @@ Gem::Specification.new do |gem|
   gem.homepage      = "https://github.com/maoueh/nugrant"
   gem.summary       = "Vagrant plugin to enable user specific configuration parameters."
   gem.description   = <<-EOF
-     This gem is in fact a Vagrant pluging. By installing this gem, it will be
+     This gem is in fact a Vagrant plugin. By installing this gem, it will be
      possible to define user specific configuration files that will be merge
-     directly into the Vagrant configuration. This is usefull if you need to
+     directly into the Vagrant configuration. This is useful if you need to
      share a Vagrantfile to multiple developers but would like to customize
      some parameters for each users differently.
   EOF
