@@ -1,3 +1,3 @@
 module Nugrant
-  VERSION = "0.0.12.dev"
+  VERSION = "0.0.12"
 end
