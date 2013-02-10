@@ -3,6 +3,11 @@
 * Added travis configuration file
 * Added travis build status icon to readme
 * Fixed a bug when `.vagrantuser` file is empty or not a hash type
+* Improved parameters command
+ * The parameters command is now a proper subcommand
+ * An option has been added to see system parameters
+ * An option has been added to see user parameters
+ * An option has been added to see project parameters
 
 # 0.0.11
 
