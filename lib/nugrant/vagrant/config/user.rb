@@ -4,6 +4,8 @@ module Nugrant
   module Vagrant
     module Config
       class User < ::Vagrant::Config::Base
+        attr_reader :parameters
+
         def initialize()
           @parameters = Nugrant::Parameters.new()
         end

@@ -9,6 +9,7 @@ module Nugrant
           super(arguments, environment)
 
           @show_help = false
+          @show_defaults = false
           @show_system = false
           @show_user = false
           @show_project = false
@@ -24,6 +25,10 @@ module Nugrant
 
             parser.on("-h", "--help", "Print this help") do
               @show_help = true
+            end
+
+            parser.on("-d", "--defaults", "Show only defaults parameters") do
+              @show_defaults = true
             end
 
             parser.on("-s", "--system", "Show only system parameters") do
@@ -43,11 +48,6 @@ module Nugrant
                               "of all parameters that would be available for usage in the Vagrantfile.\n" +
                               "The hierarchy of the parameters is respected, so the final values are\n" +
                               "displayed."
-
-            parser.separator ""
-            parser.separator "Notice: For now, defaults directly defined in the Vagrantfile are not \n" +
-                             "considered by this command. This is something we would like to fix in \n" +
-                             "the near future."
           end
         end
 
@@ -57,11 +57,19 @@ module Nugrant
 
           return help(parser) if @show_help
 
-          system() if @show_system
-          user() if @show_user
-          project() if @show_project
+          @logger.debug("'Parameters' each target VM...")
+          with_target_vms(arguments) do |vm|
+            parameters = vm.config.keys[:user].parameters
 
-          all() if !@show_system && !@show_user && !@show_project
+            @env.ui.info("# Vm '#{vm.name}'", :prefix => false)
+
+            defaults(parameters) if @show_defaults
+            system(parameters) if @show_system
+            user(parameters) if @show_user
+            project(parameters) if @show_project
+
+            all(parameters) if !@show_defaults && !@show_system && !@show_user && !@show_project
+          end
 
           return 0
         end
@@ -70,54 +78,56 @@ module Nugrant
           @env.ui.info(parser.help, :prefix => false)
         end
 
-        def system()
-          parameters = Nugrant::Parameters.new()
-
-          print_header("System")
-          print_parameters(parameters.get_system_params())
+        def defaults(parameters)
+          print_results("Defaults", parameters.defaults)
         end
 
-        def user()
-          parameters = Nugrant::Parameters.new()
-
-          print_header("User")
-          print_parameters(parameters.get_user_params())
+        def system(parameters)
+          print_results("System", parameters.system)
         end
 
-        def project()
-          parameters = Nugrant::Parameters.new()
-
-          print_header("Project")
-          print_parameters(parameters.get_project_params())
+        def user(parameters)
+          print_results("User", parameters.user)
         end
 
-        def all()
-          parameters = Nugrant::Parameters.new()
-
-          print_parameters(parameters.get_params())
+        def project(parameters)
+          print_results("Project", parameters.project)
         end
 
-        def print_header(kind)
-          @env.ui.info("#{kind.capitalize} parameters", :prefix => false)
-          @env.ui.info("-----------------------------------------------", :prefix => false)
+        def all(parameters)
+          print_results("All", parameters.all)
         end
 
-        def print_parameters(parameters)
+        def print_results(kind, parameters)
           if !parameters || parameters.empty?()
+            print_header(kind)
             @env.ui.info(" Empty", :prefix => false)
             @env.ui.info("", :prefix => false)
             return
           end
 
-          data = {
+          print_parameters(kind, {
             'config' => {
               'user' => parameters
             }
-          }
+          })
+        end
 
-          string = Nugrant::Helper::Yaml.format(data.to_yaml)
+        def print_parameters(kind, data)
+          string = Nugrant::Helper::Yaml.format(data.to_yaml, :indent => 1)
+
+          print_header(kind)
           @env.ui.info(string, :prefix => false)
           @env.ui.info("", :prefix => false)
+        end
+
+        def print_header(kind, length = 50)
+          @env.ui.info(" #{kind.capitalize} Parameters", :prefix => false)
+          @env.ui.info(" " + "-" * length, :prefix => false)
+        end
+
+        def compute_header_length(string)
+
         end
       end
     end
