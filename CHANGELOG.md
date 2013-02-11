@@ -1,6 +1,11 @@
 # 0.0.13
 
-
+* Cleanup `Parameters` and `ParameterBag` interface
+ * The method `defaults` has been removed from the bag
+ * Setting defaults on `Parameters` now recompute the final bag
+* Improved `vagrant user parameters` command
+ * Now using the exact config as seen by Vagrant, this includes defaults parameters
+ * An option has been added to only see defaults parameters
 
 # 0.0.12
 
