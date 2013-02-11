@@ -183,11 +183,6 @@ class Nugrant::TestParameters < Test::Unit::TestCase
   def test_defaults()
     filetypes.each do |params_filetype|
       parameters = create_parameters(params_filetype, "params_simple", invalid_path, invalid_path)
-      parameters.defaults({"test" => "override", "level" => "new"})
-
-      assert_equal("value", parameters.test)
-      assert_equal("new", parameters.level)
-
       parameters.defaults = {"test" => "override1", "level" => "new1"}
 
       assert_equal("value", parameters.test)
@@ -198,7 +193,7 @@ class Nugrant::TestParameters < Test::Unit::TestCase
   def test_empty_file()
     filetypes.each do |params_filetype|
       parameters = create_parameters(params_filetype, "params_empty", invalid_path, invalid_path)
-      parameters.defaults({"test" => "value"})
+      parameters.defaults = {"test" => "value"}
 
       assert_equal("value", parameters.test)
     end
@@ -208,7 +203,7 @@ class Nugrant::TestParameters < Test::Unit::TestCase
     ["boolean", "list"].each do |wrong_type|
       filetypes.each do |params_filetype|
         parameters = create_parameters(params_filetype, "params_#{wrong_type}", invalid_path, invalid_path)
-        parameters.defaults({"test" => "value"})
+        parameters.defaults = {"test" => "value"}
 
         assert_equal("value", parameters.test)
       end

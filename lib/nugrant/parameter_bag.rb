@@ -1,26 +1,29 @@
 module Nugrant
   class ParameterBag
     def initialize(parameters)
-      if parameters == nil
-        return
-      end
+      @bag = recompute(parameters)
+    end
 
-      @bag = {}
-      @defaults = {}
+    def recompute(parameters)
+      @bag = transform(parameters)
+      return @bag
+    end
+
+    def transform(parameters)
+      bag = {}
+      return bag if parameters == nil
 
       parameters.each do |key, value|
-        if key == "defaults"
-          raise ArgumentError, "The key 'defaults' has restricted usage and cannot be defined"
-        end
-
         if not value.is_a?(Hash)
-          @bag[key] = value
+          bag[key] = value
           next
         end
 
         # It is a hash, transform it into a bag
-        @bag[key] = Nugrant::ParameterBag.new(value)
+        bag[key] = Nugrant::ParameterBag.new(value)
       end
+
+      return bag
     end
 
     def [](param_name)
@@ -32,15 +35,11 @@ module Nugrant
     end
 
     def has_param?(param_name)
-      return @bag != nil && @bag.has_key?(param_name)
+      return @bag.has_key?(param_name)
     end
 
     def get_param(param_name)
       if not has_param?(param_name)
-        if @defaults[param_name]
-          return @defaults[param_name]
-        end
-
         raise KeyError, "Undefined parameter '#{param_name}'"
       end
 
@@ -49,20 +48,6 @@ module Nugrant
 
     def get_params()
       return @bag
-    end
-
-    def defaults(parameters)
-      parameters.each do |key, value|
-        if value.is_a?(Hash) and has_param?(key)
-          @bag[key].defaults(value)
-        end
-      end
-
-      @defaults = Nugrant::ParameterBag.new(parameters)
-    end
-
-    def defaults=(parameters)
-      defaults(parameters)
     end
   end
 end

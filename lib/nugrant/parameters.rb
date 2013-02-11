@@ -5,57 +5,44 @@ require 'yaml'
 
 module Nugrant
   class Parameters < Nugrant::ParameterBag
+    attr_reader :defaults, :system, :user, :project, :all
+
     def initialize(config = nil)
       if config == nil
         config = Nugrant::Config.new()
       end
 
       @config = config
-      @parameters = load_parameters()
 
-      super(@parameters)
+      @defaults = nil
+      @system = parse_parameters(@config.system_params_path)
+      @user = parse_parameters(@config.user_params_path)
+      @project = parse_parameters(@config.project_params_path)
+
+      @all = compute_all()
     end
 
-    def get_bag()
-      @bag
+    def defaults=(parameters)
+      @defaults = parameters
+
+      # When defaults change, we need to recompute parameters hierarchy
+      compute_all()
     end
 
-    def get_params()
-      return @parameters
+    def compute_all()
+      @all = Hash.new()
+      @all.deep_merge!(@defaults) if @defaults != nil
+      @all.deep_merge!(@system) if @system != nil
+      @all.deep_merge!(@user) if @user != nil
+      @all.deep_merge!(@project) if @project != nil
+
+      self.recompute(@all)
+
+      return @all
     end
 
-    def get_project_params()
-      return @project_parameters
-    end
-
-    def get_user_params()
-      return @user_parameters
-    end
-
-    def get_system_params()
-      return @system_parameters
-    end
-
-    def load_parameters()
-      @project_parameters = load_parameters_file(@config.project_params_path)
-      @user_parameters = load_parameters_file(@config.user_params_path)
-      @system_parameters = load_parameters_file(@config.system_params_path)
-
-      parameters = Hash.new()
-
-      if @project_parameters == nil and @user_parameters == nil and @system_parameters == nil
-        return parameters
-      end
-
-      parameters.deep_merge!(@system_parameters) if @system_parameters != nil
-      parameters.deep_merge!(@user_parameters) if @user_parameters != nil
-      parameters.deep_merge!(@project_parameters) if @project_parameters != nil
-
-      return parameters
-    end
-
-    def load_parameters_file(file_path)
-      data = parse(file_path)
+    def parse_parameters(file_path)
+      data = parse_data(file_path)
       if data == nil || !data.kind_of?(Hash)
         return
       end
@@ -68,7 +55,7 @@ module Nugrant
       return data
     end
 
-    def parse(file_path)
+    def parse_data(file_path)
       return if not File.exists?(file_path)
 
       begin
