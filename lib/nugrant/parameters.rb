@@ -3,8 +3,10 @@ require 'json'
 require 'ostruct'
 require 'yaml'
 
+require 'nugrant/bag'
+
 module Nugrant
-  class Parameters < Nugrant::ParameterBag
+  class Parameters < Nugrant::Bag
     attr_reader :defaults, :system, :user, :project, :all
 
     def initialize(config = nil)

@@ -2,13 +2,13 @@ require 'nugrant'
 require 'nugrant/parameters'
 require 'test/unit'
 
-class Nugrant::TestParameterBag < Test::Unit::TestCase
+class Nugrant::TestBag < Test::Unit::TestCase
   def create_bag(parameters)
-    return Nugrant::ParameterBag.new(parameters)
+    return Nugrant::Bag.new(parameters)
   end
 
   def assert_bag(parameters, bag)
-    assert_kind_of(Nugrant::ParameterBag, bag)
+    assert_kind_of(Nugrant::Bag, bag)
 
     parameters.each do |key, value|
       if not value.is_a?(Hash)

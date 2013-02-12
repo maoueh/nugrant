@@ -1,5 +1,5 @@
 module Nugrant
-  class ParameterBag
+  class Bag
     def initialize(parameters)
       @bag = recompute(parameters)
     end
@@ -20,7 +20,7 @@ module Nugrant
         end
 
         # It is a hash, transform it into a bag
-        bag[key] = Nugrant::ParameterBag.new(value)
+        bag[key] = Nugrant::Bag.new(value)
       end
 
       return bag

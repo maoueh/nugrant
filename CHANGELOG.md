@@ -1,5 +1,7 @@
 # 0.0.14
 
+* Renamed `ParameterBag` to `Bag`.
+
 # 0.0.13
 
 * Cleanup `Parameters` and `ParameterBag` interface
