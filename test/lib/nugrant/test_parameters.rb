@@ -28,7 +28,7 @@ class Nugrant::TestParameters < Test::Unit::TestCase
       assert_equal(value, parameters[key], "array[#{key}]")
     end
 
-    assert_equal(false, parameters.has_param?("0.0.0"))
+    assert_equal(false, parameters.has_key?("0.0.0"))
   end
 
   def test_params_level_1()
@@ -109,7 +109,7 @@ class Nugrant::TestParameters < Test::Unit::TestCase
         "0.0.1" => "system",
       })
 
-      assert_equal(false, parameters.has_param?("0.0.0"))
+      assert_equal(false, parameters.has_key?("0.0.0"))
     end
   end
 
@@ -117,7 +117,7 @@ class Nugrant::TestParameters < Test::Unit::TestCase
     assert_level(parameters.send(key), results)
     assert_level(parameters[key], results)
 
-    assert_equal(false, parameters.has_param?("0.0.0"))
+    assert_equal(false, parameters.has_key?("0.0.0"))
   end
 
   def test_file_nil()

@@ -1,53 +1,44 @@
 module Nugrant
   class Bag
-    def initialize(parameters)
-      @bag = recompute(parameters)
+    def initialize(hash)
+      @bag = recompute(hash)
     end
 
-    def recompute(parameters)
-      @bag = transform(parameters)
-      return @bag
-    end
+    def recompute(hash)
+      @bag = {}
+      return @bag if hash == nil
 
-    def transform(parameters)
-      bag = {}
-      return bag if parameters == nil
-
-      parameters.each do |key, value|
+      hash.each do |key, value|
         if not value.is_a?(Hash)
-          bag[key] = value
+          @bag[key] = value
           next
         end
 
         # It is a hash, transform it into a bag
-        bag[key] = Nugrant::Bag.new(value)
+        @bag[key] = Nugrant::Bag.new(value)
       end
 
-      return bag
+      return @bag
     end
 
-    def [](param_name)
-      return get_param(param_name)
+    def [](key)
+      return fetch(key)
     end
 
     def method_missing(method, *args, &block)
-      return get_param(method.to_s)
+      return fetch(method.to_s)
     end
 
-    def has_param?(param_name)
-      return @bag.has_key?(param_name)
+    def has_key?(key)
+      return @bag.has_key?(key)
     end
 
-    def get_param(param_name)
-      if not has_param?(param_name)
-        raise KeyError, "Undefined parameter '#{param_name}'"
+    def fetch(key)
+      if not has_key?(key)
+        raise KeyError, "Undefined parameter '#{key}'"
       end
 
-      return @bag[param_name]
-    end
-
-    def get_params()
-      return @bag
+      return @bag[key]
     end
   end
 end

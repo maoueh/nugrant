@@ -1,6 +1,9 @@
 # 0.0.14
 
-* Renamed `ParameterBag` to `Bag`.
+* Renamed `ParameterBag` to `Bag`
+* Cleanup `Bag` api
+ * Renamed method `has_param?` to `has_key?` in `Bag`
+ * Removed method `get_params` from `Bag`
 
 # 0.0.13
 
@@ -28,8 +31,8 @@
 
 # 0.0.10
 
-* Added a subcommand `parameters` for vagrant command `user`.
-* Added a vagrant command `vagrant user subcommand [options]`.
+* Added a subcommand `parameters` for vagrant command `user`
+* Added a vagrant command `vagrant user subcommand [options]`
 
 # 0.0.9
 
