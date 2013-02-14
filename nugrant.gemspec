@@ -10,13 +10,17 @@ Gem::Specification.new do |gem|
   gem.authors       = ["Matthieu Vachon"]
   gem.email         = ["matthieu.o.vachon@gmail.com"]
   gem.homepage      = "https://github.com/maoueh/nugrant"
-  gem.summary       = "Vagrant plugin to enable user specific configuration parameters."
+  gem.summary       = "Library to handle user specific parameters from various location."
   gem.description   = <<-EOF
-     This gem is in fact a Vagrant plugin. By installing this gem, it will be
-     possible to define user specific configuration files that will be merge
-     directly into the Vagrant configuration. This is useful if you need to
-     share a Vagrantfile to multiple developers but would like to customize
-     some parameters for each users differently.
+     Nugrant is a library to easily handle parameters that need to be
+     injected into an application via different sources (system, user,
+     project, defaults).
+
+     Nugrant can also be directly used as a Vagrant plugin. By activating
+     this gem with Vagrant, it will be possible to define user specific
+     parameters that will be injected directly into the Vagrantfile. This
+     is useful if you need to share a Vagrantfile to multiple developers
+     but would like to customize some parameters for each user differently.
   EOF
 
   gem.files         = `git ls-files`.split($/)
