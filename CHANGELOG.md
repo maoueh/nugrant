@@ -1,3 +1,7 @@
+# 1.0.0 (unreleased)
+
+* For now on, this gem will follow semantic versioning.
+
 # 0.0.14
 
 * Renamed `ParameterBag` to `Bag`
