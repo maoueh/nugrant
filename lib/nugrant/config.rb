@@ -9,20 +9,19 @@ module Nugrant
     attr :params_filetype, true
 
     def self.user_base_path()
-      return File.expand_path("~")
+      File.expand_path("~")
     end
 
     def self.system_base_path()
-      # TODO: Fixme, find the right location to put system wide settings on windows...
       if Config.on_windows?
-        return "C:/etc"
+        return ENV['PROGRAMDATA'] || ENV['ALLUSERSPROFILE']
       end
 
-      return "/etc"
+      "/etc"
     end
 
     def self.on_windows?()
-      return (RbConfig::CONFIG['host_os'] =~ /mswin|mingw|cygwin/) != nil
+      (RbConfig::CONFIG['host_os'].downcase =~ /mswin|mingw|cygwin/) != nil
     end
 
     def initialize(options = {})
