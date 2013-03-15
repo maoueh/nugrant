@@ -1,9 +1,79 @@
 # Nugrant [![Build Status](https://travis-ci.org/maoueh/nugrant.png)](https://travis-ci.org/maoueh/nugrant)
 
-Vagrant plugin that brings user specific configuration
-options. It will enable a `.vagrantuser` at different
-location that will get imported into the main vagrant
-config.
+Nugrant is a library to easily handle parameters that need to be
+injected into an application via different sources (system, user,
+project, defaults).
+
+But Nugrant is foremost a Vagrant plugin that will enhance
+Vagrantfile to allow user specific configuration values. The plugin
+will let users define a `.vagrantuser` file at different locations. This
+file will contain parameters that will be injected into the Vagrantfile.
+
+## Installation
+
+### Library
+
+If you would like to use Nugrant as a library, simply reference
+it as a dependency of your application. Probably by adding it to
+your `Gemfile` or your `.gemspec` file.
+
+    nugrant ~> 0.0.15
+
+### Vagrant
+
+If you would like to use Nugrant as a Vagrant plugin, the
+detailed installation steps are provided below. Without a
+doubt, you need Vagrant installed for those steps to work ;)
+
+There are two different ways to install the gem. You can
+install it via Vagrant or via the system gem container.
+
+When you install via Vagrant, the main benefit is that
+it's decoupled from other system gems. There is less
+chance for this gem's dependencies, even if they are minimal,
+to clash with gems already installed on your system. This is the
+recommended installation method. To install, simply run:
+
+    > vagrant gem install nugrant
+
+If you prefer to install the gem in a system wide manner,
+please use this command instead:
+
+    > gem install nugrant
+
+## Usage
+
+Whether used as a library or a Vagrant plugin, Nugrant has some
+common concepts that apply to both usages. The most important
+one is the parameters hierarchy.
+
+Nugrant can read parameters from various locations and will merge
+them all together in a single set. Merging is done in a fairly
+standard fashion.
+
+Here the precedence rules that apply when merging parameters
+from various location:
+
+ - Defaults
+ - System
+ - User
+ - Project
+
+In text, this means that project parameters overrides user
+parameters, user parameters overrides system parameters and
+finally system parameters overrides defaults parameters.
+
+### Library
+
+Using Nugrant as a library to handle parameters from various
+location is really easy. Two main classes need to be handled.
+
+First, you need to create a `Nugrant::Config` object. This
+configuration holds the values that needs to be customized
+by your own application. This includes the different parameters paths
+and the format of the parameters file.
+
+### Vagrant
 
 For example, let say the git repository you want to
 expose is not located under the root folder of
@@ -19,29 +89,6 @@ Your `Vagrantfile` would look like this:
 However, what happens when multiple developers
 need to share the same `Vagrantfile`? This is the main
 use case this plugin address.
-
-## Installation
-
-First, you need to have Vagrant installed for this gem
-to work correctly.
-
-There is two different way to install the gem. You can
-install it via Vagrant or via the system gem containers.
-
-When you install from Vagrant, the main benefit is that
-it's decoupled from your other system gems. There is less
-chance for this gem's dependencies, even if they are minimal,
-to clash with gems already installed on your system. This is the
-recommended installation method. To install, simply run:
-
-    > vagrant gem install nugrant
-
-If you prefer to install the gem in a system wide matters,
-please use this command instead:
-
-    > gem install nugrant
-
-## Usage
 
 When Vagrant starts, via any of the `vagrant` commands,
 it loads all vagrant plugins it founds under the `GEM_PATH`
