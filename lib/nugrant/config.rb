@@ -14,7 +14,7 @@ module Nugrant
 
     def self.system_base_path()
       if Config.on_windows?
-        return ENV['PROGRAMDATA'] || ENV['ALLUSERSPROFILE']
+        return File.expand_path(ENV['PROGRAMDATA'] || ENV['ALLUSERSPROFILE'])
       end
 
       "/etc"
