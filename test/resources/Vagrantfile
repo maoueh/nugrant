@@ -1,5 +1,0 @@
-#Vagrant.require_plugin "nugrant"
-
-Vagrant.configure("2") do |config|
-  puts "Something"
-end

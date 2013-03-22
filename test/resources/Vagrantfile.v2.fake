@@ -1,0 +1,9 @@
+Vagrant.configure("2") do |config|
+  config.user.defaults = {
+    'value' => "test"
+  }
+
+  config.vm.box = "testing"
+
+  puts config.user.value
+end
