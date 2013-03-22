@@ -1,6 +1,8 @@
-# 1.0.0 (unreleased)
+# 1.0.0 (March 21th, 2013)
 
 * For now on, this gem will follow semantic versioning.
+* Refactored how Vagrant plugin is architectured.
+* Now supporting Vagrant 1.1.x (Plugin version "2").
 
 # 0.0.14
 
