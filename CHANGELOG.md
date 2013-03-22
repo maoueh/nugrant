@@ -1,3 +1,7 @@
+# 1.0.1 (unreleased)
+
+* Fixed a bug preventing the version from being printed when doing `vagrant user -v`.
+
 # 1.0.0 (March 21th, 2013)
 
 * For now on, this gem will follow semantic versioning.
