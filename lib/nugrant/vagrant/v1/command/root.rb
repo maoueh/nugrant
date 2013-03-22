@@ -1,4 +1,5 @@
 require 'nugrant'
+require 'nugrant/version'
 
 module Nugrant
   module Vagrant
