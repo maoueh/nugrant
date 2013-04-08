@@ -17,7 +17,7 @@ If you would like to use Nugrant as a library, simply reference
 it as a dependency of your application. Probably by adding it to
 your `Gemfile` or your `.gemspec` file.
 
-    nugrant ~> 0.0.15
+    nugrant ~> 1.0.0
 
 ### Vagrant
 
@@ -25,21 +25,49 @@ If you would like to use Nugrant as a Vagrant plugin, the
 detailed installation steps are provided below. Without a
 doubt, you need Vagrant installed for those steps to work ;)
 
-There are two different ways to install the gem. You can
-install it via Vagrant or via the system gem container.
+First of all, Vagrant's plugin system is very well done and
+Nugrant supports version `v1` (1.0.z branch, like 1.0.7) and
+`v2` (1.y.z branch, like 1.1.3). However, the installation
+procedure between the two versions is different.
+
+To know which version you currently have installed, type
+`vagrant -v` in a terminal.
+
+#### Version 1.0.z (latest version tested 1.0.7)
+
+In this version, there is two different ways to install Nugrant.
+You can install it via Vagrant or directly via the system gem
+container.
 
 When you install via Vagrant, the main benefit is that
 it's decoupled from other system gems. There is less
 chance for this gem's dependencies, even if they are minimal,
 to clash with gems already installed on your system. This is the
-recommended installation method. To install, simply run:
+recommended installation method. To install, simply run in
+a terminal:
 
     > vagrant gem install nugrant
 
-If you prefer to install the gem in a system wide manner,
-please use this command instead:
+If you prefer to install the gem in via the system gem
+container, please use this command instead:
 
     > gem install nugrant
+
+#### Version 1.y.z (latest version tested 1.1.3)
+
+In those versions, probably until 2.y.z is out, there
+is a new way to install and register plugin with the Vagrant
+environment.
+
+To install when using one of this versions, simply run in a
+terminal:
+
+    > vagrant plugin install nugrant
+
+Since the plugin system has been completely rewritten in those
+versions, it is not possible anymore to make the plugin available
+within Vagrant when installing Nugrant in the system
+gem container.
 
 ## Usage
 
