@@ -1,3 +1,5 @@
+# 1.1.0 (unreleased)
+
 # 1.0.1 (April 9th, 2013)
 
 * Fixed a crash when `user` config value is `nil` preventing `vagrant user parameters`
