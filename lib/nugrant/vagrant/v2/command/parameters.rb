@@ -60,7 +60,8 @@ module Nugrant
 
             @logger.debug("'Parameters' each target VM...")
             with_target_vms(arguments) do |vm|
-              parameters = vm.config.user.parameters
+              config = vm.config.user
+              parameters = config ? config.parameters : Nugrant::Parameters.new()
 
               @env.ui.info("# Vm '#{vm.name}'", :prefix => false)
 
