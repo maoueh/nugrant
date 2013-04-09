@@ -1,5 +1,7 @@
 # 1.0.1 (unreleased)
 
+* Fixed a crash when `user` config value is nil preventing `vagrant user parameters`
+  from working as expected. [GH-4](https://github.com/maoueh/nugrant/issues/4)
 * Fixed a bug preventing the version from being printed when doing `vagrant user -v`.
 
 # 1.0.0 (March 21th, 2013)
