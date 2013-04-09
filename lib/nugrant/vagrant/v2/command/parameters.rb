@@ -127,10 +127,6 @@ module Nugrant
             @env.ui.info(" #{kind.capitalize} Parameters", :prefix => false)
             @env.ui.info(" " + "-" * length, :prefix => false)
           end
-
-          def compute_header_length(string)
-
-          end
         end
       end
     end
