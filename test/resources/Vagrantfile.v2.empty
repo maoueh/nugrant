@@ -1,0 +1,4 @@
+Vagrant.require_plugin('nugrant')
+
+Vagrant.configure("2") do |config|
+end
