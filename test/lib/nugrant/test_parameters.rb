@@ -24,11 +24,17 @@ class Nugrant::TestParameters < Test::Unit::TestCase
 
   def assert_level(parameters, results)
     results.each do |key, value|
-      assert_equal(value, parameters.send(key), "method(#{key})")
+      assert_equal(value, parameters.send(key), "array[#{key}]")
       assert_equal(value, parameters[key], "array[#{key}]")
     end
 
-    assert_equal(false, parameters.has_key?("0.0.0"))
+    assert_key_error(parameters, "0.0.0")
+  end
+
+  def assert_key_error(parameters, key)
+    assert_raise(KeyError) do
+      parameters[key]
+    end
   end
 
   def test_params_level_1()
@@ -109,7 +115,7 @@ class Nugrant::TestParameters < Test::Unit::TestCase
         "0.0.1" => "system",
       })
 
-      assert_equal(false, parameters.has_key?("0.0.0"))
+      assert_key_error(parameters, "0.0.0")
     end
   end
 
@@ -117,7 +123,16 @@ class Nugrant::TestParameters < Test::Unit::TestCase
     assert_level(parameters.send(key), results)
     assert_level(parameters[key], results)
 
-    assert_equal(false, parameters.has_key?("0.0.0"))
+    assert_key_error(parameters, "0.0.0")
+  end
+
+  def test_params_array()
+    file_path = "params_array"
+    filetypes.each do |params_filetype|
+      parameters = create_parameters(params_filetype, file_path, invalid_path, invalid_path)
+
+      assert_equal(["1", "2", "3"], parameters['level1']['level2'])
+    end
   end
 
   def test_file_nil()
@@ -131,15 +146,12 @@ class Nugrant::TestParameters < Test::Unit::TestCase
   def run_test_file_invalid(invalid_value)
     filetypes.each do |params_filetype|
       parameters = create_parameters(params_filetype, "params_simple", invalid_path, invalid_path)
-      assert_equal("value", parameters.test)
       assert_equal("value", parameters["test"])
 
       parameters = create_parameters(params_filetype, invalid_path, "params_simple", invalid_path)
-      assert_equal("value", parameters.test)
       assert_equal("value", parameters["test"])
 
       parameters = create_parameters(params_filetype, invalid_path, invalid_path, "params_simple")
-      assert_equal("value", parameters.test)
       assert_equal("value", parameters["test"])
 
       parameters = create_parameters(params_filetype, invalid_path, invalid_path, invalid_path)
@@ -159,24 +171,22 @@ class Nugrant::TestParameters < Test::Unit::TestCase
     filetypes.each do |params_filetype|
       parameters = create_parameters(params_filetype, file_path, invalid_path, invalid_path)
 
-      assert_equal("value1", parameters.level1)
-      assert_equal("value2", parameters.level2.first)
+      assert_equal("value1", parameters['level1'])
+      assert_equal("value2", parameters['level2']['first'])
     end
   end
 
   def test_restricted_defaults_usage()
     filetypes.each do |params_filetype|
-      assert_raise(ArgumentError) do
-        results = create_parameters(params_filetype, "params_defaults_at_root", invalid_path, invalid_path)
-        puts("Results: #{results.inspect} (Should have thrown!)")
-      end
+      parameters = create_parameters(params_filetype, "params_defaults_at_root", invalid_path, invalid_path)
+
+      assert_equal("value", parameters.defaults)
     end
 
     filetypes.each do |params_filetype|
-      assert_raise(ArgumentError) do
-        results = create_parameters(params_filetype, "params_defaults_not_at_root", invalid_path, invalid_path)
-        puts("Results: #{results.inspect} (Should have thrown!)")
-      end
+      parameters = create_parameters(params_filetype, "params_defaults_not_at_root", invalid_path, invalid_path)
+
+      assert_equal("value", parameters.level.defaults)
     end
   end
 
@@ -185,8 +195,8 @@ class Nugrant::TestParameters < Test::Unit::TestCase
       parameters = create_parameters(params_filetype, "params_simple", invalid_path, invalid_path)
       parameters.defaults = {"test" => "override1", "level" => "new1"}
 
-      assert_equal("value", parameters.test)
-      assert_equal("new1", parameters.level)
+      assert_equal("value", parameters['test'])
+      assert_equal("new1", parameters['level'])
     end
   end
 
@@ -195,7 +205,7 @@ class Nugrant::TestParameters < Test::Unit::TestCase
       parameters = create_parameters(params_filetype, "params_empty", invalid_path, invalid_path)
       parameters.defaults = {"test" => "value"}
 
-      assert_equal("value", parameters.test)
+      assert_equal("value", parameters['test'])
     end
   end
 
@@ -205,7 +215,7 @@ class Nugrant::TestParameters < Test::Unit::TestCase
         parameters = create_parameters(params_filetype, "params_#{wrong_type}", invalid_path, invalid_path)
         parameters.defaults = {"test" => "value"}
 
-        assert_equal("value", parameters.test)
+        assert_equal("value", parameters['test'])
       end
     end
   end

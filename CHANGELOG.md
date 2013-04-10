@@ -1,5 +1,17 @@
 # 1.1.0 (unreleased)
 
+* Rewrite completely classes `Parameters` and `Bag`.
+* Reduced chances to have a parameter name collapsing with an
+  implementation method.
+
+### Backward Incompatibilities
+
+* `Parameters` is not extending the `Bag` class anymore.
+* `Parameters` and `Bag` attributes and methods are now almost
+  all prefixed with __ to reduce clashes to a minimum when
+  accessing parameters with method-like syntax
+  (i.e. `parameters.git.master` instead of `parameters['git']['master']`)
+
 # 1.0.1 (April 9th, 2013)
 
 * Fixed a crash when `user` config value is `nil` preventing `vagrant user parameters`

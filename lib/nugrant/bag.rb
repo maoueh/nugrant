@@ -1,44 +1,84 @@
+require 'deep_merge'
+
 module Nugrant
   class Bag
-    def initialize(hash)
-      @bag = recompute(hash)
+    attr_reader :__elements
+
+    def initialize(elements = nil)
+      if elements.kind_of?(Bag)
+        @__elements = elements
+      end
+
+      __recompute(elements)
     end
 
-    def recompute(hash)
-      @bag = {}
-      return @bag if hash == nil
+    def [](key)
+      return __fetch(key)
+    end
+
+    def method_missing(method, *args, &block)
+      return __fetch(method.to_s)
+    end
+
+    def has?(key)
+      return @__elements.has_key?(key)
+    end
+
+    def empty?()
+      @__elements.size() <= 0
+    end
+
+    ##
+    # This method always perform a deep merge but does
+    # not deep merge array for now
+    #
+    def __merge!(elements)
+      bag = elements.kind_of?(Bag) ? elements : Bag.new(elements)
+      return if bag.empty?()
+
+      bag.__each do |key, value|
+        if has?(key)
+          current = @__elements[key]
+          if current.kind_of?(Bag) and value.kind_of?(Bag)
+            current.__merge!(value)
+          else
+            @__elements[key] = value
+          end
+
+          next
+        end
+
+        @__elements[key] = value
+      end
+    end
+
+    def __each()
+      @__elements.each do |key, value|
+        yield key, value
+      end
+    end
+
+    def __recompute(hash = nil)
+      @__elements = {}
+      return if hash == nil or not hash.kind_of?(Hash)
 
       hash.each do |key, value|
-        if not value.is_a?(Hash)
-          @bag[key] = value
+        if not value.kind_of?(Hash)
+          @__elements[key] = value
           next
         end
 
         # It is a hash, transform it into a bag
-        @bag[key] = Nugrant::Bag.new(value)
+        @__elements[key] = Bag.new(value)
       end
-
-      return @bag
     end
 
-    def [](key)
-      return fetch(key)
-    end
-
-    def method_missing(method, *args, &block)
-      return fetch(method.to_s)
-    end
-
-    def has_key?(key)
-      return @bag.has_key?(key)
-    end
-
-    def fetch(key)
-      if not has_key?(key)
+    def __fetch(key)
+      if not has?(key)
         raise KeyError, "Undefined parameter '#{key}'"
       end
 
-      return @bag[key]
+      return @__elements[key]
     end
   end
 end
