@@ -1,3 +1,5 @@
+# 1.1.1 (unreleased)
+
 # 1.1.0 (May 17th, 2013)
 
 * Rewrite completely classes `Parameters` and `Bag`.
