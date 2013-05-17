@@ -1,4 +1,4 @@
-# 1.1.0 (unreleased)
+# 1.1.0 (May 17th, 2013)
 
 * Rewrite completely classes `Parameters` and `Bag`.
 * Reduced chances to have a parameter name collapsing with an
