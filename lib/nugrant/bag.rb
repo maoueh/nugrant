@@ -58,6 +58,17 @@ module Nugrant
       end
     end
 
+    def __to_hash()
+      return {} if empty?()
+
+      hash = {}
+      __each do |key, value|
+        hash[key] = value.kind_of?(Bag) ? value.__to_hash() : value
+      end
+
+      return hash
+    end
+
     def __recompute(hash = nil)
       @__elements = {}
       return if hash == nil or not hash.kind_of?(Hash)

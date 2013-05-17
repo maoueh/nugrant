@@ -81,27 +81,27 @@ module Nugrant
           end
 
           def defaults(parameters)
-            print_results("Defaults", parameters.defaults)
+            print_bag("Defaults", parameters.__defaults)
           end
 
           def system(parameters)
-            print_results("System", parameters.system)
+            print_bag("System", parameters.__system)
           end
 
           def user(parameters)
-            print_results("User", parameters.user)
+            print_bag("User", parameters.__user)
           end
 
           def project(parameters)
-            print_results("Project", parameters.project)
+            print_bag("Project", parameters.__project)
           end
 
           def all(parameters)
-            print_results("All", parameters.all)
+            print_bag("All", parameters.__all)
           end
 
-          def print_results(kind, parameters)
-            if !parameters || parameters.empty?()
+          def print_bag(kind, bag)
+            if !bag || bag.empty?()
               print_header(kind)
               @env.ui.info(" Empty", :prefix => false)
               @env.ui.info("", :prefix => false)
@@ -110,7 +110,7 @@ module Nugrant
 
             print_parameters(kind, {
               'config' => {
-                'user' => parameters
+                'user' => bag.__to_hash()
               }
             })
           end

@@ -82,5 +82,20 @@ module Nugrant
         bag["invalid_value"]
       end
     end
+
+    def test_to_hash()
+      hash = create_bag({}).__to_hash()
+
+      assert_kind_of(Hash, hash)
+      assert_equal({}, hash)
+
+      hash = create_bag({"value" => {"one" => "value", "two" => "value"}}).__to_hash()
+
+      assert_kind_of(Hash, hash)
+      assert_kind_of(Hash, hash['value'])
+      assert_kind_of(String, hash['value']['one'])
+      assert_kind_of(String, hash['value']['two'])
+      assert_equal({"value" => {"one" => "value", "two" => "value"}}, hash)
+    end
   end
 end
