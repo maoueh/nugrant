@@ -17,7 +17,7 @@ If you would like to use Nugrant as a library, simply reference
 it as a dependency of your application. Probably by adding it to
 your `Gemfile` or your `.gemspec` file.
 
-    nugrant ~> 1.0.0
+    nugrant ~> 1.0.1
 
 ### Vagrant
 
@@ -80,12 +80,14 @@ them all together in a single set. Merging is done in a fairly
 standard fashion.
 
 Here the precedence rules that apply when merging parameters
-from various location:
+from various location. List index indicate the priority of the
+entry. Entry with lower number has lower priority (values at this
+priority will be overridden by values defined on higher priorities).
 
- - Defaults
- - System
- - User
- - Project
+ 1. Defaults
+ 2. System
+ 3. User
+ 4. Project
 
 In text, this means that project parameters overrides user
 parameters, user parameters overrides system parameters and
@@ -103,32 +105,35 @@ and the format of the parameters file.
 
 ### Vagrant
 
-For example, let say the git repository you want to
-expose is not located under the root folder of
+All examples shown here are for Vagrant 1.1+. They have
+been tested with Vagrant 1.2.2. Keep this in mind when
+copying examples.
+
+Let start with a small use case. Say the git repository you want
+to share with your guest VM is not located under the root folder of
 your `Vagrantfile`. That means you will need to specify
-an absolute host path to share the folder on the guest vm.
+an absolute host path to share the folder on the guest VM.
 
 Your `Vagrantfile` would look like this:
 
-    Vagrant::Config.run do |config|
-      config.vm.share_folder "git", "/git", "/home/user/work/git"
+    Vagrant.configure("2") do |config|
+      config.vm.box = "base"
+      config.vm.synced_folder "/home/user/work/git", "/git"
     end
 
 However, what happens when multiple developers
 need to share the same `Vagrantfile`? This is the main
-use case this plugin address.
+use case this plugin try to address.
 
-When Vagrant starts, via any of the `vagrant` commands,
-it loads all vagrant plugins it founds under the `GEM_PATH`
-variable. If you installed the plugin with one of the two
-methods we listed above, you DO NOT need to setup this
-environment variable.
+When Vagrant starts, it loads all vagrant plugins it knows
+about. If you installed the plugin with one of the two
+methods we listed above, Vagrant will know about Nugrant
+and will load it correctly.
 
-To use the plugin, first create a yaml file named
-`.vagrantuser` where your `Vagrantfile` is located. The file
-must be a valid yaml file:
+To use the plugin, first create a YAML file named
+`.vagrantuser` in the same folder where your `Vagrantfile` is
+located. The file must be a valid YAML file:
 
-    vm_port: 2223
     repository:
       project: "/home/user/work/git"
 
@@ -137,10 +142,9 @@ is imported into the `config` object of the `Vagrantfile`
 under the key `user`. So, with the `.vagrantuser` file above, you
 could have this `Vagrantfile` that abstract absolute paths.
 
-    Vagrant::Config.run do |config|
-      config.ssh.port config.user.vm_port
-
-      config.vm.share_folder "git", "/git", config.user.repository.project
+    Vagrant.configure("2") do |config|
+      config.vm.box = "base"
+      config.vm.synced_folder config.user.repository.project, "/git"
     end
 
 This way, paths can be customized by every developer. They just
@@ -150,44 +154,64 @@ version control system so it is to committed with the project.
 
 Additionally, you can also have a `.vagrantuser` under your user home
 directory. This way, you can set parameters that will be
-available to all your `Vagrantfile'. The project `.vagrantuser`
-file will overrides parameters defined in the `.vagrantuser` file
-defined in the user home directory
+available to all your `Vagrantfile'. The `.vagrantuser` located
+within the same folder as the `Vagrantfile` file will overrides
+parameters defined in the `.vagrantuser` file defined in the user
+home directory.
 
 For example, you have `.vagrantuser` file located at `~/.vagrantuser`
 that has the following content:
 
-    vm_port: 2223
+    ssh_port: 2223
     repository:
       project: "/home/user/work/git"
 
-And another `.vagrantuser` at the root of your `Vagrantfile`:
+And another `.vagrantuser` within the same folder as your `Vagrantfile`:
 
-    vm_port: 3332
+    ssh_port: 3332
     repository:
       personal: "/home/user/personal/git"
 
 Then, the `Vagrantfile` could be defined like this:
 
-    Vagrant::Config.run do |config|
-      config.ssh.port config.user.vm_port
+    Vagrant.configure("2") do |config|
+      config.ssh.port config.user.ssh_port
 
-      config.vm.share_folder "git", "/git", config.user.repository.project
-      config.vm.share_folder "personal", "/personal", config.user.repository.personal
+      config.vm.synced_folder config.user.repository.project, "/git"
+      config.vm.synced_folder config.user.repository.personal, "/personal"
     end
 
 That would be equivalent to:
 
-    Vagrant::Config.run do |config|
+    Vagrant.configure("2") do |config|
       config.ssh.port 3332
 
-      config.vm.share_folder "git", "/git", "/home/user/work/git"
-      config.vm.share_folder "personal", "/personal", "/home/user/personal/git"
+      config.vm.synced_folder "/home/user/work/git", "/git"
+      config.vm.synced_folder "/home/user/personal/git", "/personal"
     end
 
 As you can see, the parameters defined in the second `.vagrantuser` file
 (the project one) overrides settings defined in the `.vagrantuser` found
 in the home directory (the user one).
+
+Here the list of locations where Nugrant looks for parameters:
+
+ 1. Defaults (via `config.user.defaults` in `Vagrantfile`)
+ 2. System (`/etc/.vagrantuser` on Unix, `%PROGRAMDATA%/.vagrantuser` or `%ALLUSERSPROFILE%/.vagrantuser` on Windows)
+ 3. Home (`~/.vagrantuser`)
+ 4. Project (`.vagrantuser` within the same folder as the `Vagrantfile`)
+
+### Paths
+
+When you want to specify paths on, specially on Windows, it's probably
+better to only use foward slash (`/`). The main reason for this is because
+Ruby, which will be used at the end by Vagrant is able to deal with forward
+slash even on Windows. This is great because with this, you can avoid
+values escaping in YAML file. If you need to use backward slash (`\`), don't
+forget to properly escape it!
+
+    value: "C:/Users/user/work/git"
+    value: "C:\\Users\\user\\work\\git"
 
 ### Parameters access
 
@@ -220,7 +244,7 @@ parameter `config.user.vm.ssh_port`.
 You can use the following snippet directly within your Vagrantfile
 to set a default value for this parameter:
 
-    Vagrant::Config.run do |config|
+    Vagrant.configure("2") do |config|
       config.user.defaults = {
         "vm" => {
           "ssh_port" => "3335"
