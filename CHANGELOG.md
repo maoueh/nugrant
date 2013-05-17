@@ -3,6 +3,16 @@
 * Rewrite completely classes `Parameters` and `Bag`.
 * Reduced chances to have a parameter name collapsing with an
   implementation method.
+* Removed dependency on `deep_merge`. We do now perform
+  our own merge.
+* Added possibility to iterate through keys by using
+  `.each`:
+
+  ```
+  config.user.local.each do |name, value|
+    puts "Key #{name}: #{value}"
+  end
+  ```
 
 ### Backward Incompatibilities
 

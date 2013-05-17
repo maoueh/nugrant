@@ -2,10 +2,13 @@ Vagrant.require_plugin('nugrant')
 
 Vagrant.configure("2") do |config|
   config.user.defaults = {
-    'value' => "test"
+    'local' => {
+        'first' => "value1",
+        'second' => "value2"
+    }
   }
-
-  config.vm.box = "testing"
-
-  puts config.user.value
+  
+  config.user.local.each do |name, value|
+    puts "Parameters #{name}: #{value}"
+  end
 end

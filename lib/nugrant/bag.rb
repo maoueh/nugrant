@@ -35,7 +35,7 @@ module Nugrant
       bag = elements.kind_of?(Bag) ? elements : Bag.new(elements)
       return if bag.empty?()
 
-      bag.__each do |key, value|
+      bag.each do |key, value|
         if has?(key)
           current = @__elements[key]
           if current.kind_of?(Bag) and value.kind_of?(Bag)
@@ -53,7 +53,7 @@ module Nugrant
       end
     end
 
-    def __each()
+    def each()
       @__elements.each do |key, value|
         yield key, value
       end
@@ -63,7 +63,7 @@ module Nugrant
       return {} if empty?()
 
       hash = {}
-      __each do |key, value|
+      each do |key, value|
         hash[key] = value.kind_of?(Bag) ? value.__to_hash() : value
       end
 

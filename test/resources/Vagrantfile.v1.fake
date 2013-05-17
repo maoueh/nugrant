@@ -1,9 +1,10 @@
 Vagrant::Config.run do |config|
   config.user.defaults = {
-    'value' => "test"
+    'first' => "value1",
+    'second' => "value2"
   }
-
-  config.vm.box = "testing"
-
-  puts config.user.value
+  
+  config.user.each do |name, value|
+    puts "Parameters #{name}: #{value.inspect}"
+  end
 end

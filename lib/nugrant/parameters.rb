@@ -32,6 +32,10 @@ module Nugrant
       return @__all.has?(key)
     end
 
+    def each(&block)
+      @__all.each(&block)
+    end
+
     def defaults=(elements)
       @__defaults = Bag.new(elements)
 
