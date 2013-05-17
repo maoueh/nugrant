@@ -7,7 +7,7 @@ group :development do
     'v1' => {
         'home' => "~/.vagrant.d.v1",
         'gem' => Proc.new do
-            gem "vagrant", "~> 1.0.5"
+            gem "vagrant", "~> 1.0.7"
         end,
     },
     'v2' => {
