@@ -28,7 +28,5 @@ Gem::Specification.new do |gem|
   gem.test_files    = gem.files.grep(%r{^(test|spec|features)/})
   gem.require_paths = ["lib"]
 
-  gem.add_dependency "deep_merge", "~> 1.0.0"
-
   gem.add_development_dependency "rake"
 end

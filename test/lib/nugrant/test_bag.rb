@@ -97,5 +97,21 @@ module Nugrant
       assert_kind_of(String, hash['value']['two'])
       assert_equal({"value" => {"one" => "value", "two" => "value"}}, hash)
     end
+
+    def test_merge_array()
+      bag1 = create_bag({"first" => [1, 2]})
+      bag2 = create_bag({"first" => [2, 3]})
+
+      bag1.__merge!(bag2);
+
+      assert_equal({"first" => [1, 2, 3]}, bag1.__to_hash())
+
+      bag1 = create_bag({"first" => [1, 2]})
+      bag2 = create_bag({"first" => "string"})
+
+      bag1.__merge!(bag2);
+
+      assert_equal({"first" => "string"}, bag1.__to_hash())
+    end
   end
 end

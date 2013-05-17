@@ -1,5 +1,3 @@
-require 'deep_merge'
-
 module Nugrant
   class Bag
     attr_reader :__elements
@@ -29,8 +27,9 @@ module Nugrant
     end
 
     ##
-    # This method always perform a deep merge but does
-    # not deep merge array for now
+    # This method always perform a deep merge and will deep merge
+    # array scalar values only. This means that we do not merge
+    # within array themselves.
     #
     def __merge!(elements)
       bag = elements.kind_of?(Bag) ? elements : Bag.new(elements)
@@ -41,6 +40,8 @@ module Nugrant
           current = @__elements[key]
           if current.kind_of?(Bag) and value.kind_of?(Bag)
             current.__merge!(value)
+          elsif current.kind_of?(Array) and value.kind_of?(Array)
+            @__elements[key] = current | value
           else
             @__elements[key] = value
           end
