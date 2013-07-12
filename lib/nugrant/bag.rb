@@ -64,7 +64,7 @@ module Nugrant
 
       hash = {}
       each do |key, value|
-        hash[key] = value.kind_of?(Bag) ? value.__to_hash() : value
+        hash[key.to_sym()] = value.kind_of?(Bag) ? value.__to_hash() : value
       end
 
       return hash
