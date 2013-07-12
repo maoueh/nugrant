@@ -78,5 +78,9 @@ module Nugrant
       @__all.__merge!(@__user)
       @__all.__merge!(@__current)
     end
+
+    def __to_hash()
+      @__all.__to_hash()
+    end
   end
 end
