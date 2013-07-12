@@ -3,15 +3,29 @@ require 'nugrant/helper/bag'
 
 module Nugrant
   class Parameters
-    attr_reader :__defaults, :__system, :__user, :__project, :__all
+    attr_reader :__current, :__user, :__system, :__defaults, :__all
 
-    def initialize(config = nil, defaults = nil)
-      @__config = config || Config.new()
+    ##
+    # Create a new parameters object which holds completed
+    # merged values. The following precedence is used to decide
+    # which location has precedence over which location:
+    #
+    #    (Highest)  ------------------ (Lowest)
+    #      current < user < system < defaults
+    #
+    # =| Options
+    #  * +:config+   - A hash that will be passed to Nugrant::Config.new().
+    #                  See Nugrant::Config constructor for options that you can use.
+    #  * +:defaults+ - The default values for the various parameters that will be read. This
+    #                  must be a Hash object.
+    #
+    def initialize(options = {})
+      @__config = Config.new(options[:config])
 
-      @__defaults = defaults || Bag.new()
-      @__system = Helper::Bag.read(@__config.system_params_path, @__config.params_filetype)
-      @__user = Helper::Bag.read(@__config.user_params_path, @__config.params_filetype)
-      @__project = Helper::Bag.read(@__config.project_params_path, @__config.params_filetype)
+      @__current = Helper::Bag.read(@__config.current_path, @__config.params_format)
+      @__user = Helper::Bag.read(@__config.user_path, @__config.params_format)
+      @__system = Helper::Bag.read(@__config.system_path, @__config.params_format)
+      @__defaults = Bag.new(options[:defaults] || {})
 
       __compute_all()
     end
@@ -36,6 +50,15 @@ module Nugrant
       @__all.each(&block)
     end
 
+    ##
+    # Set the new default values for the
+    # various parameters contain by this instance.
+    # This will call __compute_all() to recompute
+    # correct precedences.
+    #
+    # =| Attributes
+    #  * +elements+ - The new default elements
+    #
     def defaults=(elements)
       @__defaults = Bag.new(elements)
 
@@ -43,12 +66,17 @@ module Nugrant
       __compute_all()
     end
 
+    ##
+    # Recompute the correct precedences by merging the various
+    # bag in the right order and return the result as a Nugrant::Bag
+    # object.
+    #
     def __compute_all()
       @__all = Bag.new()
       @__all.__merge!(@__defaults)
       @__all.__merge!(@__system)
       @__all.__merge!(@__user)
-      @__all.__merge!(@__project)
+      @__all.__merge!(@__current)
     end
   end
 end

@@ -2,7 +2,7 @@
 
 Nugrant is a library to easily handle parameters that need to be
 injected into an application via different sources (system, user,
-project, defaults).
+current, defaults).
 
 But Nugrant is foremost a Vagrant plugin that will enhance
 Vagrantfile to allow user specific configuration values. The plugin
@@ -87,9 +87,9 @@ priority will be overridden by values defined on higher priorities).
  1. Defaults
  2. System
  3. User
- 4. Project
+ 4. Current
 
-In text, this means that project parameters overrides user
+In text, this means that current parameters overrides user
 parameters, user parameters overrides system parameters and
 finally system parameters overrides defaults parameters.
 
@@ -191,7 +191,7 @@ That would be equivalent to:
     end
 
 As you can see, the parameters defined in the second `.vagrantuser` file
-(the project one) overrides settings defined in the `.vagrantuser` found
+(the current one) overrides settings defined in the `.vagrantuser` found
 in the home directory (the user one).
 
 Here the list of locations where Nugrant looks for parameters:
@@ -199,7 +199,7 @@ Here the list of locations where Nugrant looks for parameters:
  1. Defaults (via `config.user.defaults` in `Vagrantfile`)
  2. System (`/etc/.vagrantuser` on Unix, `%PROGRAMDATA%/.vagrantuser` or `%ALLUSERSPROFILE%/.vagrantuser` on Windows)
  3. Home (`~/.vagrantuser`)
- 4. Project (`.vagrantuser` within the same folder as the `Vagrantfile`)
+ 4. current (`.vagrantuser` within the same folder as the `Vagrantfile`)
 
 ### Paths
 

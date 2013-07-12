@@ -6,36 +6,36 @@ require 'nugrant/bag'
 module Nugrant
   module Helper
     module Bag
-      def self.read(filepath, filetype, error_handler = nil)
-        data = parse_data(filepath, filetype, error_handler)
+      def self.read(filepath, format, error_handler = nil)
+        data = parse_data(filepath, format, error_handler)
 
         return Nugrant::Bag.new(data)
       end
 
-      def self.parse_data(filepath, filetype, error_handler = nil)
+      def self.parse_data(filepath, format, error_handler = nil)
         return if not File.exists?(filepath)
 
         begin
           File.open(filepath, "rb") do |file|
-            parsing_method = "parse_#{filetype}"
-            return send(parsing_method, file.read)
+            parsing_method = "parse_#{format.to_s}"
+            return send(parsing_method, file.read())
           end
         rescue => error
           if error_handler
             # TODO: Implements error handler logic
-            error_handler.handle("Could not parse the user #{filetype} parameters file '#{filepath}': #{error}")
+            error_handler.handle("Could not parse the user #{format.to_s} parameters file '#{filepath}': #{error}")
           end
         end
       end
 
-      def self.parse_json(data_string)
-        JSON.parse(data_string)
+      def self.parse_json(input)
+        JSON.parse(input)
       end
 
-      def self.parse_yml(data_string)
+      def self.parse_yaml(input)
         YAML::ENGINE.yamler= 'syck' if defined?(YAML::ENGINE)
 
-        YAML.load(data_string)
+        YAML.load(input)
       end
     end
   end

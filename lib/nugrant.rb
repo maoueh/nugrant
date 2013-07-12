@@ -2,6 +2,7 @@ require 'pathname'
 require 'nugrant/config'
 require 'nugrant/parameters'
 
+# 1.8 Compatibility check
 unless defined?(KeyError)
   class KeyError < IndexError
   end
@@ -19,9 +20,4 @@ if defined?(Vagrant)
 end
 
 module Nugrant
-  def self.create_parameters(options)
-    config = Nugrant::Config.new(options)
-
-    return Nugrant::Parameters.new(config)
-  end
 end

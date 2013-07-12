@@ -8,7 +8,7 @@ module Nugrant
           attr_reader :parameters
 
           def initialize()
-            @parameters = Nugrant::Parameters.new()
+            @parameters = Nugrant::Parameters.new({:config => {:params_filename => ".vagrantuser"}})
           end
 
           def [](param_name)
