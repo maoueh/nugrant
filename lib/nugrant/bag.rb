@@ -15,7 +15,7 @@ module Nugrant
     end
 
     def method_missing(method, *args, &block)
-      return __fetch(method.to_s)
+      return __fetch(method)
     end
 
     def has?(key)
@@ -76,12 +76,12 @@ module Nugrant
 
       hash.each do |key, value|
         if not value.kind_of?(Hash)
-          @__elements[key] = value
+          @__elements[key.to_sym()] = value
           next
         end
 
         # It is a hash, transform it into a bag
-        @__elements[key] = Bag.new(value)
+        @__elements[key.to_sym()] = Bag.new(value)
       end
     end
 

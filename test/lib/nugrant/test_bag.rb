@@ -30,49 +30,49 @@ module Nugrant
     end
 
     def test_bag()
-      run_test_bag({"first" => "value1", "second" => "value2"})
+      run_test_bag({:first => "value1", :second => "value2"})
 
       run_test_bag({
-        "first" => {
-          "level1" => "value1",
-          "level2" => "value2",
+        :first => {
+          :level1 => "value1",
+          :level2 => "value2",
         },
-        "second" => {
-          "level1" => "value3",
-          "level2" => "value4",
+        :second => {
+          :level1 => "value3",
+          :level2 => "value4",
         },
-        "third" => "value5"
+        :third => "value5"
       })
 
       run_test_bag({
-        "first" => {
-          "level1" => {
-            "level11" => "value1",
-            "level12" => "value2",
+        :first => {
+          :level1 => {
+            :level11 => "value1",
+            :level12 => "value2",
           },
-          "level2" => {
-            "level21" => "value3",
-            "level22" => "value4",
+          :level2 => {
+            :level21 => "value3",
+            :level22 => "value4",
           },
-          "level3" => "value5",
+          :level3 => "value5",
         },
-        "second" => {
-          "level1" => {
-            "level11" => "value6",
-            "level12" => "value7",
+        :second => {
+          :level1 => {
+            :level11 => "value6",
+            :level12 => "value7",
           },
-          "level2" => {
-            "level21" => "value8",
-            "level22" => "value9",
+          :level2 => {
+            :level21 => "value8",
+            :level22 => "value9",
           },
-          "level3" => "value10",
+          :level3 => "value10",
         },
-        "third" => "value11"
+        :third => "value11"
       })
     end
 
     def test_undefined_value()
-      bag = create_bag({"value" => "one"})
+      bag = create_bag({:value => "one"})
 
       assert_raise(KeyError) do
         bag.invalid_value
@@ -89,29 +89,29 @@ module Nugrant
       assert_kind_of(Hash, hash)
       assert_equal({}, hash)
 
-      hash = create_bag({"value" => {"one" => "value", "two" => "value"}}).__to_hash()
+      hash = create_bag({:value => {:one => "value", :two => "value"}}).__to_hash()
 
       assert_kind_of(Hash, hash)
-      assert_kind_of(Hash, hash['value'])
-      assert_kind_of(String, hash['value']['one'])
-      assert_kind_of(String, hash['value']['two'])
-      assert_equal({"value" => {"one" => "value", "two" => "value"}}, hash)
+      assert_kind_of(Hash, hash[:value])
+      assert_kind_of(String, hash[:value][:one])
+      assert_kind_of(String, hash[:value][:two])
+      assert_equal({:value => {:one => "value", :two => "value"}}, hash)
     end
 
     def test_merge_array()
-      bag1 = create_bag({"first" => [1, 2]})
-      bag2 = create_bag({"first" => [2, 3]})
+      bag1 = create_bag({:first => [1, 2]})
+      bag2 = create_bag({:first => [2, 3]})
 
       bag1.__merge!(bag2);
 
-      assert_equal({"first" => [1, 2, 3]}, bag1.__to_hash())
+      assert_equal({:first => [1, 2, 3]}, bag1.__to_hash())
 
-      bag1 = create_bag({"first" => [1, 2]})
-      bag2 = create_bag({"first" => "string"})
+      bag1 = create_bag({:first => [1, 2]})
+      bag2 = create_bag({:first => "string"})
 
       bag1.__merge!(bag2);
 
-      assert_equal({"first" => "string"}, bag1.__to_hash())
+      assert_equal({:first => "string"}, bag1.__to_hash())
     end
   end
 end
