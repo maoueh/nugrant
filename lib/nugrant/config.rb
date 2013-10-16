@@ -60,7 +60,7 @@ module Nugrant
     #                         parameters should resides. The parameters loaded from this
     #                         location have the second highest precedence.
     #                           Defaults => "~/#{@params_filename}"
-    #  * +:user_path+       - The system path is the location where system wide
+    #  * +:system_path+     - The system path is the location where system wide
     #                         parameters should resides. The parameters loaded from this
     #                         location have the third highest precedence.
     #                           Defaults => Default system path depending on OS + @params_filename

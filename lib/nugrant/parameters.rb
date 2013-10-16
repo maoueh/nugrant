@@ -1,4 +1,5 @@
 require 'nugrant/bag'
+require 'nugrant/config'
 require 'nugrant/helper/bag'
 
 module Nugrant
