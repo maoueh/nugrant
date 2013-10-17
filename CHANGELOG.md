@@ -1,5 +1,8 @@
 # 1.1.1 (unreleased)
 
+* Now using [multi_json](https://rubygems.org/gems/multi_json)
+  for JSON handling.
+
 # 1.1.0 (May 17th, 2013)
 
 * Rewrite completely classes `Parameters` and `Bag`.
