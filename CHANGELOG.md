@@ -1,5 +1,11 @@
 # 1.1.1 (unreleased)
 
+* Ensured that keys used within a `Bag` are always symbol. This make
+  sure that it is possible to retrieve a value with any access method.
+  See [GH-9](https://github.com/maoueh/nugrant/issues/9).
+* Now using [multi_json](https://rubygems.org/gems/multi_json)
+  for JSON handling.
+
 # 1.1.0 (May 17th, 2013)
 
 * Rewrite completely classes `Parameters` and `Bag`.

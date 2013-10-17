@@ -1,4 +1,14 @@
-# Nugrant [![Build Status](https://travis-ci.org/maoueh/nugrant.png)](https://travis-ci.org/maoueh/nugrant)
+# Nugrant
+
+[![Gem Version](https://badge.fury.io/rb/nugrant.png)][gem]
+[![Build Status](https://secure.travis-ci.org/maoueh/nugrant.png?branch=master)][travis]
+[![Dependency Status](https://gemnasium.com/maoueh/nugrant.png?travis)][gemnasium]
+[![Code Climate](https://codeclimate.com/github/maoueh/nugrant.png)][codeclimate]
+
+[gem]: https://rubygems.org/gems/nugrant
+[travis]: http://travis-ci.org/maoueh/nugrant
+[gemnasium]: https://gemnasium.com/maoueh/nugrant
+[codeclimate]: https://codeclimate.com/github/maoueh/nugrant
 
 Nugrant is a library to easily handle parameters that need to be
 injected into an application via different sources (system, user,

@@ -29,7 +29,7 @@ module Nugrant
       end
 
       def self.parse_json(input)
-        JSON.parse(input)
+        MultiJson.load(input)
       end
 
       def self.parse_yaml(input)

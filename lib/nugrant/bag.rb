@@ -19,7 +19,7 @@ module Nugrant
     end
 
     def has?(key)
-      return @__elements.has_key?(key)
+      return @__elements.has_key?(key.to_sym())
     end
 
     def empty?()
@@ -90,7 +90,7 @@ module Nugrant
         raise KeyError, "Undefined parameter '#{key}'"
       end
 
-      return @__elements[key]
+      return @__elements[key.to_sym()]
     end
   end
 end

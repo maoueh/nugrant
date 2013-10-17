@@ -8,18 +8,28 @@ module Nugrant
       return Bag.new(parameters)
     end
 
+    def assert_all_access_equal(value, bag, key)
+      assert_equal(value, bag.method_missing(key.to_sym), "bag.#{key.to_sym.inspect}")
+      assert_equal(value, bag[key.to_s], "bag[#{key.to_s.inspect}]")
+      assert_equal(value, bag[key.to_sym], "bag[#{key.to_sym.inspect}]")
+    end
+
+    def assert_all_access_bag(value, bag, key)
+      assert_bag(value, bag.method_missing(key.to_sym))
+      assert_bag(value, bag[key.to_s])
+      assert_bag(value, bag[key.to_sym])
+    end
+
     def assert_bag(parameters, bag)
       assert_kind_of(Bag, bag)
 
       parameters.each do |key, value|
         if not value.kind_of?(Hash)
-          assert_equal(value, bag.send(key))
-          assert_equal(value, bag[key])
+          assert_all_access_equal(value, bag, key)
           next
         end
 
-        assert_bag(value, bag.send(key))
-        assert_bag(value, bag[key])
+        assert_all_access_bag(value, bag, key)
       end
     end
 
@@ -81,6 +91,10 @@ module Nugrant
       assert_raise(KeyError) do
         bag["invalid_value"]
       end
+
+      assert_raise(KeyError) do
+        bag[:invalid_value]
+      end
     end
 
     def test_to_hash()
@@ -89,7 +103,7 @@ module Nugrant
       assert_kind_of(Hash, hash)
       assert_equal({}, hash)
 
-      hash = create_bag({:value => {:one => "value", :two => "value"}}).__to_hash()
+      hash = create_bag({"value" => {:one => "value", "two" => "value"}}).__to_hash()
 
       assert_kind_of(Hash, hash)
       assert_kind_of(Hash, hash[:value])
@@ -99,14 +113,14 @@ module Nugrant
     end
 
     def test_merge_array()
-      bag1 = create_bag({:first => [1, 2]})
+      bag1 = create_bag({"first" => [1, 2]})
       bag2 = create_bag({:first => [2, 3]})
 
       bag1.__merge!(bag2);
 
       assert_equal({:first => [1, 2, 3]}, bag1.__to_hash())
 
-      bag1 = create_bag({:first => [1, 2]})
+      bag1 = create_bag({"first" => [1, 2]})
       bag2 = create_bag({:first => "string"})
 
       bag1.__merge!(bag2);

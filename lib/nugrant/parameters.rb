@@ -36,7 +36,7 @@ module Nugrant
     end
 
     def method_missing(method, *args, &block)
-      return  @__all[method]
+      return @__all[method]
     end
 
     def empty?()

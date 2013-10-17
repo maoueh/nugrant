@@ -32,10 +32,15 @@ class Nugrant::TestParameters < Test::Unit::TestCase
     })
   end
 
+  def assert_all_access_equal(value, parameters, key)
+    assert_equal(value, parameters.method_missing(key.to_sym), "parameters.#{key.to_sym.inspect}")
+    assert_equal(value, parameters[key.to_s], "parameters[#{key.to_s.inspect}]")
+    assert_equal(value, parameters[key.to_sym], "parameters[#{key.to_sym.inspect}]")
+  end
+
   def assert_level(parameters, results)
     results.each do |key, value|
-      assert_equal(value, parameters.send(key), "array[#{key}]")
-      assert_equal(value, parameters[key], "array[#{key}]")
+      assert_all_access_equal(value, parameters, key)
     end
 
     assert_key_error(parameters, "0.0.0")
@@ -156,13 +161,13 @@ class Nugrant::TestParameters < Test::Unit::TestCase
   def run_test_file_invalid(invalid_value)
     formats.each do |format|
       parameters = create_parameters(format, "params_simple", invalid_path, invalid_path)
-      assert_equal("value", parameters[:test])
+      assert_all_access_equal("value", parameters, "test")
 
       parameters = create_parameters(format, invalid_path, "params_simple", invalid_path)
-      assert_equal("value", parameters[:test])
+      assert_all_access_equal("value", parameters, "test")
 
       parameters = create_parameters(format, invalid_path, invalid_path, "params_simple")
-      assert_equal("value", parameters[:test])
+      assert_all_access_equal("value", parameters, "test")
 
       parameters = create_parameters(format, invalid_path, invalid_path, invalid_path)
       assert_not_nil(parameters)
@@ -181,8 +186,8 @@ class Nugrant::TestParameters < Test::Unit::TestCase
     formats.each do |format|
       parameters = create_parameters(format, file_path, invalid_path, invalid_path)
 
-      assert_equal("value1", parameters[:level1])
-      assert_equal("value2", parameters[:level2][:first])
+      assert_all_access_equal("value1", parameters, 'level1')
+      assert_all_access_equal("value2", parameters['level2'], 'first')
     end
   end
 
@@ -190,13 +195,13 @@ class Nugrant::TestParameters < Test::Unit::TestCase
     formats.each do |format|
       parameters = create_parameters(format, "params_defaults_at_root", invalid_path, invalid_path)
 
-      assert_equal("value", parameters.defaults)
+      assert_all_access_equal("value", parameters, :defaults)
     end
 
     formats.each do |format|
       parameters = create_parameters(format, "params_defaults_not_at_root", invalid_path, invalid_path)
 
-      assert_equal("value", parameters.level.defaults)
+      assert_all_access_equal("value", parameters.level, :defaults)
     end
   end
 
@@ -205,8 +210,8 @@ class Nugrant::TestParameters < Test::Unit::TestCase
       parameters = create_parameters(format, "params_simple", invalid_path, invalid_path)
       parameters.defaults = {:test => "override1", :level => "new1"}
 
-      assert_equal("value", parameters[:test])
-      assert_equal("new1", parameters[:level])
+      assert_all_access_equal("value", parameters, 'test')
+      assert_all_access_equal("new1", parameters, 'level')
     end
   end
 
@@ -215,7 +220,7 @@ class Nugrant::TestParameters < Test::Unit::TestCase
       parameters = create_parameters(format, "params_empty", invalid_path, invalid_path)
       parameters.defaults = {:test => "value"}
 
-      assert_equal("value", parameters[:test])
+      assert_all_access_equal("value", parameters, 'test')
     end
   end
 
@@ -225,7 +230,7 @@ class Nugrant::TestParameters < Test::Unit::TestCase
         parameters = create_parameters(format, "params_#{wrong_type}", invalid_path, invalid_path)
         parameters.defaults = {:test => "value"}
 
-        assert_equal("value", parameters[:test])
+        assert_all_access_equal("value", parameters, 'test')
       end
     end
   end
