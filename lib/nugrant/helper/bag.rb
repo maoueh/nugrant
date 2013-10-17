@@ -1,4 +1,4 @@
-require 'json'
+require 'multi_json'
 require 'yaml'
 
 require 'nugrant/bag'
@@ -29,7 +29,7 @@ module Nugrant
       end
 
       def self.parse_json(data_string)
-        JSON.parse(data_string)
+        MultiJson.load(data_string)
       end
 
       def self.parse_yml(data_string)
