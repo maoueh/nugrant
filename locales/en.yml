@@ -4,7 +4,10 @@ en:
       errors:
         parameter_not_found: |-
           Nugrant: Parameter '%{key}' was not found, is it defined in
-          your .vagrantuser file?
+          your .vagrantuser file? Here where we think the error
+          could be in your Vagrantfile:
+
+          %{context}
 
           If you think it should be found, don't hesitate to fill an
           issue @ https://github.com/maoueh/nugrant/issues.
