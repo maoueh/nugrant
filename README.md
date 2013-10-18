@@ -27,7 +27,7 @@ If you would like to use Nugrant as a library, simply reference
 it as a dependency of your application. Probably by adding it to
 your `Gemfile` or your `.gemspec` file.
 
-    nugrant ~> 1.0.1
+    nugrant ~> 1.1
 
 ### Vagrant
 
@@ -63,7 +63,7 @@ container, please use this command instead:
 
     > gem install nugrant
 
-#### Version 1.y.z (latest version tested 1.1.3)
+#### Version 1.y.z (latest version tested 1.3.4)
 
 In those versions, probably until 2.y.z is out, there
 is a new way to install and register plugin with the Vagrant
