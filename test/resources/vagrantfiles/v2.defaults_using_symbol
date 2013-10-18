@@ -2,13 +2,19 @@ Vagrant.require_plugin('nugrant')
 
 Vagrant.configure("2") do |config|
   config.user.defaults = {
+    :single => 1,
     :local => {
         :first => "value1",
         :second => "value2"
     }
   }
 
-  config.user.local.each do |name, value|
-    puts "Parameters #{name}: #{value}"
-  end
+  puts config.user.single
+  puts config.user[:single]
+
+  puts config.user.local.first
+  puts config.user[:local]["first"]
+
+  puts config.user.local.second
+  puts config.user["local"][:second]
 end
