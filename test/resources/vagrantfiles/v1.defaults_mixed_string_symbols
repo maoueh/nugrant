@@ -1,11 +1,9 @@
-Vagrant.require_plugin('nugrant')
-
-Vagrant.configure("2") do |config|
+Vagrant::Config.run do |config|
   config.user.defaults = {
     'single' => 1,
-    'local' => {
+    :local => {
         'first' => "value1",
-        'second' => "value2"
+        :second => "value2"
     }
   }
 

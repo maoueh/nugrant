@@ -1,0 +1,10 @@
+en:
+  nugrant:
+    vagrant:
+      errors:
+        parameter_not_found: |-
+          Nugrant: Parameter '%{key}' was not found, is it defined in
+          your .vagrantuser file?
+
+          If you think it should be found, don't hesitate to fill an
+          issue @ https://github.com/maoueh/nugrant/issues.
