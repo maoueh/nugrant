@@ -1,4 +1,5 @@
 require 'nugrant'
+require 'nugrant/vagrant/errors'
 
 module Nugrant
   module Vagrant
@@ -13,10 +14,14 @@ module Nugrant
 
           def [](param_name)
             return @parameters[param_name]
+          rescue KeyError
+            raise Errors::ParameterNotFoundError, :key => param_name
           end
 
           def method_missing(method, *args, &block)
             return @parameters.method_missing(method, *args, &block)
+          rescue KeyError
+            raise Errors::ParameterNotFoundError, :key => method
           end
 
           def each(&block)
