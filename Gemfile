@@ -5,16 +5,16 @@ gemspec
 group :development do
   vagrant_dependencies = {
     'v1' => {
-        'home' => "~/.vagrant.d.v1",
-        'gem' => Proc.new do
-            gem "vagrant", "~> 1.0.7"
-        end,
+      'home' => "~/.vagrant.d.v1",
+      'gem' => Proc.new do
+        gem "vagrant", "~> 1.0.7"
+      end,
     },
     'v2' => {
-        'home' => "~/.vagrant.d",
-        'gem' => Proc.new do
-            gem "vagrant", :git => "git://github.com/mitchellh/vagrant.git"
-        end,
+      'home' => "~/.vagrant.d",
+      'gem' => Proc.new do
+        gem "vagrant", :git => "git://github.com/mitchellh/vagrant.git", :tag => "v1.3.5"
+      end,
     },
   }
 
