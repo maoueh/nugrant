@@ -17,7 +17,7 @@ module Nugrant
         end
 
         def compute_context()
-          Helper::Stack.find_error_location(caller(), {
+          Helper::Stack.fetch_error_region(caller(), {
             :matcher => /(.+Vagrantfile):([0-9]+)/
           })
         end
