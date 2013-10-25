@@ -13,7 +13,7 @@ module Nugrant
         fetch_error_region_from_location(location, options)
       end
 
-      def self.fetch_error_region_from_location(location, options)
+      def self.fetch_error_region_from_location(location, options = {})
         prefix = options[:prefix] || "   "
         width = options[:width] || 4
         file = File.new(location[:file], "r")
