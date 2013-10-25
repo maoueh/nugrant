@@ -1,4 +1,4 @@
-# 1.2.0 (unreleased)
+# 1.2.0 (October 24th, 2013)
 
 * Now showing better error message to the end-user when a parameter
   cannot be found. The message displays which key could not be found.
