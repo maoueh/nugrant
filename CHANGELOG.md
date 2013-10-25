@@ -1,5 +1,21 @@
-# 1.1.1 (unreleased)
+# 1.2.0 (October 24th, 2013)
 
+* Now showing better error message to the end-user when a parameter
+  cannot be found. The message displays which key could not be found.
+  Moreover, we show the context within the Vagrantfile where we think
+  the error occurred:
+
+  ```
+  Nugrant: Parameter 'param' was not found, is it defined in
+  your .vagrantuser file? Here where we think the error
+  could be in your Vagrantfile:
+
+   1:     Vagrant.configure("2") do |config|
+   2:>>     puts config.user.param
+   3:     end
+  ```
+
+  See [GH-8] (https://github.com/maoueh/nugrant/issues/8).
 * Ensured that keys used within a `Bag` are always symbol. This make
   sure that it is possible to retrieve a value with any access method.
   See [GH-9](https://github.com/maoueh/nugrant/issues/9).
