@@ -4,11 +4,11 @@ require 'test/unit'
 
 class Nugrant::TestParameters < Test::Unit::TestCase
 
-  @@PARAMS_FILETYPES = ["json", "yml"]
+  @@PARAMS_FILETYPES = [:json, :yml]
   @@INVALID_PATH = "impossible_file_path.yml.impossible"
 
   def create_parameters(params_filetype, project_params_filename, user_params_filename, system_params_filename)
-    resource_path = File.expand_path("#{File.dirname(__FILE__)}/../../resources/#{params_filetype}")
+    resource_path = File.expand_path("#{File.dirname(__FILE__)}/../../resources/#{params_filetype.to_s()}")
 
     project_params_path = "#{resource_path}/#{project_params_filename}.#{params_filetype}" if project_params_filename
     user_params_path = "#{resource_path}/#{user_params_filename}.#{params_filetype}" if user_params_filename
@@ -222,6 +222,25 @@ class Nugrant::TestParameters < Test::Unit::TestCase
 
         assert_all_access_equal("value", parameters, 'test')
       end
+    end
+  end
+
+  def test_nil_values()
+    filetypes.each do |params_filetype|
+      parameters = create_parameters(params_filetype, "params_user_nil_values", invalid_path, invalid_path)
+      parameters.defaults = {nil: "Not nil", :deep => {:nil => "Not nil", :deeper => {:nil => "Not nil"}}}
+
+      assert_all_access_equal("Not nil", parameters[:deep][:deeper], :nil)
+      assert_all_access_equal("Not nil", parameters[:deep], :nil)
+      assert_all_access_equal("Not nil", parameters, :nil)
+    end
+
+    filetypes.each do |params_filetype|
+      parameters = create_parameters(params_filetype, "params_user_nil_values", invalid_path, invalid_path)
+
+      assert_all_access_equal(nil, parameters[:deep][:deeper], :nil)
+      assert_all_access_equal(nil, parameters[:deep], :nil)
+      assert_all_access_equal(nil, parameters, :nil)
     end
   end
 
