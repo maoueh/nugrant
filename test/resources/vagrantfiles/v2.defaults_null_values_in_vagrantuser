@@ -1,0 +1,25 @@
+# Source from https://github.com/maoueh/nugrant/issues/12#issuecomment-27054150
+# but slightly modified
+Vagrant.require_plugin('nugrant')
+
+Vagrant.configure('2') do |config|
+   config.user.defaults = {
+     "host" => {
+       "rails_server_port" => 3000,
+       "apps_folder" => "../../rails-apps/" },
+     "plugins" => {
+       "vagrant_cachier" => {
+         "enabled" => false
+       }
+     }
+   }
+
+  puts "Host Rails Server Port: #{config.user.host.rails_server_port}"
+  puts "Host App Folder: #{config.user.host.apps_folder}"
+  puts "Gitconfig Name: #{config.user.gitconfig.name}"
+  puts "Gitconfig Email: #{config.user.gitconfig.email}"
+
+  if config.user.plugins.vagrant_cachier.enabled
+    puts "Vagrant Cachier is Enabled!"
+  end
+end

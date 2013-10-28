@@ -42,7 +42,7 @@ module Nugrant
             current.__merge!(value)
           elsif current.kind_of?(Array) and value.kind_of?(Array)
             @__elements[key] = current | value
-          else
+          elsif value != nil
             @__elements[key] = value
           end
 

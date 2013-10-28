@@ -1,5 +1,9 @@
 # 1.2.1 (unreleased)
 
+* Keys associated to a null value are considered as being missing
+  by the merging process. It is still possible to define a null
+  parameter, but it will be overrided by any parameter and will not
+  override any. See [GH-12](https://github.com/maoueh/nugrant/issues/12).
 * Fixed output of command `vagrant user parameters`, the keys were
   serialized as symbol instead of string.
 
