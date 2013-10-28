@@ -110,7 +110,7 @@ module Nugrant
 
             print_parameters(kind, {
               'config' => {
-                'user' => bag.__to_hash()
+                'user' => bag.__to_hash(:string_key => true)
               }
             })
           end

@@ -1,3 +1,8 @@
+# 1.2.1 (unreleased)
+
+* Fixed output of command `vagrant user parameters`, the keys were
+  serialized as symbol instead of string.
+
 # 1.2.0 (October 24th, 2013)
 
 * Now showing better error message to the end-user when a parameter
