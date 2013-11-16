@@ -1,3 +1,5 @@
+require 'shellwords'
+
 module Nugrant
   module Helper
     class Env
@@ -140,7 +142,7 @@ module Nugrant
       #
       def self.export_command(key, value, options = {})
         value = value.to_s()
-        value = self.escape(value) if options[:escape_value] == nil || options[:escape_value]
+        value = Shellwords.escape(value) if options[:escape_value] == nil || options[:escape_value]
 
         # TODO: Handle platform differently
         "export #{key}=#{value}"
@@ -210,17 +212,6 @@ module Nugrant
         commands.each do |command|
           io.puts(command)
         end
-      end
-
-      ##
-      # Returns the escaped version of the value. The
-      # escape is simple by surrounding value with "
-      # and escaping " to \" so the value remains valid.
-      #
-      # @param value The value to escape, cannot be nil.
-      def self.escape(value)
-        # This surround value with " and escape " to \"
-        "\"#{value.gsub(/"/, "\\\"")}\""
       end
 
       private

@@ -34,14 +34,9 @@ module Nugrant
         assert_equal(expected, actual)
       end
 
-      def test_escape_value
-        assert_equal("\"value\"", Helper::Env.escape("value"))
-        assert_equal("\"\\\"value\\\"\"", Helper::Env.escape("\"value\""))
-      end
-
       def test_export_command
-        assert_export("export TEST=\"\\\"running\\\"\"", "TEST", "\"running\"")
-        assert_export("export TEST=running", "TEST", "running", :escape_value => false)
+        assert_export("export TEST=\\\"running\\ with\\ space\\\"", "TEST", "\"running with space\"")
+        assert_export("export TEST=running with space", "TEST", "running with space", :escape_value => false)
       end
 
       def test_export_commands
@@ -49,8 +44,8 @@ module Nugrant
           :existing => "downcase",
           :level1 => {
             :level2 => {
-              :first => "first",
-              :second => "second"
+              :first => "first with space",
+              :second => "\"second\\"
             },
             :third => "third"
           }
@@ -58,22 +53,22 @@ module Nugrant
 
         stub_env(:existing => "exist", :EXISTING => "exist") do
           assert_export_commands([
-            "export EXISTING=\"downcase\"",
-            "export LEVEL1_LEVEL2_FIRST=\"first\"",
-            "export LEVEL1_LEVEL2_SECOND=\"second\"",
-            "export LEVEL1_THIRD=\"third\"",
+            "export EXISTING=downcase",
+            "export LEVEL1_LEVEL2_FIRST=first\\ with\\ space",
+            "export LEVEL1_LEVEL2_SECOND=\\\"second\\\\",
+            "export LEVEL1_THIRD=third",
           ], bag)
 
           assert_export_commands([
-            "export LEVEL1_LEVEL2_FIRST=\"first\"",
-            "export LEVEL1_LEVEL2_SECOND=\"second\"",
-            "export LEVEL1_THIRD=\"third\"",
+            "export LEVEL1_LEVEL2_FIRST=first\\ with\\ space",
+            "export LEVEL1_LEVEL2_SECOND=\\\"second\\\\",
+            "export LEVEL1_THIRD=third",
           ], bag, :override => false)
 
           assert_export_commands([
             "export EXISTING=downcase",
-            "export LEVEL1_LEVEL2_FIRST=first",
-            "export LEVEL1_LEVEL2_SECOND=second",
+            "export LEVEL1_LEVEL2_FIRST=first with space",
+            "export LEVEL1_LEVEL2_SECOND=\"second\\",
             "export LEVEL1_THIRD=third",
           ], bag, :override => true, :escape_value => false)
 
@@ -82,8 +77,8 @@ module Nugrant
 
           assert_export_commands([
             "export CONFIG.EXISTING=downcase",
-            "export CONFIG.LEVEL1.LEVEL2.FIRST=first",
-            "export CONFIG.LEVEL1.LEVEL2.SECOND=second",
+            "export CONFIG.LEVEL1.LEVEL2.FIRST=first with space",
+            "export CONFIG.LEVEL1.LEVEL2.SECOND=\"second\\",
             "export CONFIG.LEVEL1.THIRD=third",
           ], bag, :override => true, :escape_value => false, :namer => prefix_namer)
         end
