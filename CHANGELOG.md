@@ -1,4 +1,8 @@
-# 1.2.1 (unreleased)
+# 1.3.0 (unreleased)
+
+* Added a new command that can be used either standalone or via
+  a small bash script to easily export environment variables
+  from your currently set parameters.
 
 * Keys associated to a null value are considered as being missing
   by the merge process. It is still possible to define a null
@@ -26,6 +30,7 @@
   ```
 
   See [GH-8] (https://github.com/maoueh/nugrant/issues/8).
+
 * Ensured that keys used within a `Bag` are always symbol. This make
   sure that it is possible to retrieve a value with any access method.
   See [GH-9](https://github.com/maoueh/nugrant/issues/9).
