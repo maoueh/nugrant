@@ -5,7 +5,8 @@
 
 * Added a new command that can be used either standalone or via
   a small bash script to easily export environment variables
-  from your currently set parameters.
+  from your currently set parameters. See
+  [GH-13](https://github.com/maoueh/nugrant/issues/13).
 
 * Keys associated to a null value are considered as being missing
   by the merge process. It is still possible to define a null
