@@ -1,11 +1,11 @@
-require 'test/unit'
+require 'minitest/autorun'
 
 require 'nugrant/bag'
 
 module Nugrant
-  class TestBag < Test::Unit::TestCase
-    def create_bag(parameters)
-      return Bag.new(parameters)
+  class TestBag < ::Minitest::Test
+    def create_bag(elements)
+      return Bag.new(elements)
     end
 
     def assert_all_access_equal(value, bag, key)
@@ -84,15 +84,15 @@ module Nugrant
     def test_undefined_value()
       bag = create_bag({:value => "one"})
 
-      assert_raise(KeyError) do
+      assert_raises(KeyError) do
         bag.invalid_value
       end
 
-      assert_raise(KeyError) do
+      assert_raises(KeyError) do
         bag["invalid_value"]
       end
 
-      assert_raise(KeyError) do
+      assert_raises(KeyError) do
         bag[:invalid_value]
       end
     end

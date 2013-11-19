@@ -42,7 +42,7 @@ module Nugrant
             current.__merge!(value)
           elsif current.kind_of?(Array) and value.kind_of?(Array)
             @__elements[key] = current | value
-          else
+          elsif value != nil
             @__elements[key] = value
           end
 
@@ -59,12 +59,16 @@ module Nugrant
       end
     end
 
-    def __to_hash()
+    def __to_hash(options = {})
       return {} if empty?()
+
+      string_key = options[:string_key]
 
       hash = {}
       each do |key, value|
-        hash[key.to_sym()] = value.kind_of?(Bag) ? value.__to_hash() : value
+        key = key.to_s() if string_key
+
+        hash[key] = value.kind_of?(Bag) ? value.__to_hash(:string_key => string_key) : value
       end
 
       return hash

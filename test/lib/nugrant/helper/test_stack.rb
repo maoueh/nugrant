@@ -1,10 +1,10 @@
-require 'test/unit'
+require 'minitest/autorun'
 
 require 'nugrant/helper/stack'
 
 module Nugrant
   module Helper
-    class TestStack < Test::Unit::TestCase
+    class TestStack < ::Minitest::Test
       def assert_error_location(expected, entry, matcher = nil)
         assert_equal(expected, Stack::extract_error_location(entry, :matcher => matcher))
       end

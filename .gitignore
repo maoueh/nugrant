@@ -19,3 +19,4 @@ test/version_tmp
 tmp
 
 test/resources/vagrantfiles/Vagrantfile
+test/resources/vagrantfiles/.vagrantuser
