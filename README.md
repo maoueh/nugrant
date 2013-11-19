@@ -396,7 +396,7 @@ current directory. You then simply source this script:
 
     . nugrant2env.sh
 
-Using vagrant user env -s -u will instead generate the bash
+Using `vagrant user env -s -u` will instead generate the bash
 script that will unset the enviornment variables. Don't forget
 to source it to unset variables.
 
