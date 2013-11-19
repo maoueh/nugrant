@@ -1,3 +1,5 @@
+# 1.3.1 (In progress)
+
 # 1.3.0 (November 19th, 2013)
 
 * Now using [minitest](https://github.com/seattlerb/minitest) as our
