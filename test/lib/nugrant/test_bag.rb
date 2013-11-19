@@ -4,8 +4,8 @@ require 'nugrant/bag'
 
 module Nugrant
   class TestBag < Test::Unit::TestCase
-    def create_bag(parameters)
-      return Bag.new(parameters)
+    def create_bag(elements)
+      return Bag.new(elements)
     end
 
     def assert_all_access_equal(value, bag, key)

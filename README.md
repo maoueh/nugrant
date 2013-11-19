@@ -295,6 +295,61 @@ Usage:
           nodes_path: /Users/Chef/kitchen/nodes
           roles_path: /Users/Chef/kitchen/roles
 
+#### Env
+
+Sometimes, you would like to have acces to the different values
+stored in your `.vagrantuser` from environment variables. This
+command is meant is exactly for this.
+
+By using one of the two ways below, you will be able to export
+(and unset) environment variables from your parameters.
+
+When using the command directly, commands are printed into
+the console by default.
+
+##### Method #1
+
+If you plan to use frequently this feature, the best suggestion
+is to create a little bash script that will be a simple delegate
+to the real command. By hand creating a small bash script, you
+will be able to source more easily the commands into your
+environment.
+
+Let's create a file named `nugrant2env` somewhere accessible from
+the `PATH` variable with the following content:
+
+    ```bash
+    #!/bin/env sh
+
+    $(vagrant user env "$@")
+    ```
+
+This script will simply delegates to the `vagrant user env`
+command. This command will then output the various export
+commands the create the environment variables.
+
+You then simply do the command to make environment variables
+built from your parameters into your env:
+
+    . nugrant2env <options>
+
+By default, export commands are generated. To generate the
+unset ones, simply add `--unset`, or simply `-u`
+
+    . nugrant2env --unset
+
+##### Method #2
+
+Generates a script that you will then source. To achieve this,
+simply issue:
+
+    vagrant user env -s
+
+This will generate a script called `nugrant2env.sh` into your
+current directory. You then simply source this script:
+
+    . nugrant2env.sh
+
 ## Contributing
 
 You can contribute by filling issues when something goes

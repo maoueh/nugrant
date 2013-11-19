@@ -1,4 +1,6 @@
 require 'nugrant'
+require 'nugrant/vagrant/v2/command/env'
+require 'nugrant/vagrant/v2/command/parameters'
 require 'nugrant/version'
 
 module Nugrant
@@ -15,9 +17,12 @@ module Nugrant
             @argv = @arguments
 
             @subcommands = ::Vagrant::Registry.new()
+            @subcommands.register(:env) do
+              Command::Env
+            end
+
             @subcommands.register(:parameters) do
-              require File.expand_path("../parameters", __FILE__)
-              Parameters
+              Command::Parameters
             end
 
             @show_help = false

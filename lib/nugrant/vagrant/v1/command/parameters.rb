@@ -37,18 +37,18 @@ module Nugrant
               end
 
               parser.on("-u", "--user", "Show only user parameters") do
-                 @show_user = true
-               end
+                @show_user = true
+              end
 
-               parser.on("-p", "--project", "Show only project parameters") do
-                 @show_project = true
-               end
+              parser.on("-p", "--project", "Show only project parameters") do
+                @show_project = true
+              end
 
-               parser.separator ""
-               parser.separator "When no options is provided, the command prints the names and values \n" +
-                                "of all parameters that would be available for usage in the Vagrantfile.\n" +
-                                "The hierarchy of the parameters is respected, so the final values are\n" +
-                                "displayed."
+              parser.separator ""
+              parser.separator "When no options is provided, the command prints the names and values \n" +
+                               "of all parameters that would be available for usage in the Vagrantfile.\n" +
+                               "The hierarchy of the parameters is respected, so the final values are\n" +
+                               "displayed."
             end
           end
 
@@ -110,7 +110,7 @@ module Nugrant
 
             print_parameters(kind, {
               'config' => {
-                'user' => bag.__to_hash()
+                'user' => bag.__to_hash(:string_key => true)
               }
             })
           end
