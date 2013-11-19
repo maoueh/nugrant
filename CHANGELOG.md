@@ -1,4 +1,4 @@
-# 1.3.0 (unreleased)
+# 1.3.0 (November 19th, 2013)
 
 * Now using [minitest](https://github.com/seattlerb/minitest) as our
   testing library.
