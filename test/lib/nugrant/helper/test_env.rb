@@ -1,11 +1,11 @@
-require 'test/unit'
+require 'minitest/autorun'
 
 require 'nugrant/bag'
 require 'nugrant/helper/env'
 
 module Nugrant
   module Helper
-    class TestEnv < Test::Unit::TestCase
+    class TestEnv < ::Minitest::Test
       def create_bag(parameters)
         return Nugrant::Bag.new(parameters)
       end
@@ -25,7 +25,7 @@ module Nugrant
       def assert_export_commands(expected, bag, options = {})
         actual = Helper::Env.export_commands(bag, options)
 
-        assert_equal(expected, actual)
+        assert_equal(expected.sort!(), actual.sort!())
       end
 
       def assert_unset_commands(expected, bag, options = {})

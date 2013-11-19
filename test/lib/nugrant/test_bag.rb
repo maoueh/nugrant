@@ -1,9 +1,9 @@
-require 'test/unit'
+require 'minitest/autorun'
 
 require 'nugrant/bag'
 
 module Nugrant
-  class TestBag < Test::Unit::TestCase
+  class TestBag < ::Minitest::Test
     def create_bag(elements)
       return Bag.new(elements)
     end
@@ -84,15 +84,15 @@ module Nugrant
     def test_undefined_value()
       bag = create_bag({"value" => "one"})
 
-      assert_raise(KeyError) do
+      assert_raises(KeyError) do
         bag.invalid_value
       end
 
-      assert_raise(KeyError) do
+      assert_raises(KeyError) do
         bag["invalid_value"]
       end
 
-      assert_raise(KeyError) do
+      assert_raises(KeyError) do
         bag[:invalid_value]
       end
     end

@@ -25,10 +25,11 @@ Gem::Specification.new do |gem|
 
   gem.files         = `git ls-files`.split($/)
   gem.executables   = gem.files.grep(%r{^bin/}).map{ |f| File.basename(f) }
-  gem.test_files    = gem.files.grep(%r{^(test|spec|features)/})
+  gem.test_files    = gem.files.grep(%r{^(test/lib)/})
   gem.require_paths = ["lib"]
 
-  gem.add_dependency 'multi_json', '~> 1.8'
+  gem.add_dependency "multi_json", "~> 1.8"
 
   gem.add_development_dependency "rake"
+  gem.add_development_dependency "minitest", "~> 5.0.8"
 end
