@@ -359,11 +359,9 @@ by sourcing the script.
 Create a file named `nugrant2env` somewhere accessible from
 the `$PATH` variable with the following content:
 
-    ```bash
     #!/bin/env sh
 
     $(vagrant user env "$@")
-    ```
 
 This script will simply delegates to the `vagrant user env`
 command and pass all arguments it receives to it. The
