@@ -214,7 +214,7 @@ Here the list of locations where Nugrant looks for parameters:
 ### Paths
 
 When you want to specify paths on, specially on Windows, it's probably
-better to only use foward slash (`/`). The main reason for this is because
+better to only use forward slash (`/`). The main reason for this is because
 Ruby, which will be used at the end by Vagrant is able to deal with forward
 slash even on Windows. This is great because with this, you can avoid
 values escaping in YAML file. If you need to use backward slash (`\`), don't
@@ -222,6 +222,18 @@ forget to properly escape it!
 
     value: "C:/Users/user/work/git"
     value: "C:\\Users\\user\\work\\git"
+
+Moreover, it is preferable that paths are specified in full
+(i.e. no `~` for HOME directory for example). Normally, they
+should be handled by `Vagrant` but it may happen that it's not
+the case. If your have an error with a specific parameter,
+either expand it in your config:
+
+    project: "/home/joe/work/ruby/git"
+
+Of expand it in the `Vagrantfile`:
+
+    config.vm.synced_folder File.expand_path(config.user.repository.project), "/git"
 
 ### Parameters access
 
@@ -295,28 +307,57 @@ Usage:
           nodes_path: /Users/Chef/kitchen/nodes
           roles_path: /Users/Chef/kitchen/roles
 
+Add flag `-h` (or `--help`) for description of the command and a
+list of available options.
+
 #### Env
 
 Sometimes, you would like to have acces to the different values
 stored in your `.vagrantuser` from environment variables. This
 command is meant is exactly for this.
 
-By using one of the two ways below, you will be able to export
-(and unset) environment variables from your parameters.
+By using one of the two methods below, you will be able to export
+(but also unset) environment variables from your current
+parameters as seen by Nugrant.
 
-When using the command directly, commands are printed into
-the console by default.
+You can see the commands that will be executed by simply
+calling the method:
+
+    vagrant user env
+
+The name of the environment will be upper cased and full path of
+the key, without the `config.user` prefix, separated
+with `_`. For example, the key accessible using
+`config.user.db.user` and with value `root` would generate the
+export command:
+
+    export DB_USER=root
+
+And the unset command:
+
+    unset DB_USER
+
+The value are escaped so it is possible to define value containing
+spaces for example.
+
+A last note about generate commands is that pre-existing environment
+variable are not taking in consideration by this command. So if
+an environment variable with name `DB_USER` already exist, it
+would be overwritten by an export command.
+
+Add flag `-h` (or `--help`) for description of the command and a
+list of available options.
 
 ##### Method #1
 
-If you plan to use frequently this feature, the best suggestion
-is to create a little bash script that will be a simple delegate
-to the real command. By hand creating a small bash script, you
-will be able to source more easily the commands into your
-environment.
+If you plan to use frequently this feature, our best suggestion
+is to create a little bash script that will simply delegates
+to the real command. By having a bash script that calls the
+command, you will be able to easily export environment variables
+by sourcing the script.
 
-Let's create a file named `nugrant2env` somewhere accessible from
-the `PATH` variable with the following content:
+Create a file named `nugrant2env` somewhere accessible from
+the `$PATH` variable with the following content:
 
     ```bash
     #!/bin/env sh
@@ -325,30 +366,41 @@ the `PATH` variable with the following content:
     ```
 
 This script will simply delegates to the `vagrant user env`
-command. This command will then output the various export
-commands the create the environment variables.
+command and pass all arguments it receives to it. The
+magic happens because the command `vagrant user env` outputs
+the various export commands to the standard output.
 
-You then simply do the command to make environment variables
-built from your parameters into your env:
+By sourcing the simple delegating bash script, the parameters
+seen by Nugrant will be available in your environment:
 
-    . nugrant2env <options>
+    . nugrant2env
 
-By default, export commands are generated. To generate the
-unset ones, simply add `--unset`, or simply `-u`
+By default, export commands are generated. But you can pass
+some options to the `nugrant2env` script, For example, to
+generate the unset ones, add `--unset` (or simply `-u`).
 
     . nugrant2env --unset
 
+For a list of options, see the help of the command delegated
+to:
+
+    vagrant user env -h
+
 ##### Method #2
 
-Generates a script that you will then source. To achieve this,
-simply issue:
+Use the command to generate a base script in the current
+directory that you will then source:
 
     vagrant user env -s
 
-This will generate a script called `nugrant2env.sh` into your
+This will generate a script called `nugrant2env.sh` into the
 current directory. You then simply source this script:
 
     . nugrant2env.sh
+
+Using vagrant user env -s -u will instead generate the bash
+script that will unset the enviornment variables. Don't forget
+to source it to unset variables.
 
 ## Contributing
 
