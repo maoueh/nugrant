@@ -1,5 +1,8 @@
 # 1.3.0 (unreleased)
 
+* Now using [minitest](https://github.com/seattlerb/minitest) as our
+  testing library.
+
 * Added a new command that can be used either standalone or via
   a small bash script to easily export environment variables
   from your currently set parameters.
