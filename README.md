@@ -27,7 +27,7 @@ If you would like to use Nugrant as a library, simply reference
 it as a dependency of your application. Probably by adding it to
 your `Gemfile` or your `.gemspec` file.
 
-    "nugrant", "~> 1.3"
+    "nugrant", "~> 1.4"
 
 ### Vagrant
 
@@ -316,7 +316,7 @@ Sometimes, you would like to have acces to the different values
 stored in your `.vagrantuser` from environment variables. This
 command is meant is exactly for this.
 
-By using one of the two methods below, you will be able to export
+By using one of the three methods below, you will be able to export
 (but also unset) environment variables from your current
 parameters as seen by Nugrant.
 
@@ -389,16 +389,37 @@ to:
 Use the command to generate a base script in the current
 directory that you will then source:
 
-    vagrant user env -s
+    vagrant user env --format script
 
 This will generate a script called `nugrant2env.sh` into the
 current directory. You then simply source this script:
 
     . nugrant2env.sh
 
-Using `vagrant user env -s -u` will instead generate the bash
-script that will unset the enviornment variables. Don't forget
+Using `vagrant user env -u --format script` will instead generate the bash
+script that will unset the environment variables. Don't forget
 to source it to unset variables.
+
+##### Method #3
+
+Use the command to generate an [autoenv](https://github.com/kennethreitz/autoenv)
+file in the current directory. By using the [autoenv] project, anytime you
+will enter the project directory via the `cd` command, variables
+exported found in the `.env` file generated will be exported to
+your environment.
+
+    vagrant user env --format autoenv
+
+This will generate a file called `.env` in the
+current directory. You then simply change to the directory
+where the `.env` file was generated to made exported variables
+available in your environment.
+
+    cd ..
+    cd <project_dir>
+
+Using `vagrant user env -u --format autoenv` will instead generate
+the autoenv file that will unset the environment variables.
 
 ## Contributing
 
