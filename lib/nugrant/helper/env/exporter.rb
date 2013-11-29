@@ -1,3 +1,6 @@
+require 'shellwords'
+
+require 'nugrant/bag'
 require 'nugrant/helper/env/namer'
 
 module Nugrant
