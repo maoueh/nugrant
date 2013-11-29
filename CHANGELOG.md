@@ -1,4 +1,12 @@
-# 1.3.1 (In progress)
+# 1.4.0 (In progress)
+
+* Adding support to export to an [autoenv](https://github.com/kennethreitz/autoenv)
+  file. See [GH-13](https://github.com/maoueh/nugrant/issues/13).
+
+* Deprecated usage of `-s, --script` option for command
+  `vagrant user env`. This was replaced by the more generic
+  and extensible `-f, --format FORMAT` option. The
+  `-s, --script` option will be removed in 2.0.
 
 # 1.3.0 (November 19th, 2013)
 
