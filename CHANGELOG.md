@@ -1,3 +1,5 @@
+# 1.4.1 (In progress)
+
 # 1.4.0 (November 28th, 2013)
 
 * Adding support to export to an [autoenv](https://github.com/kennethreitz/autoenv)
