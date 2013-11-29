@@ -1,4 +1,4 @@
-# 1.4.0 (In progress)
+# 1.4.0 (November 28th, 2013)
 
 * Adding support to export to an [autoenv](https://github.com/kennethreitz/autoenv)
   file. See [GH-13](https://github.com/maoueh/nugrant/issues/13).
