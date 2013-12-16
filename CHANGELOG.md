@@ -1,3 +1,5 @@
+# 1.4.2 (In progress)
+
 # 1.4.1 (December 15th, 2013)
 
 * Fixed a superfluous warning message when using ruby >= 2.0.0 which is now the
