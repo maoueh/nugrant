@@ -31,7 +31,7 @@ module Nugrant
       end
 
       def self.parse_yaml(input)
-        YAML::ENGINE.yamler = 'syck' if defined?(YAML::ENGINE)
+        YAML::ENGINE.yamler = 'syck' if (defined?(Syck) || defined?(YAML::Syck)) && defined?(YAML::ENGINE)
 
         YAML.load(input)
       end

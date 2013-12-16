@@ -116,7 +116,7 @@ and the format of the parameters file.
 ### Vagrant
 
 All examples shown here are for Vagrant 1.1+. They have
-been tested with Vagrant 1.2.2. Keep this in mind when
+been tested with Vagrant 1.4.0. Keep this in mind when
 copying examples.
 
 Let start with a small use case. Say the git repository you want

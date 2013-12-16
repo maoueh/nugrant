@@ -1,4 +1,9 @@
-# 1.4.1 (In progress)
+# 1.4.2 (In progress)
+
+# 1.4.1 (December 15th, 2013)
+
+* Fixed a superfluous warning message when using ruby >= 2.0.0 which is now the
+  default when installing Vagrant >= 1.4.0 (at least on Windows).
 
 # 1.4.0 (November 28th, 2013)
 
