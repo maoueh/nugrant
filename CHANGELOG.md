@@ -1,5 +1,8 @@
 # 1.4.1 (In progress)
 
+* Fixed a superfluous warning message when using ruby >= 2.0.0 which is now the
+  default when installing Vagrant >= 1.4.0 (at least on Windows).
+
 # 1.4.0 (November 28th, 2013)
 
 * Adding support to export to an [autoenv](https://github.com/kennethreitz/autoenv)
