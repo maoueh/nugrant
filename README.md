@@ -63,7 +63,7 @@ container, please use this command instead:
 
     > gem install nugrant
 
-#### Version 1.y.z (latest version tested 1.1.3)
+#### Version 1.y.z (latest version tested 1.4.0)
 
 In those versions, probably until 2.y.z is out, there
 is a new way to install and register plugin with the Vagrant
@@ -116,7 +116,7 @@ and the format of the parameters file.
 ### Vagrant
 
 All examples shown here are for Vagrant 1.1+. They have
-been tested with Vagrant 1.2.2. Keep this in mind when
+been tested with Vagrant 1.4.0. Keep this in mind when
 copying examples.
 
 Let start with a small use case. Say the git repository you want
