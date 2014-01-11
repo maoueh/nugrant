@@ -21,14 +21,14 @@ module Nugrant
     #                  must be a Hash object.
     #
     def initialize(options = {})
-      @__config = Config.new(options[:config])
+      config = Config.new(options[:config])
 
-      @__current = Helper::Bag.read(@__config.current_path, @__config.params_format)
-      @__user = Helper::Bag.read(@__config.user_path, @__config.params_format)
-      @__system = Helper::Bag.read(@__config.system_path, @__config.params_format)
+      @__current = Helper::Bag.read(config.current_path, config.params_format)
+      @__user = Helper::Bag.read(config.user_path, config.params_format)
+      @__system = Helper::Bag.read(config.system_path, config.params_format)
       @__defaults = Bag.new(options[:defaults] || {})
 
-      __compute_all()
+      compute_all!()
     end
 
     def [](key)
@@ -44,7 +44,7 @@ module Nugrant
     end
 
     def has?(key)
-      return @__all.has?(key)
+      return @__all.include?(key)
     end
 
     def each(&block)
@@ -64,7 +64,7 @@ module Nugrant
       @__defaults = Bag.new(elements)
 
       # When defaults change, we need to recompute parameters hierarchy
-      __compute_all()
+      compute_all!()
     end
 
     ##
@@ -72,16 +72,16 @@ module Nugrant
     # bag in the right order and return the result as a Nugrant::Bag
     # object.
     #
-    def __compute_all()
+    def compute_all!()
       @__all = Bag.new()
-      @__all.__merge!(@__defaults)
-      @__all.__merge!(@__system)
-      @__all.__merge!(@__user)
-      @__all.__merge!(@__current)
+      @__all.merge!(@__defaults)
+      @__all.merge!(@__system)
+      @__all.merge!(@__user)
+      @__all.merge!(@__current)
     end
 
-    def __to_hash()
-      @__all.__to_hash()
+    def to_hash()
+      @__all.to_hash()
     end
   end
 end

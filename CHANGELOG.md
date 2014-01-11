@@ -1,3 +1,35 @@
+# 2.0.0 (In progress)
+
+### Backward Incompatibilities
+
+* `Bag` and `Parameters` are now [Enumerable](http://ruby-doc.org/core-2.0.0/Enumerable.html).
+
+  This change has implications on the resolving process of the variables
+  that are stored in the `Bag` when using the dot syntax `(user.email.value)`
+  in your code. By using this method with the new model, more keys will
+  collapse with method from the `Bag` class itself but also newly added method
+  via the `Enumerable` module.
+
+  The list of the restricted keys are the ones defined on the
+  [Enumerable] module plus somes directly defined on the nugrant
+  [Bag]:
+
+      # From Enumerable
+      all?, any?, chunk, collect, collect_concat, count, cycle,
+      detect, drop, drop_while, each_cons, each_entry, each_slice,
+      each_with_index, each_with_object, entries, find, find_all,
+      find_index, first, flat_map, grep, group_by, include?,
+      inject, lazy, map, max, max_by, member?, min, min_by,
+      minmax, minmax_by, none?, one?, partition, reduce, reject,
+      reverse_each, select, slice_before, sort, sort_by, take,
+      take_while, to_a, zip
+
+      # From Bag
+      initialize, method_missing, [], empty?, merge!, update!, to_hash,
+      __convert_key.
+
+* The `Bag` class has a new API.
+
 # 1.4.2 (In progress)
 
 # 1.4.1 (December 15th, 2013)

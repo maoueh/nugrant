@@ -98,12 +98,12 @@ module Nugrant
     end
 
     def test_to_hash()
-      hash = create_bag({}).__to_hash()
+      hash = create_bag({}).to_hash()
 
       assert_kind_of(Hash, hash)
       assert_equal({}, hash)
 
-      hash = create_bag({"value" => {:one => "value", "two" => "value"}}).__to_hash()
+      hash = create_bag({"value" => {:one => "value", "two" => "value"}}).to_hash()
 
       assert_kind_of(Hash, hash)
       assert_kind_of(Hash, hash[:value])
@@ -116,16 +116,16 @@ module Nugrant
       bag1 = create_bag({"first" => [1, 2]})
       bag2 = create_bag({:first => [2, 3]})
 
-      bag1.__merge!(bag2);
+      bag1.merge!(bag2);
 
-      assert_equal({:first => [1, 2, 3]}, bag1.__to_hash())
+      assert_equal({:first => [1, 2, 3]}, bag1.to_hash())
 
       bag1 = create_bag({"first" => [1, 2]})
       bag2 = create_bag({:first => "string"})
 
-      bag1.__merge!(bag2);
+      bag1.merge!(bag2);
 
-      assert_equal({:first => "string"}, bag1.__to_hash())
+      assert_equal({:first => "string"}, bag1.to_hash())
     end
   end
 end

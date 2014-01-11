@@ -1,25 +1,37 @@
 module Nugrant
   class Bag
+    ##
+    # The bag is Enumerable. For method using a key argument
+    # the bag will accept symbol or string keys. For method
+    # return keys, the bag will emit symbol keys.
+    include Enumerable
+
     attr_reader :__elements
 
     def initialize(elements = nil)
-      if elements.kind_of?(Bag)
-        @__elements = elements
-      end
-
-      __recompute(elements)
+      clear!()
+      update!(elements)
     end
 
     def [](key)
-      return __fetch(key)
+      key = __convert_key(key)
+      raise KeyError, "Undefined parameter '#{key}'" if @__elements[key] == nil
+
+      return @__elements[key]
     end
 
     def method_missing(method, *args, &block)
-      return __fetch(method)
+      return self[method]
     end
 
-    def has?(key)
-      return @__elements.has_key?(key.to_sym())
+    def clear!()
+      @__elements = {}
+    end
+
+    def each()
+      @__elements.each do |key, value|
+        yield key, value
+      end
     end
 
     def empty?()
@@ -31,70 +43,62 @@ module Nugrant
     # array scalar values only. This means that we do not merge
     # within array themselves.
     #
-    def __merge!(elements)
-      bag = elements.kind_of?(Bag) ? elements : Bag.new(elements)
-      return if bag.empty?()
+    def merge!(hash)
+      bag = hash.kind_of?(Bag) ? hash : Bag.new(hash)
 
       bag.each do |key, value|
-        if has?(key)
-          current = @__elements[key]
-          if current.kind_of?(Bag) and value.kind_of?(Bag)
-            current.__merge!(value)
-          elsif current.kind_of?(Array) and value.kind_of?(Array)
-            @__elements[key] = current | value
-          elsif value != nil
-            @__elements[key] = value
-          end
-
+        if (current = @__elements[key]) == nil
+          @__elements[key] = value
           next
         end
 
-        @__elements[key] = value
+        case
+          when current.kind_of?(Bag) && value.kind_of?(Bag)
+            current.merge!(value)
+
+          when current.kind_of?(Array) && value.kind_of?(Array)
+            @__elements[key] = current | value
+
+          when value != nil
+            @__elements[key] = value
+        end
       end
     end
 
-    def each()
-      @__elements.each do |key, value|
-        yield key, value
-      end
-    end
-
-    def __to_hash(options = {})
-      return {} if empty?()
-
-      string_key = options[:string_key]
-
-      hash = {}
-      each do |key, value|
-        key = key.to_s() if string_key
-
-        hash[key] = value.kind_of?(Bag) ? value.__to_hash(:string_key => string_key) : value
-      end
-
-      return hash
-    end
-
-    def __recompute(hash = nil)
-      @__elements = {}
-      return if hash == nil or not hash.kind_of?(Hash)
+    def update!(hash = nil)
+      return if not (hash.kind_of?(Bag) or hash.kind_of?(Hash))
 
       hash.each do |key, value|
-        if not value.kind_of?(Hash)
-          @__elements[key.to_sym()] = value
-          next
-        end
+        case
+          when value.kind_of?(Bag) || value.kind_of?(Hash)
+            @__elements[__convert_key(key)] = Bag.new(value)
 
-        # It is a hash, transform it into a bag
-        @__elements[key.to_sym()] = Bag.new(value)
+          else
+            @__elements[__convert_key(key)] = value
+        end
       end
     end
 
-    def __fetch(key)
-      if not has?(key)
-        raise KeyError, "Undefined parameter '#{key}'"
-      end
+    def to_hash(options = {})
+      return {} if empty?()
 
-      return @__elements[key.to_sym()]
+      use_string_key = options[:use_string_key]
+
+      Hash[map do |key, value|
+        key = key.to_s() if use_string_key
+
+        [key, value.kind_of?(Bag) ? value.to_hash(options) : value]
+      end]
+    end
+
+    ##
+    ### Private Methods
+    ##
+
+    private
+
+    def __convert_key(key)
+      key.to_sym()
     end
   end
 end
