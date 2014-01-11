@@ -13,7 +13,7 @@ group :development do
     'v2' => {
       'home' => "~/.vagrant.d",
       'gem' => Proc.new do
-        gem "vagrant", :git => "git://github.com/mitchellh/vagrant.git", :tag => "v1.4.0"
+        gem "vagrant", :git => "git://github.com/mitchellh/vagrant.git", :tag => "v1.4.3"
       end,
     },
   }

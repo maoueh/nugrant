@@ -28,6 +28,10 @@ module Nugrant
             @parameters.each(&block)
           end
 
+          def has?(key)
+            @parameters.has?(key)
+          end
+
           def defaults(parameters)
             @parameters.defaults(parameters)
           end

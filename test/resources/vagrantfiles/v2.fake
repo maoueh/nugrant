@@ -11,4 +11,7 @@ Vagrant.configure("2") do |config|
   config.user.local.each do |name, value|
     puts "Parameters #{name}: #{value}"
   end
+
+  puts "User has local (symbol)" if config.user.has?(:local)
+  puts "User has local (string)" if config.user.has?("local")
 end

@@ -1,5 +1,9 @@
 # 1.4.2 (In progress)
 
+* Fixed Vagrant `user` config class to make the `has?` method
+  available to people using Vagrant. This considered has a bug
+  fix because using `has?` was not working anyway before.
+
 # 1.4.1 (December 15th, 2013)
 
 * Fixed a superfluous warning message when using ruby >= 2.0.0 which is now the
