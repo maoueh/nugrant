@@ -1,3 +1,5 @@
+# 1.4.3 (In progess)
+
 # 1.4.2 (January 11th, 2014)
 
 * Fixed Vagrant `user` config class to make the `has?` method
