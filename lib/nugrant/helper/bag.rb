@@ -16,8 +16,7 @@ module Nugrant
         return if not File.exists?(filepath)
 
         File.open(filepath, "rb") do |file|
-          parsing_method = "parse_#{filetype}"
-          return send(parsing_method, file.read)
+          return send("parse_#{filetype}", file)
         end
       rescue => error
         if options[:error_handler]
@@ -26,14 +25,14 @@ module Nugrant
         end
       end
 
-      def self.parse_json(input)
-        MultiJson.load(input)
+      def self.parse_json(io)
+        MultiJson.load(io.read())
       end
 
-      def self.parse_yaml(input)
+      def self.parse_yaml(io)
         YAML::ENGINE.yamler = 'syck' if (defined?(Syck) || defined?(YAML::Syck)) && defined?(YAML::ENGINE)
 
-        YAML.load(input)
+        YAML.load(io.read())
       end
     end
   end

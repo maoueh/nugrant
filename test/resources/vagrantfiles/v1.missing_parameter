@@ -1,3 +1,0 @@
-Vagrant::Config.run do |config|
-  puts config.user.unkown_for_sure
-end

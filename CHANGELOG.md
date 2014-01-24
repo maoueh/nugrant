@@ -2,17 +2,20 @@
 
 ### Backward Incompatibilities
 
-* `Bag` and `Parameters` are now [Enumerable](http://ruby-doc.org/core-2.0.0/Enumerable.html).
+* Support for Vagrant 0.x has been dropped. This means that Nugrant 2.x will not
+  load if installed in a Vagrant 0.x environment.
+
+* `Bag` and `Parameters` and Vagrant configuration object `config.user`are now
+  [Enumerable](http://ruby-doc.org/core-2.0.0/Enumerable.html).
 
   This change has implications on the resolving process of the variables
-  that are stored in the `Bag` when using the dot syntax `(user.email.value)`
-  in your code. By using this method with the new model, more keys will
-  collapse with method from the `Bag` class itself but also newly added method
-  via the `Enumerable` module.
+  that are stored in the `Bag` when using the dot syntax `(config.user.email)`
+  in your code and `Vagrantfiles`. By using this syntax with version 2.0, some keys
+  will collapse with the internal object's methods.
 
-  The list of the restricted keys are the ones defined on the
-  [Enumerable] module plus somes directly defined on the nugrant
-  [Bag]:
+  The number of keys involved should be rather low because the restricted keys
+  are are not common used as parameter name. The list of the restricted keys are the ones
+  defined by the `Enumerable` module and Nugrant `Bag` module:
 
       # From Enumerable
       all?, any?, chunk, collect, collect_concat, count, cycle,

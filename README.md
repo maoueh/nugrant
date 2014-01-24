@@ -12,14 +12,75 @@
 
 Nugrant is a library to easily handle parameters that need to be
 injected into an application via different sources (system, user,
-current, defaults).
+current, defaults). But foremost, a Vagrant plug-in that will enhance
+Vagrantfile to allow user specific configuration values.
 
-But Nugrant is foremost a Vagrant plugin that will enhance
-Vagrantfile to allow user specific configuration values. The plugin
-will let users define a `.vagrantuser` file at different locations. This
-file will contain parameters that will be injected into the Vagrantfile.
+## Overview
+
+Using Nugrant as a plug-in provides an easy and hierarchical system to manage
+machine and user specific parameters.
+
+Let's start with an example. You need to distribute among your enterprise a
+`Vagrantfile` to start and provision an AWS EC2 instance (or for an open-source project).
+The `aws_access_key` and `aws_secret_key` should be configurable depending on the user
+running `vagrant up`.
+
+To achieve this, simply create a file named `.vagrantuser` in the project directory with
+the following content:
+
+    aws:
+      access_key: "123456"
+      secret_key: "abcdef"
+
+In your `Vagrantfile`, `Nugrant` will let you access the parameters via the
+`config.user` object:
+
+    Vagrant.configure("2") do |config|
+      ...
+
+      config.vm.provider :aws do |aws, override|
+        aws.access_key_id = config.user.aws.access_key
+        aws.secret_access_key = config.user.aws.secret_key
+
+        ...
+      end
+    end
+
+You then ignore the `.vagrantuser` file in your revision control, so each developer
+as a specific one with their own values. People often commit a `.vagrantuser.example`
+file in project's repository as an easy startup for the various parameters that
+must be filled in, something like:
+
+    aws:
+      access_key: "<ACCESS_KEY_HERE>"
+      secret_key: "<SECRET_KEY_HERE>"
+
+Moreover, there is a hierarchy of `.vagrantuser` files that you can leverage.
+The order is project `.vagrantuser` overrides `$HOME/.vagrantuser` overrides
+`$SYSTEM/.vagrantuser` where `$HOME` is the user's home directory and `$SYSTEM`
+is the platform dependent folder where system global parameters are set.
+
+We use it in our team to specify the various parameters required for
+Vagrant `chef-solo` provisioner by putting the a `.vagrantuser` in our
+home directory under a key `chef`. It gets merged with the project's
+`.vagrantuser` file (if it exists), so it they can be overridden there.
+
+Please refer to section [Usage](#usage) for all details and explanations
+needed to fully use and understand Nugrant.
 
 ## Installation
+
+### Vagrant
+
+Vagrant's plug-in system is very well done and Nugrant supports
+the following plug-in API versions:
+
+ * V2 => Vagrant 1.x
+
+To install the Nugrant as a Vagrant plug-in, simply type the following
+command in a terminal:
+
+    vagrant plugin install nugrant
 
 ### Library
 
@@ -29,61 +90,13 @@ your `Gemfile` or your `.gemspec` file.
 
     "nugrant", "~> 2.0"
 
-### Vagrant
-
-If you would like to use Nugrant as a Vagrant plugin, the
-detailed installation steps are provided below. Without a
-doubt, you need Vagrant installed for those steps to work ;)
-
-First of all, Vagrant's plugin system is very well done and
-Nugrant supports version `v1` (1.0.z branch, like 1.0.7) and
-`v2` (1.y.z branch, like 1.1.3). However, the installation
-procedure between the two versions is different.
-
-To know which version you currently have installed, type
-`vagrant -v` in a terminal.
-
-#### Version 1.0.z (latest version tested 1.0.7)
-
-In this version, there is two different ways to install Nugrant.
-You can install it via Vagrant or directly via the system gem
-container.
-
-When you install via Vagrant, the main benefit is that
-it's decoupled from other system gems. There is less
-chance for this gem's dependencies, even if they are minimal,
-to clash with gems already installed on your system. This is the
-recommended installation method. To install, simply run in
-a terminal:
-
-    > vagrant gem install nugrant
-
-If you prefer to install the gem in via the system gem
-container, please use this command instead:
-
-    > gem install nugrant
-
-#### Version 1.y.z (latest version tested 1.3.4)
-
-In those versions, probably until 2.y.z is out, there
-is a new way to install and register plugin with the Vagrant
-environment.
-
-To install when using one of this versions, simply run in a
-terminal:
-
-    > vagrant plugin install nugrant
-
-Since the plugin system has been completely rewritten in those
-versions, it is not possible anymore to make the plugin available
-within Vagrant when installing Nugrant in the system
-gem container.
-
 ## Usage
 
-Whether used as a library or a Vagrant plugin, Nugrant has some
+Whether used as a library or a Vagrant plug-in, Nugrant has some
 common concepts that apply to both usages. The most important
 one is the parameters hierarchy.
+
+### Common
 
 Nugrant can read parameters from various locations and will merge
 them all together in a single set. Merging is done in a fairly
@@ -102,16 +115,6 @@ priority will be overridden by values defined on higher priorities).
 In text, this means that current parameters overrides user
 parameters, user parameters overrides system parameters and
 finally system parameters overrides defaults parameters.
-
-### Library
-
-Using Nugrant as a library to handle parameters from various
-location is really easy. Two main classes need to be handled.
-
-First, you need to create a `Nugrant::Config` object. This
-configuration holds the values that needs to be customized
-by your own application. This includes the different parameters paths
-and the format of the parameters file.
 
 ### Vagrant
 
@@ -133,14 +136,14 @@ Your `Vagrantfile` would look like this:
 
 However, what happens when multiple developers
 need to share the same `Vagrantfile`? This is the main
-use case this plugin try to address.
+use case this plug-in try to address.
 
-When Vagrant starts, it loads all vagrant plugins it knows
-about. If you installed the plugin with one of the two
+When Vagrant starts, it loads all vagrant plug-ins it knows
+about. If you installed the plug-in with one of the two
 methods we listed above, Vagrant will know about Nugrant
 and will load it correctly.
 
-To use the plugin, first create a YAML file named
+To use the plug-in, first create a YAML file named
 `.vagrantuser` in the same folder where your `Vagrantfile` is
 located. The file must be a valid YAML file:
 
@@ -211,7 +214,7 @@ Here the list of locations where Nugrant looks for parameters:
  3. Home (`~/.vagrantuser`)
  4. current (`.vagrantuser` within the same folder as the `Vagrantfile`)
 
-### Paths
+#### Paths
 
 When you want to specify paths on, specially on Windows, it's probably
 better to only use forward slash (`/`). The main reason for this is because
@@ -235,7 +238,7 @@ Of expand it in the `Vagrantfile`:
 
     config.vm.synced_folder File.expand_path(config.user.repository.project), "/git"
 
-### Parameters access
+#### Parameters access
 
 Parameters in the `Vagrantfile` can be retrieved via method call
 of array access.
@@ -251,9 +254,9 @@ it since its always better to be consistent:
 
 Only the root key, i.e. `config.user`, cannot be access with
 both syntax, only the method syntax can be used since this
-is not provided by this plugin but by Vagrant itself.
+is not provided by this plug-in but by Vagrant itself.
 
-### Default values
+#### Default values
 
 When using parameters, it is often needed so set default values
 for certain parameters so if the user does not define one, the
@@ -284,12 +287,12 @@ If the user decides to change it, he just has to set it in his
 own `.vagrantuser` and it will override the default value defined
 in the Vagrantfile.
 
-### Vagrant commands
+#### Commands
 
 In this section, we describe the various vagrant commands defined
-by this plugin that can be used to interact with it.
+by this plug-in that can be used to interact with it.
 
-#### Parameters
+##### Parameters
 
 This command will print the currently defined parameters at the
 given location. All rules are respected when using this command.
@@ -310,7 +313,7 @@ Usage:
 Add flag `-h` (or `--help`) for description of the command and a
 list of available options.
 
-#### Env
+##### Env
 
 Sometimes, you would like to have acces to the different values
 stored in your `.vagrantuser` from environment variables. This
@@ -348,7 +351,7 @@ would be overwritten by an export command.
 Add flag `-h` (or `--help`) for description of the command and a
 list of available options.
 
-##### Method #1
+###### Method #1
 
 If you plan to use frequently this feature, our best suggestion
 is to create a little bash script that will simply delegates
@@ -384,7 +387,7 @@ to:
 
     vagrant user env -h
 
-##### Method #2
+###### Method #2
 
 Use the command to generate a base script in the current
 directory that you will then source:
@@ -400,7 +403,7 @@ Using `vagrant user env -u --format script` will instead generate the bash
 script that will unset the environment variables. Don't forget
 to source it to unset variables.
 
-##### Method #3
+###### Method #3
 
 Use the command to generate an [autoenv](https://github.com/kennethreitz/autoenv)
 file in the current directory. By using the [autoenv] project, anytime you
@@ -421,6 +424,16 @@ available in your environment.
 Using `vagrant user env -u --format autoenv` will instead generate
 the autoenv file that will unset the environment variables.
 
+### Library
+
+Using Nugrant as a library to handle parameters from various
+location is really easy. Two main classes need to be handled.
+
+First, you need to create a `Nugrant::Config` object. This
+configuration holds the values that needs to be customized
+by your own application. This includes the different parameters paths
+and the format of the parameters file.
+
 ## Contributing
 
 You can contribute by filling issues when something goes
@@ -429,5 +442,5 @@ to fix the issue either in the code or in the documentation,
 where applicable.
 
 You can also send pull requests for any feature or improvement
-you think should be included in this plugin. I will evaluate
+you think should be included in this plug-in. I will evaluate
 each of them and merge them as fast as possible.
