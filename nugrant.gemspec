@@ -32,5 +32,5 @@ Gem::Specification.new do |gem|
   gem.add_dependency "multi_json", "~> 1.0"
 
   gem.add_development_dependency "rake", "~> 10.0"
-  gem.add_development_dependency "minitest", "~> 5.0"
+  gem.add_development_dependency "minitest", "~> 5.2"
 end
