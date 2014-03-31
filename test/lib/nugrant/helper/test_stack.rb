@@ -5,21 +5,6 @@ require 'nugrant/helper/stack'
 module Nugrant
   module Helper
     class TestStack < ::Minitest::Test
-      def assert_error_location(expected, entry, matcher = nil)
-        assert_equal(expected, Stack::extract_error_location(entry, :matcher => matcher))
-      end
-
-      def assert_error_region(expected, region)
-        expected_lines = expected.split()
-        region_lines = region.split()
-
-        assert_equal(expected_lines.length(), region_lines.length())
-
-        expected_lines.each_with_index do |expected_line, index|
-          assert_equal(expected_line.strip(), region_lines[index].strip())
-        end
-      end
-
       def create_stack(options = {})
         pattern = options[:pattern] || "Vagrantfile:%s"
         count = options[:count] || 4
@@ -38,16 +23,34 @@ module Nugrant
         {:file => "#{resource_path}/#{name}", :line => line}
       end
 
+      def assert_error_location(expected, entry, matcher = nil)
+        assert_equal(expected, Stack::extract_error_location(entry, :matcher => matcher), "Not exact error location")
+      end
+
+      def assert_error_region(expected, region)
+        expected_lines = expected.split("\n")
+        region_lines = region.split("\n")
+
+        expected_count = expected_lines.length()
+        actual_count = region_lines.length()
+
+        assert_equal(expected_count, actual_count, "Region different line count")
+
+        expected_lines.each_with_index do |expected_line, index|
+          assert_equal(expected_line.strip(), region_lines[index].strip(), "Line ##{index} are not equals")
+        end
+      end
+
       def test_fetch_error_region_from_location()
-        location = create_location("v1.defaults_using_symbol", 4)
+        location = create_location("v2.defaults_using_symbol", 4)
         error_region = Stack::fetch_error_region_from_location(location)
         expected_region = <<-EOT
-          1:     Vagrant::Config.run do |config|
+          1:     Vagrant.configure("2") do |config|
           2:       config.user.defaults = {
           3:         :single => 1,
           4:>>       :local => {
-          5:             :first => "value1",
-          6:             :second => "value2"
+          5:           :first => "value1",
+          6:           :second => "value2"
           7:         }
           8:       }
         EOT
@@ -56,15 +59,15 @@ module Nugrant
       end
 
       def test_fetch_error_region_from_location_custom_prefix()
-        location = create_location("v1.defaults_using_symbol", 4)
+        location = create_location("v2.defaults_using_symbol", 4)
         error_region = Stack::fetch_error_region_from_location(location, :prefix => "**")
         expected_region = <<-EOT
-          **1:     Vagrant::Config.run do |config|
+          **1:     Vagrant.configure(\"2\") do |config|
           **2:       config.user.defaults = {
           **3:         :single => 1,
           **4:>>       :local => {
-          **5:             :first => "value1",
-          **6:             :second => "value2"
+          **5:           :first => "value1",
+          **6:           :second => "value2"
           **7:         }
           **8:       }
         EOT
@@ -73,14 +76,14 @@ module Nugrant
       end
 
       def test_fetch_error_region_from_location_custom_width()
-        location = create_location("v1.defaults_using_symbol", 4)
+        location = create_location("v2.defaults_using_symbol", 4)
         error_region = Stack::fetch_error_region_from_location(location, :width => 2)
         expected_region = <<-EOT
           2:       config.user.defaults = {
           3:         :single => 1,
           4:>>       :local => {
-          5:             :first => "value1",
-          6:             :second => "value2"
+          5:           :first => "value1",
+          6:           :second => "value2"
         EOT
 
         assert_error_region(expected_region, error_region)

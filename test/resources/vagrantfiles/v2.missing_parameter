@@ -1,5 +1,3 @@
-Vagrant.require_plugin('nugrant')
-
 Vagrant.configure("2") do |config|
   puts config.user.unkown_for_sure
 end

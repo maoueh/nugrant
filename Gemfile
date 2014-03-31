@@ -1,27 +1,15 @@
 source 'https://rubygems.org'
 
-gemspec
-
 group :development do
-  vagrant_dependencies = {
-    'v1' => {
-      'home' => "~/.vagrant.d.v1",
-      'gem' => Proc.new do
-        gem "vagrant", "~> 1.0.7"
-      end,
-    },
-    'v2' => {
-      'home' => "~/.vagrant.d",
-      'gem' => Proc.new do
-        gem "vagrant", :git => "git://github.com/mitchellh/vagrant.git", :tag => "v1.4.3"
-      end,
-    },
-  }
+  gem "rake", "~> 10.1"
+  gem "minitest", "~> 5.2"
+  gem "minitest-reporters", "~> 1.0"
 
-  vagrant_plugin_version = ENV['VAGRANT_PLUGIN_VERSION'] || "v2"
-  vagrant_dependency = vagrant_dependencies[vagrant_plugin_version]
+  gem "win32console", :platforms => ['mswin', 'mingw', :'x64_mingw']
 
-  ENV['VAGRANT_HOME'] = File.expand_path(vagrant_dependency['home'])
+  gem "vagrant", :git => "https://github.com/mitchellh/vagrant.git", :tag => "v1.5.1"
+end
 
-  vagrant_dependency['gem'].call()
+group :plugins do
+  gem "nugrant", path: "."
 end

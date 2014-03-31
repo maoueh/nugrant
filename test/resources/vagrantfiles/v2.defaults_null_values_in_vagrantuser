@@ -1,7 +1,5 @@
 # Source from https://github.com/maoueh/nugrant/issues/12#issuecomment-27054150
 # but slightly modified
-Vagrant.require_plugin('nugrant')
-
 Vagrant.configure('2') do |config|
    config.user.defaults = {
      "host" => {

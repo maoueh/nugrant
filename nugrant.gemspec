@@ -28,9 +28,6 @@ Gem::Specification.new do |gem|
   gem.test_files    = gem.files.grep(%r{^(test/lib)/})
   gem.require_paths = ["lib"]
 
-  gem.add_dependency "insensitive_hash", "~> 0.0"
-  gem.add_dependency "multi_json", "~> 1.0"
-
-  gem.add_development_dependency "rake", "~> 10.0"
-  gem.add_development_dependency "minitest", "~> 5.2"
+  gem.add_dependency "insensitive_hash", "~> 0.3"
+  gem.add_dependency "multi_json", "~> 1.8"
 end

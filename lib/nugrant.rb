@@ -8,18 +8,6 @@ unless defined?(KeyError)
   end
 end
 
-if defined?(Vagrant)
-  Nugrant.setup_i18n()
-
-  case
-  when defined?(Vagrant::Plugin::V2)
-    require 'nugrant/vagrant/v2/plugin'
-  else
-    raise RuntimeError, "Vagrant [#{Vagrant::VERSION}] is not supported by Nugrant."
-  end
-end
-
-
 module Nugrant
   def self.setup_i18n()
     I18n.load_path << File.expand_path("locales/en.yml", Nugrant.source_root)
@@ -28,5 +16,16 @@ module Nugrant
 
   def self.source_root
     @source_root ||= Pathname.new(File.expand_path("../../", __FILE__))
+  end
+end
+
+if defined?(Vagrant)
+  Nugrant.setup_i18n()
+
+  case
+  when defined?(Vagrant::Plugin::V2)
+    require 'nugrant/vagrant/v2/plugin'
+  else
+    raise RuntimeError, "Vagrant [#{Vagrant::VERSION}] is not supported by Nugrant."
   end
 end
