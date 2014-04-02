@@ -3,7 +3,7 @@ module Nugrant
     ##
     # The bag is Enumerable. For method using a key argument
     # the bag will accept symbol or string keys. For method
-    # return keys, the bag will emit symbol keys.
+    # returning keys, the bag will emit symbol keys.
     include Enumerable
 
     attr_reader :__elements
@@ -39,25 +39,36 @@ module Nugrant
     end
 
     ##
-    # This method always perform a deep merge and will deep merge
-    # array scalar values only. This means that we do not merge
-    # within array themselves.
+    # This method first start by converting the `input` parameter
+    # into a bag. It will then *deep* merge current values with
+    # the new ones coming from the `input`.
     #
-    def merge!(hash)
-      bag = hash.kind_of?(Bag) ? hash : Bag.new(hash)
+    # The array merge strategy is by default to replace current
+    # values with new ones. You can use option `:array_strategy`
+    # to change this default behavior.
+    #
+    # +Options+
+    #  * :array_strategy
+    #     * :replace (Default) => Replace current values by new ones
+    #     * :extend => Merge current values with new ones
+    #     * :concat => Append new values to current ones
+    #
+    def merge!(input, options = {})
+      options = {:array_strategy => :replace}.merge(options)
+      bag = hash.kind_of?(Bag) ? input : Bag.new(input)
 
+      array_strategy = options[:array_strategy]
       bag.each do |key, value|
-        if (current = @__elements[key]) == nil
-          @__elements[key] = value
-          next
-        end
-
+        current = @__elements[key]
         case
+          when current == nil
+            @__elements[key] = value
+
           when current.kind_of?(Bag) && value.kind_of?(Bag)
-            current.merge!(value)
+            current.merge!(value, :array_strategy => array_strategy)
 
           when current.kind_of?(Array) && value.kind_of?(Array)
-            @__elements[key] = current | value
+            @__elements[key] = send("__#{array_strategy}_array_merge", current, value)
 
           when value != nil
             @__elements[key] = value
@@ -99,6 +110,18 @@ module Nugrant
 
     def __convert_key(key)
       key.to_sym()
+    end
+
+    def __concat_array_merge(current_array, new_array)
+      current_array + new_array
+    end
+
+    def __extend_array_merge(current_array, new_array)
+      current_array | new_array
+    end
+
+    def __replace_array_merge(current_array, new_array)
+      new_array
     end
   end
 end
