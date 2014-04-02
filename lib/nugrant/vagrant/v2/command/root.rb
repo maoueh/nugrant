@@ -1,6 +1,7 @@
 require 'nugrant'
 require 'nugrant/vagrant/v2/command/env'
 require 'nugrant/vagrant/v2/command/parameters'
+require 'nugrant/vagrant/v2/command/restricted_keys'
 require 'nugrant/version'
 
 module Nugrant
@@ -23,6 +24,10 @@ module Nugrant
 
             @subcommands.register(:parameters) do
               Command::Parameters
+            end
+
+            @subcommands.register(:'restricted-keys') do
+              Command::RestrictedKeys
             end
 
             @show_help = false

@@ -266,6 +266,32 @@ Only the root key, i.e. `config.user`, cannot be access with
 both syntax, only the method syntax can be used since this
 is not provided by this plug-in but by Vagrant itself.
 
+##### Tips
+
+Each non-final parameter (i.e a parameter that contains other parameters and
+not a scalar value) is in fact a [Bag](/lib/nugrant/bag.rb)
+object. You can call any defined methods on it. Since this object is also
+[Enumerable](http://ruby-doc.org/core-2.0/Enumerable.html), you can do neat things
+like iterating over your values or filtering them.
+
+##### Restricted keys
+
+Method access has the neat advantage of being beautiful to the
+eye. However, the drawback of using this retrieval syntax is
+that not all keys are permitted. As explained in the [Tips](#tips)
+section, the object you are calling when using method access
+is in fact of type [Bag](/lib/nugrant/bag.rb). Hence, if you
+are using a key which collapse with ones of Bag's keys, it will
+call the method instead of given you the value of you parameter.
+At best, you will get a weird behavior and at worst a stack
+trace when trying to access the parameter.
+
+If you really want to use one of the restricted keys, simply
+ensure to always use array access method.
+
+The list of restricted keys can be accessed using command
+`vagrant user restricted-keys`.
+
 #### Default values
 
 When using parameters, it is often needed so set default values
@@ -322,6 +348,15 @@ Usage:
 
 Add flag `-h` (or `--help`) for description of the command and a
 list of available options.
+
+##### Restricted Keys
+
+This command will print the keys that cannot be accessed using
+the method access syntax.
+
+Usage:
+
+    > vagrant user restricted-keys
 
 ##### Env
 
