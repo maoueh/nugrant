@@ -6,38 +6,38 @@ module Nugrant
     module V2
       module Config
         class User < ::Vagrant.plugin("2", :config)
-          attr_reader :parameters
+          attr_reader :__parameters
+
+
 
           def initialize()
-            @parameters = Nugrant::Parameters.new({:config => {:params_filename => ".vagrantuser"}})
+            @__parameters = Nugrant::Parameters.new({:config => {:params_filename => ".vagrantuser"}})
           end
 
           def [](param_name)
-            return @parameters[param_name]
+            return @__parameters[param_name]
           rescue KeyError
             raise Errors::ParameterNotFoundError, :key => param_name
           end
 
           def method_missing(method, *args, &block)
-            return @parameters.method_missing(method, *args, &block)
-          rescue KeyError
-            raise Errors::ParameterNotFoundError, :key => method
+            [method]
           end
 
           def each(&block)
-            @parameters.each(&block)
+            @__parameters.each(&block)
           end
 
           def has?(key)
-            @parameters.has?(key)
+            @__parameters.has?(key)
           end
 
           def defaults(parameters)
-            @parameters.defaults(parameters)
+            @__parameters.defaults(parameters)
           end
 
           def defaults=(parameters)
-            @parameters.defaults=(parameters)
+            @__parameters.defaults=(parameters)
           end
         end
       end

@@ -6,11 +6,19 @@ module Nugrant
     # returning keys, the bag will emit symbol keys.
     include Enumerable
 
-    attr_reader :__elements
-
     def initialize(elements = nil)
       clear!()
-      update!(elements)
+
+      # Convert sub-values to Bag if elements is a Bag or a Hash
+      elements.each do |key, value|
+        case
+          when value.kind_of?(Bag) || value.kind_of?(Hash)
+            @__elements[__convert_key(key)] = Bag.new(value)
+
+          else
+            @__elements[__convert_key(key)] = value
+        end
+      end if elements.kind_of?(Bag) or elements.kind_of?(Hash)
     end
 
     def [](key)
@@ -72,20 +80,6 @@ module Nugrant
 
           when value != nil
             @__elements[key] = value
-        end
-      end
-    end
-
-    def update!(hash = nil)
-      return if not (hash.kind_of?(Bag) or hash.kind_of?(Hash))
-
-      hash.each do |key, value|
-        case
-          when value.kind_of?(Bag) || value.kind_of?(Hash)
-            @__elements[__convert_key(key)] = Bag.new(value)
-
-          else
-            @__elements[__convert_key(key)] = value
         end
       end
     end
