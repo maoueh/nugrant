@@ -2,6 +2,8 @@
 
 ### Backward Incompatibilities
 
+* Removed deprecated `--script` argument from `vagrant user env` command.
+
 * Support for Ruby <= 1.9.2 has been dropped. This is not a problem when using
   Nugrant as a Vagrant plugin. Use branch `1.x` if you can't upgrade to
   Ruby >= 1.9.3.

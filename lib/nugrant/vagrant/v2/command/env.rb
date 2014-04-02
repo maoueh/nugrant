@@ -11,7 +11,6 @@ module Nugrant
             super(arguments, environment)
 
             @unset = false
-            @script = false
             @format = :terminal
             @show_help = false
           end
@@ -26,9 +25,6 @@ module Nugrant
                                "existing ones are overridden. The --format argument can be used\n" +
                                "to choose in which format the variables should be displayed.\n" +
                                "Changing the format will also change where they are displayed.\n"
-              parser.separator ""
-              parser.separator "The `-s, --script` option is deprecated and will be removed in\n" +
-                               "version 2.0. Use `--format script` instead."
               parser.separator ""
 
               parser.separator "Available formats:"
@@ -45,11 +41,7 @@ module Nugrant
                 @unset = unset
               end
 
-              parser.on("-s", "--[no-]script", "Generates a bash script instead of simply showing command, default false") do |script|
-                 @script = script
-              end
-
-              parser.on("-f", "--format FORMAT", "Determines in what format variables are outputted, default to terminal") do |format|
+              parser.on("-f", "--format FORMAT", "Determines in what format variables are output, default to terminal") do |format|
                  @format = format.to_sym()
               end
 
@@ -88,11 +80,11 @@ module Nugrant
               options = {:type => @unset ? :unset : :export}
 
               case
-              when @script || @format == :script
+              when @format == :script
                 Helper::Env::Exporter.script_exporter(bag, options)
               when @format == :autoenv
                 Helper::Env::Exporter.autoenv_exporter(bag, options)
-              else
+              when @format == :terminal
                 Helper::Env::Exporter.terminal_exporter(bag, options)
               end
 
