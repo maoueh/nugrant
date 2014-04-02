@@ -2,8 +2,13 @@
 
 ### Backward Incompatibilities
 
+* Support for Ruby <= 1.9.2 has been dropped. This is not a problem when using
+  Nugrant as a Vagrant plugin. Use branch `1.x` if you can't upgrade to
+  Ruby >= 1.9.3.
+
 * Support for Vagrant 0.x has been dropped. This means that Nugrant 2.x will not
-  load if installed in a Vagrant 0.x environment.
+  load if installed in a Vagrant 0.x environment. Use branch `1.x` if you can't
+  upgrade to Vagrant 1.x.
 
 * `Bag` and `Parameters` and Vagrant configuration object `config.user`are now
   [Enumerable](http://ruby-doc.org/core-2.0.0/Enumerable.html).

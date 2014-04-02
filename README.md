@@ -15,6 +15,11 @@ injected into an application via different sources (system, user,
 current, defaults). But foremost, a Vagrant plug-in that will enhance
 Vagrantfile to allow user specific configuration values.
 
+Supported platforms:
+
+ * Vagrant 1.x
+ * Ruby 1.9.3+
+
 ## Overview
 
 Using Nugrant as a plug-in provides an easy and hierarchical system to manage
@@ -81,6 +86,11 @@ To install the Nugrant as a Vagrant plug-in, simply type the following
 command in a terminal:
 
     vagrant plugin install nugrant
+
+#### Vagrant 0.x
+
+Vagrant 0.x is not supported anymore. If you still need support for
+Vagrant 0.x, please use release line `1.x` (branch [1.x](https://github.com/maoueh/nugrant/tree/1.x)).
 
 ### Library
 
