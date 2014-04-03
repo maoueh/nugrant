@@ -1,5 +1,6 @@
 require 'nugrant'
 require 'nugrant/helper/yaml'
+require 'nugrant/vagrant/v2/command/helper'
 
 module Nugrant
   module Vagrant
@@ -110,15 +111,17 @@ module Nugrant
 
             print_parameters(kind, {
               'config' => {
-                'user' => bag.to_hash(:string_key => true)
+                'user' => bag.to_hash(:use_string_key => true)
               }
             })
           end
 
-          def print_parameters(kind, data)
-            string = Nugrant::Helper::Yaml.format(data.to_yaml, :indent => 1)
+          def print_parameters(kind, hash)
+            string = Nugrant::Helper::Yaml.format(hash.to_yaml, :indent => 1)
+            used_restricted_keys = Helper::get_used_restricted_keys(hash, Helper::get_restricted_keys())
 
             print_header(kind)
+            print_warning(used_restricted_keys) if !used_restricted_keys.empty?()
             @env.ui.info(string, :prefix => false)
             @env.ui.info("", :prefix => false)
           end
@@ -126,6 +129,14 @@ module Nugrant
           def print_header(kind, length = 50)
             @env.ui.info(" #{kind.capitalize} Parameters", :prefix => false)
             @env.ui.info(" " + "-" * length, :prefix => false)
+          end
+
+          def print_warning(used_restricted_keys)
+            @env.ui.info("", :prefix => false)
+            @env.ui.info(" You are using some restricted keys. Method access will not work with", :prefix => false)
+            @env.ui.info(" the following keys, only array access will:", :prefix => false)
+            @env.ui.info("   #{used_restricted_keys.join(", ")}", :prefix => false)
+            @env.ui.info("", :prefix => false)
           end
         end
       end

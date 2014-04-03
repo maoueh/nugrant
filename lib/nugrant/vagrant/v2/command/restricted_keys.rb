@@ -1,5 +1,5 @@
 require 'nugrant'
-require 'nugrant/vagrant/v2/config/user'
+require 'nugrant/vagrant/v2/command/helper'
 
 module Nugrant
   module Vagrant
@@ -37,10 +37,17 @@ module Nugrant
 
             return help(parser) if @show_help
 
-            methods = V2::Config::User.instance_methods
-            methods.sort!
+            @env.ui.info("The following keys are restricted, i.e. that method access (`config.user.first`)", :prefix => false)
+            @env.ui.info("will not work. If you really want to use a restricted key, use array access ", :prefix => false)
+            @env.ui.info("instead (`config.user['local']`).", :prefix => false)
+            @env.ui.info("", :prefix => false)
 
-            @env.ui.info(methods.join(", "), :prefix => false)
+            @env.ui.info("You can run `vagrant user parameters` to check if your config currently defines", :prefix => false)
+            @env.ui.info("one or more restricted keys shown below.", :prefix => false)
+            @env.ui.info("", :prefix => false)
+
+            restricted_keys = Helper::get_restricted_keys()
+            @env.ui.info(restricted_keys.sort().join(", "), :prefix => false)
           end
 
           def help(parser)

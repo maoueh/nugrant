@@ -7,7 +7,6 @@ module Nugrant
 
         command "user" do
           require_relative "command/root"
-
           Command::Root
         end
 

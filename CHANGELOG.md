@@ -1,5 +1,15 @@
 # 2.0.0 (In progress)
 
+* Improved command `vagrant user parameters`. The command now checks if
+  restricted keys are used and prints a warning when it's the case.
+
+* Added a new command `vagrant user restricted-keys` that prints the keys that
+  are restricted, i.e. that cannot be accessed using method access
+  syntax.
+
+* Added possibility to specify merge strategy to use when merging
+  two arrays together.
+
 ### Backward Incompatibilities
 
 * Removed deprecated `--script` argument from `vagrant user env` command.
@@ -12,31 +22,43 @@
   load if installed in a Vagrant 0.x environment. Use branch `1.x` if you can't
   upgrade to Vagrant 1.x.
 
-* `Bag` and `Parameters` and Vagrant configuration object `config.user`are now
+* `Bag` and `Parameters` and Vagrant configuration object `config.user` are now
   [Enumerable](http://ruby-doc.org/core-2.0.0/Enumerable.html).
 
   This change has implications on the resolving process of the variables
   that are stored in the `Bag` when using the dot syntax `(config.user.email)`
   in your code and `Vagrantfiles`. By using this syntax with version 2.0, some keys
-  will collapse with the internal object's methods.
+  will collapse with the internal object's methods. In fact, it was already the
+  case before but to a much smaller scope because object were not enumerable.
 
-  The number of keys involved should be rather low because the restricted keys
-  are are not common used as parameter name. The list of the restricted keys are the ones
-  defined by the `Enumerable` module and Nugrant `Bag` module:
+  The number of conflicts should be rather low because the restricted keys
+  are not commonly used as parameter name. The list of the restricted keys
+  is the following:
 
-      # From Enumerable
-      all?, any?, chunk, collect, collect_concat, count, cycle,
-      detect, drop, drop_while, each_cons, each_entry, each_slice,
-      each_with_index, each_with_object, entries, find, find_all,
-      find_index, first, flat_map, grep, group_by, include?,
-      inject, lazy, map, max, max_by, member?, min, min_by,
-      minmax, minmax_by, none?, one?, partition, reduce, reject,
-      reverse_each, select, slice_before, sort, sort_by, take,
-      take_while, to_a, zip
+      !, !=, !~, <=>, ==, ===, =~, [], __all, __current, __defaults,
+      __id__, __send__, __system, __user, _detected_errors, _finalize!,
+      all?, any?, chunk, class, clear!, clone, collect, collect_concat,
+      compute_all!, compute_bags!, count, cycle, defaults, defaults=,
+      define_singleton_method, detect, display, drop, drop_while, dup,
+      each, each_cons, each_entry, each_slice, each_with_index,
+      each_with_object, empty?, entries, enum_for, eql?, equal?, extend,
+      finalize!, find, find_all, find_index, first, flat_map, freeze,
+      frozen?, gem, grep, group_by, has?, hash, include?, inject,
+      inspect, instance_eval, instance_exec, instance_of?,
+      instance_variable_defined?, instance_variable_get,
+      instance_variable_set, instance_variables, instance_variables_hash,
+      is_a?, kind_of?, lazy, map, max, max_by, member?, merge, merge!,
+      method, method_missing, methods, min, min_by, minmax, minmax_by,
+      nil?, none?, object_id, one?, partition, private_methods,
+      protected_methods, psych_to_yaml, public_method, public_methods,
+      public_send, reduce, reject, remove_instance_variable, respond_to?,
+      reverse_each, select, send, set_options, singleton_class,
+      singleton_methods, slice_before, sort, sort_by, suppress_warnings,
+      taint, tainted?, take, take_while, tap, to_a, to_enum, to_hash,
+      to_json, to_s, to_set, to_yaml, to_yaml_properties, trust, untaint,
+      untrust, untrusted?, validate, zip
 
-      # From Bag
-      initialize, method_missing, [], empty?, merge!, update!, to_hash,
-      __convert_key.
+* The `Parameter` class has a new API.
 
 * The `Bag` class has a new API.
 
