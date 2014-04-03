@@ -74,7 +74,7 @@ module Nugrant
             @logger.debug("Nugrant 'Env'")
             with_target_vms(arguments) do |vm|
               config = vm.config.user
-              parameters = config ? config.__parameters : Nugrant::Parameters.new()
+              parameters = config ? config : Nugrant::Parameters.new()
               bag = parameters.__all
 
               options = {:type => @unset ? :unset : :export}

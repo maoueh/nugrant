@@ -26,12 +26,10 @@ module Nugrant
       system_path = "#{resource_path}/#{system_filename}.#{extension}" if system_filename
 
       return Nugrant::Parameters.new({
-        :config => {
-          :format => format,
-          :current_path => current_path,
-          :user_path => user_path,
-          :system_path => system_path,
-        },
+        :format => format,
+        :current_path => current_path,
+        :user_path => user_path,
+        :system_path => system_path,
       })
     end
 
