@@ -11,13 +11,10 @@ module Nugrant
 
       # Convert sub-values to Bag if elements is a Bag or a Hash
       elements.each do |key, value|
-        case
-          when value.kind_of?(Bag) || value.kind_of?(Hash)
-            @__elements[__convert_key(key)] = Bag.new(value)
+        key = __convert_key(key)
+        value = Bag.new(value) if value.kind_of?(Bag) || value.kind_of?(Hash)
 
-          else
-            @__elements[__convert_key(key)] = value
-        end
+        @__elements[key] = value
       end if elements.kind_of?(Bag) or elements.kind_of?(Hash)
     end
 
