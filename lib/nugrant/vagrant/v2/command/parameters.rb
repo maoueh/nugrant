@@ -120,8 +120,9 @@ module Nugrant
             string = Nugrant::Helper::Yaml.format(hash.to_yaml, :indent => 1)
             used_restricted_keys = Helper::get_used_restricted_keys(hash, Helper::get_restricted_keys())
 
-            print_header(kind)
             print_warning(used_restricted_keys) if !used_restricted_keys.empty?()
+
+            print_header(kind)
             @env.ui.info(string, :prefix => false)
             @env.ui.info("", :prefix => false)
           end
