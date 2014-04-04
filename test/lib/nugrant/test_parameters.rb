@@ -33,10 +33,10 @@ module Nugrant
       })
     end
 
-    def assert_all_access_equal(value, parameters, key)
-      assert_equal(value, parameters.method_missing(key.to_sym), "parameters.#{key.to_sym.inspect}")
-      assert_equal(value, parameters[key.to_s], "parameters[#{key.to_s.inspect}]")
-      assert_equal(value, parameters[key.to_sym], "parameters[#{key.to_sym.inspect}]")
+    def assert_all_access_equal(expected, parameters, key)
+      assert_equal(expected, parameters.method_missing(key.to_sym), "parameters.#{key.to_sym.inspect}")
+      assert_equal(expected, parameters[key.to_s], "parameters[#{key.to_s.inspect}]")
+      assert_equal(expected, parameters[key.to_sym], "parameters[#{key.to_sym.inspect}]")
     end
 
     def assert_level(parameters, results)
@@ -246,14 +246,13 @@ module Nugrant
         assert_all_access_equal("Not nil", parameters, :nil)
       end
 
-      # TODO: Disabled for now
-      #formats.each do |format|
-      #  parameters = create_parameters(format, "params_user_nil_values", invalid_path, invalid_path)
-      #
-      #  assert_all_access_equal(nil, parameters[:deep][:deeper], :nil)
-      #  assert_all_access_equal(nil, parameters[:deep], :nil)
-      #  assert_all_access_equal(nil, parameters, :nil)
-      #end
+      formats.each do |format|
+        parameters = create_parameters(format, "params_user_nil_values", invalid_path, invalid_path)
+
+        assert_all_access_equal(nil, parameters[:deep][:deeper], :nil)
+        assert_all_access_equal(nil, parameters[:deep], :nil)
+        assert_all_access_equal(nil, parameters, :nil)
+      end
     end
 
     def formats()

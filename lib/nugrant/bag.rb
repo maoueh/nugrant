@@ -20,7 +20,7 @@ module Nugrant
 
     def [](key)
       key = __convert_key(key)
-      raise KeyError, "Undefined parameter '#{key}'" if @__elements[key] == nil
+      raise KeyError, "Undefined parameter '#{key}'" if not @__elements.key?(key)
 
       return @__elements[key]
     end
