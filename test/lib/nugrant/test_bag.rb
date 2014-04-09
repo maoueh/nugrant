@@ -160,5 +160,25 @@ module Nugrant
 
       assert_equal({:first => "string"}, bag1.to_hash())
     end
+
+    def test_nil_key()
+      assert_raises(ArgumentError) do
+        create_bag({nil => "value"})
+      end
+
+      parameters = create_bag({})
+
+      assert_raises(ArgumentError) do
+        parameters[nil] = 1
+      end
+
+      assert_raises(ArgumentError) do
+        parameters[nil]
+      end
+
+      assert_raises(ArgumentError) do
+        parameters.method_missing(nil)
+      end
+    end
   end
 end

@@ -48,7 +48,7 @@ module Nugrant
     end
 
     def assert_key_error(parameters, key)
-        assert_raises(KeyError) do
+      assert_raises(KeyError) do
         parameters[key]
       end
     end

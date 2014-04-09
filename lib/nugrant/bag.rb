@@ -1,46 +1,32 @@
+require 'delegate'
+
 module Nugrant
-  class Bag
-    ##
-    # The bag is Enumerable. For method using a key argument
-    # the bag will accept symbol or string keys. For method
-    # returning keys, the bag will emit symbol keys.
-    include Enumerable
+  class Bag < Hash
 
     def initialize(elements = nil)
-      clear!()
+      super()
 
       # Convert sub-values to Bag if elements is a Bag or a Hash
       elements.each do |key, value|
-        key = __convert_key(key)
         value = Bag.new(value) if value.kind_of?(Bag) || value.kind_of?(Hash)
 
-        @__elements[key] = value
+        self[key] = value
       end if elements.kind_of?(Bag) or elements.kind_of?(Hash)
     end
 
-    def [](key)
-      key = __convert_key(key)
-      raise KeyError, "Undefined parameter '#{key}'" if not @__elements.key?(key)
+    def [](input)
+      key = __convert_key(input)
+      raise KeyError, "Undefined parameter '#{key}'" if not key?(key)
 
-      return @__elements[key]
+      super(key)
+    end
+
+    def []=(input, value)
+      super(__convert_key(input), value)
     end
 
     def method_missing(method, *args, &block)
       return self[method]
-    end
-
-    def clear!()
-      @__elements = {}
-    end
-
-    def each()
-      @__elements.each do |key, value|
-        yield key, value
-      end
-    end
-
-    def empty?()
-      @__elements.size() <= 0
     end
 
     ##
@@ -60,23 +46,23 @@ module Nugrant
     #
     def merge!(input, options = {})
       options = {:array_strategy => :replace}.merge(options)
-      bag = hash.kind_of?(Bag) ? input : Bag.new(input)
+      bag = input.kind_of?(Bag) ? input : Bag.new(input)
 
       array_strategy = options[:array_strategy]
       bag.each do |key, value|
-        current = @__elements[key]
+        current = __get(key)
         case
           when current == nil
-            @__elements[key] = value
+            self[key] = value
 
           when current.kind_of?(Bag) && value.kind_of?(Bag)
             current.merge!(value, :array_strategy => array_strategy)
 
           when current.kind_of?(Array) && value.kind_of?(Array)
-            @__elements[key] = send("__#{array_strategy}_array_merge", current, value)
+            self[key] = send("__#{array_strategy}_array_merge", current, value)
 
           when value != nil
-            @__elements[key] = value
+            self[key] = value
         end
       end
     end
@@ -94,13 +80,26 @@ module Nugrant
     end
 
     ##
+    ### Aliases
+    ##
+
+    alias_method :to_ary, :to_a
+
+    ##
     ### Private Methods
     ##
 
     private
 
     def __convert_key(key)
-      key.to_sym()
+      return key.to_sym() if key.respond_to?(:to_sym)
+
+      raise ArgumentError, "Key cannot be converted to symbol, current value [#{key}] (#{key.class.name})"
+    end
+
+    def __get(key)
+      # Calls Hash method [__convert_key(key)], used internally to retrieve value without raising Undefined parameter
+      self.class.superclass.instance_method(:[]).bind(self).call(__convert_key(key))
     end
 
     def __concat_array_merge(current_array, new_array)
