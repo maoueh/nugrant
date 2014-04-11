@@ -20,7 +20,6 @@ module Nugrant
         end
       rescue => error
         if options[:error_handler]
-          # TODO: Implements error handler logic
           options[:error_handler].handle("Could not parse the user #{filetype} parameters file '#{filepath}': #{error}")
         end
       end

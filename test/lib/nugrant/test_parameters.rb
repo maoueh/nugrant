@@ -171,7 +171,7 @@ module Nugrant
         assert_all_access_equal("value", parameters, "test")
 
         parameters = create_parameters(format, invalid_path, invalid_path, invalid_path)
-          assert(parameters)
+        assert(parameters)
       end
     end
 

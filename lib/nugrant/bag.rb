@@ -3,15 +3,12 @@ require 'delegate'
 module Nugrant
   class Bag < Hash
 
-    def initialize(elements = nil)
+    def initialize(elements = {})
       super()
 
-      # Convert sub-values to Bag if elements is a Bag or a Hash
-      elements.each do |key, value|
-        value = Bag.new(value) if value.kind_of?(Bag) || value.kind_of?(Hash)
-
-        self[key] = value
-      end if elements.kind_of?(Bag) or elements.kind_of?(Hash)
+      (elements || {}).each do |key, value|
+        self[key] = value.kind_of?(Hash) ? Bag.new(value) : value
+      end
     end
 
     def [](input)
@@ -46,17 +43,16 @@ module Nugrant
     #
     def merge!(input, options = {})
       options = {:array_strategy => :replace}.merge(options)
-      bag = input.kind_of?(Bag) ? input : Bag.new(input)
 
       array_strategy = options[:array_strategy]
-      bag.each do |key, value|
+      input.each do |key, value|
         current = __get(key)
         case
           when current == nil
             self[key] = value
 
-          when current.kind_of?(Bag) && value.kind_of?(Bag)
-            current.merge!(value, :array_strategy => array_strategy)
+          when current.kind_of?(Hash) && value.kind_of?(Hash)
+            current.merge!(value, options)
 
           when current.kind_of?(Array) && value.kind_of?(Array)
             self[key] = send("__#{array_strategy}_array_merge", current, value)
@@ -73,9 +69,10 @@ module Nugrant
       use_string_key = options[:use_string_key]
 
       Hash[map do |key, value|
-        key = key.to_s() if use_string_key
+        key = use_string_key ? key.to_s() : key
+        value = value.kind_of?(Bag) ? value.to_hash(options) : value
 
-        [key, value.kind_of?(Bag) ? value.to_hash(options) : value]
+        [key, value]
       end]
     end
 
