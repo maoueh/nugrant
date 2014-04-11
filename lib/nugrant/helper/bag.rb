@@ -12,6 +12,10 @@ module Nugrant
         return Nugrant::Bag.new(data)
       end
 
+      def self.restricted_keys()
+        Bag.instance_methods
+      end
+
       def self.parse_data(filepath, filetype, options = {})
         return if not File.exists?(filepath)
 

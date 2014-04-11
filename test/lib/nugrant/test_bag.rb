@@ -1,6 +1,7 @@
 require 'minitest/autorun'
 
 require 'nugrant/bag'
+require 'nugrant/helper/bag'
 
 module Nugrant
   class TestBag < ::Minitest::Test
@@ -8,28 +9,28 @@ module Nugrant
       return Bag.new(elements)
     end
 
-    def assert_all_access_equal(value, bag, key)
-      assert_equal(value, bag.method_missing(key.to_sym), "bag.#{key.to_sym.inspect}")
-      assert_equal(value, bag[key.to_s], "bag[#{key.to_s.inspect}]")
-      assert_equal(value, bag[key.to_sym], "bag[#{key.to_sym.inspect}]")
+    def assert_all_access_equal(expected, bag, key)
+      assert_equal(expected, bag.method_missing(key.to_sym), "bag.#{key.to_sym}")
+      assert_equal(expected, bag[key.to_s], "bag[#{key.to_s}]")
+      assert_equal(expected, bag[key.to_sym], "bag[#{key.to_sym}]")
     end
 
-    def assert_all_access_bag(value, bag, key)
-      assert_bag(value, bag.method_missing(key.to_sym))
-      assert_bag(value, bag[key.to_s])
-      assert_bag(value, bag[key.to_sym])
+    def assert_all_access_bag(expected, bag, key)
+      assert_bag(expected, bag.method_missing(key.to_sym))
+      assert_bag(expected, bag[key.to_s])
+      assert_bag(expected, bag[key.to_sym])
     end
 
-    def assert_bag(parameters, bag)
+    def assert_bag(expected, bag)
       assert_kind_of(Bag, bag)
 
-      parameters.each do |key, value|
-        if not value.kind_of?(Hash)
-          assert_all_access_equal(value, bag, key)
+      expected.each do |key, expected_value|
+        if not expected_value.kind_of?(Hash)
+          assert_all_access_equal(expected_value, bag, key)
           next
         end
 
-        assert_all_access_bag(value, bag, key)
+        assert_all_access_bag(expected_value, bag, key)
       end
     end
 
@@ -178,6 +179,20 @@ module Nugrant
 
       assert_raises(ArgumentError) do
         parameters.method_missing(nil)
+      end
+    end
+
+    def test_restricted_keys_are_still_accessible
+      keys = Helper::Bag.restricted_keys()
+      bag = create_bag(Hash.new[
+        keys.each do |key|
+          [key, "#{key.to_s} - value"]
+        end
+      ])
+
+      keys.each do |key|
+        assert_equal("#{key.to_s} - value", bag[key.to_s], "bag[#{key.to_s}]")
+        assert_equal("#{key.to_s} - value", bag[key.to_sym], "bag[#{key.to_sym}]")
       end
     end
   end
