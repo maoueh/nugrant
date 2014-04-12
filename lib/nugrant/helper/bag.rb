@@ -13,7 +13,7 @@ module Nugrant
       end
 
       def self.restricted_keys()
-        Bag.instance_methods
+        Nugrant::Bag.instance_methods()
       end
 
       def self.parse_data(filepath, filetype, options = {})

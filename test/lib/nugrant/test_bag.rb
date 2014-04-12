@@ -184,8 +184,8 @@ module Nugrant
 
     def test_restricted_keys_are_still_accessible
       keys = Helper::Bag.restricted_keys()
-      bag = create_bag(Hash.new[
-        keys.each do |key|
+      bag = create_bag(Hash[
+        keys.map do |key|
           [key, "#{key.to_s} - value"]
         end
       ])

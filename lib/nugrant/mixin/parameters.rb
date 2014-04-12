@@ -9,11 +9,11 @@ module Nugrant
       include Enumerable
 
       def [](key)
-        return @__all[key]
+        @__all[key]
       end
 
       def method_missing(method, *args, &block)
-        return @__all[method]
+        @__all[method]
       end
 
       def empty?()

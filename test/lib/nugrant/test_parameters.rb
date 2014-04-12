@@ -34,9 +34,9 @@ module Nugrant
     end
 
     def assert_all_access_equal(expected, parameters, key)
-      assert_equal(expected, parameters.method_missing(key.to_sym), "parameters.#{key.to_sym.inspect}")
-      assert_equal(expected, parameters[key.to_s], "parameters[#{key.to_s.inspect}]")
-      assert_equal(expected, parameters[key.to_sym], "parameters[#{key.to_sym.inspect}]")
+      assert_equal(expected, parameters.method_missing(key.to_sym), "parameters.#{key.to_s}")
+      assert_equal(expected, parameters[key.to_s], "parameters[#{key.to_s}]")
+      assert_equal(expected, parameters[key.to_sym], "parameters[#{key.to_sym}]")
     end
 
     def assert_level(parameters, results)
@@ -252,6 +252,23 @@ module Nugrant
         assert_all_access_equal(nil, parameters[:deep][:deeper], :nil)
         assert_all_access_equal(nil, parameters[:deep], :nil)
         assert_all_access_equal(nil, parameters, :nil)
+      end
+    end
+
+    def test_restricted_keys_are_still_accessible
+      keys = Helper::Parameters.restricted_keys()
+      elements = Hash[
+        keys.map do |key|
+          [key, "#{key.to_s} - value"]
+        end
+      ]
+
+      parameters = create_parameters(:json, invalid_path, invalid_path, invalid_path)
+      parameters.defaults = elements
+
+      keys.each do |key|
+        assert_equal("#{key.to_s} - value", parameters[key.to_s], "parameters[#{key.to_s}]")
+        assert_equal("#{key.to_s} - value", parameters[key.to_sym], "parameters[#{key.to_sym}]")
       end
     end
 
