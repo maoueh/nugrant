@@ -5,27 +5,24 @@ module Nugrant
     # logic between default Parameters class and Vagrant
     # implementation.
     #
+    # This method delegates method missing to the overall
+    # bag instance. This means that even if the class
+    # including this module doesn't inherit Bag directly,
+    # it act exactly like one.
+    #
+    # To initialize the mixin module correctly, you must call
+    # the compute_bags! method at least once to initialize
+    # all variables. You should make this call in including
+    # class' constructor directly.
+    #
     module Parameters
-      include Enumerable
-
-      def [](key)
-        @__all[key]
-      end
-
       def method_missing(method, *args, &block)
-        @__all[method]
-      end
-
-      def empty?()
-        @__all.empty?()
-      end
-
-      def has?(key)
-        return @__all.include?(key)
-      end
-
-      def each(&block)
-        @__all.each(&block)
+        case
+        when @__all.class.method_defined?(method)
+          @__all.send(method, *args, &block)
+        else
+          @__all[method]
+        end
       end
 
       def defaults()
@@ -70,10 +67,6 @@ module Nugrant
         @__all.merge!(@__system)
         @__all.merge!(@__user)
         @__all.merge!(@__current)
-      end
-
-      def to_hash()
-        @__all.to_hash()
       end
     end
   end

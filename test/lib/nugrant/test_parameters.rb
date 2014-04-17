@@ -1,6 +1,7 @@
 require 'minitest/autorun'
 
 require 'nugrant'
+require 'nugrant/helper/parameters'
 require 'nugrant/parameters'
 
 module Nugrant
@@ -270,6 +271,17 @@ module Nugrant
         assert_equal("#{key.to_s} - value", parameters[key.to_s], "parameters[#{key.to_s}]")
         assert_equal("#{key.to_s} - value", parameters[key.to_sym], "parameters[#{key.to_sym}]")
       end
+    end
+
+    def test_hash_method_collect()
+      parameters = create_parameters(:json, "params_simple", invalid_path, invalid_path)
+      parameters.defaults = {"test" => "override1", :level => "new1"}
+
+      pairs = parameters.collect do |key, value|
+        [key, value]
+      end
+
+      assert_equal([[:test, "value"], [:level, "new1"]], pairs)
     end
 
     def formats()

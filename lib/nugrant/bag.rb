@@ -1,5 +1,3 @@
-require 'delegate'
-
 module Nugrant
   class Bag < Hash
 

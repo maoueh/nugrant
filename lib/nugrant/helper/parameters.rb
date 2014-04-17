@@ -4,7 +4,8 @@ module Nugrant
   module Helper
     module Parameters
       def self.restricted_keys()
-        Nugrant::Parameters.instance_methods()
+        methods = Nugrant::Parameters.instance_methods() + Nugrant::Bag.instance_methods()
+        methods.uniq!
       end
     end
   end
