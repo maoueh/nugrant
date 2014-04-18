@@ -10,19 +10,14 @@ module Nugrant
           attr_reader :__current, :__user, :__system, :__defaults, :__all
 
           def initialize()
-            compute_bags!({:params_filename => ".vagrantuser"})
+            compute_bags!({:params_filename => ".vagrantuser"}, options = {
+              :key_error => Proc.new do |key|
+                raise Errors::ParameterNotFoundError, :key => key.to_s
+              end
+            })
           end
 
           include Mixin::Parameters
-
-          def method_missing(method, *args, &block)
-            module_method = Mixin::Parameters.instance_method(:method_missing)
-
-            # This calls method `method_missing` defined in Mixin::Parameters with self as the "called" instance
-            module_method.bind(self).call(method, *args, &block)
-          rescue KeyError
-            raise Errors::ParameterNotFoundError, :key => method.to_s
-          end
         end
       end
     end

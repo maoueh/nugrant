@@ -1,11 +1,41 @@
 module Nugrant
   class Bag < Hash
 
-    def initialize(elements = {})
+    ##
+    # Create a new Bag object which holds key/value pairs.
+    # The Bag object inherits from the Hash object, the main
+    # differences with a normal Hash are indifferent access
+    # (symbol or string) and method access (via method call).
+    #
+    # =| Arguments
+    #  * `elements`
+    #    The initial elements the bag should be built with it.'
+    #    Must be an object responding to `each` and accepting
+    #    a block with two arguments: `key, value`.]. Defaults to
+    #    the empty hash.
+    #
+    #  * `options`
+    #    An options hash where some customization option can be passed.
+    #    Defaults to an empty hash, see options for specific option default
+    #    values.
+    #
+    # =| Options
+    #  * `:key_error`
+    #    A callable object receiving a single parameter `key` that is
+    #    called when a key cannot be found in the Bag. The received key
+    #    is already converted to a symbol. If the callable does not
+    #    raise an exception, the result of it's execution is returned.
+    #    The default value is a callable that throws a KeyError exception.
+    #
+    def initialize(elements = {}, options = {})
       super()
 
+      @__key_error = options[:key_error] || Proc.new do |key|
+        raise KeyError, "Undefined parameter '#{key}'" if not key?(key)
+      end
+
       (elements || {}).each do |key, value|
-        self[key] = value.kind_of?(Hash) ? Bag.new(value) : value
+        self[key] = value.kind_of?(Hash) ? Bag.new(value, options) : value
       end
     end
 
@@ -19,7 +49,7 @@ module Nugrant
 
     def [](input)
       key = __convert_key(input)
-      raise KeyError, "Undefined parameter '#{key}'" if not key?(key)
+      return @__key_error.call(key) if not key?(key)
 
       super(key)
     end

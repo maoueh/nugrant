@@ -5,8 +5,8 @@ require 'nugrant/helper/bag'
 
 module Nugrant
   class TestBag < ::Minitest::Test
-    def create_bag(elements)
-      return Bag.new(elements)
+    def create_bag(elements, options = {})
+      return Bag.new(elements, options)
     end
 
     def assert_all_access_equal(expected, bag, key)
@@ -194,6 +194,34 @@ module Nugrant
         assert_equal("#{key.to_s} - value", bag[key.to_s], "bag[#{key.to_s}]")
         assert_equal("#{key.to_s} - value", bag[key.to_sym], "bag[#{key.to_sym}]")
       end
+    end
+
+    def test_custom_key_error_handler
+      bag = create_bag({:value => "one"}, :key_error => Proc.new do |key|
+        raise IndexError
+      end)
+
+      assert_raises(IndexError) do
+        bag.invalid_value
+      end
+
+      assert_raises(IndexError) do
+        bag["invalid_value"]
+      end
+
+      assert_raises(IndexError) do
+        bag[:invalid_value]
+      end
+    end
+
+    def test_custom_key_error_handler_returns_value
+      bag = create_bag({:value => "one"}, :key_error => Proc.new do |key|
+        "Some value"
+      end)
+
+      assert_equal("Some value", bag.invalid_value)
+      assert_equal("Some value", bag["invalid_value"])
+      assert_equal("Some value", bag[:invalid_value])
     end
   end
 end

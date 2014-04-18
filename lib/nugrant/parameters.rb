@@ -11,17 +11,21 @@ module Nugrant
     # which location has precedence over which location:
     #
     #    (Highest)  ------------------ (Lowest)
-    #      current < user < system < defaults
+    #      project < user < system < defaults
     #
     # =| Arguments
-    #  * +:config+   - A hash that will be passed to Nugrant::Config.new() or
-    #                  a Nugrant::Config instance directly.
-    #                  See Nugrant::Config constructor for options that you can use.
-    #  * +:defaults+ - The default values for the various parameters that will be read. This
-    #                  must be a Hash object.
+    #  * `config`
+    #    A hash that will be passed to Nugrant::Config.new() or
+    #    a Nugrant::Config instance directly.
+    #    See Nugrant::Config constructor for options that you can use.
     #
-    def initialize(config, defaults = {})
-      compute_bags!(config, defaults)
+    #  * `options`
+    #    An options hash that is passed to Mixin::Parameters.compute_bags! method.
+    #    See Mixin::Parameters.compute_bags! for details on the various options
+    #    available.
+    #
+    def initialize(config, options = {})
+      compute_bags!(config, options)
     end
 
     include Mixin::Parameters

@@ -1,5 +1,8 @@
 # 2.0.0 (In progress)
 
+* It is now possible to customize key error handling by passing
+  an options hash with key `:key_error` and a `Proc` value.
+
 * Improved command `vagrant user parameters`. The command now checks if
   restricted keys are used and prints a warning when it's the case.
 

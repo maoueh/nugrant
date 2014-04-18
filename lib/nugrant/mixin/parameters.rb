@@ -39,21 +39,46 @@ module Nugrant
       #  * +elements+ - The new default elements
       #
       def defaults=(elements)
-        @__defaults = Bag.new(elements)
+        @__defaults = Bag.new(elements, @__options)
 
         # When defaults change, we need to recompute parameters hierarchy
-        compute_all!()
+        compute_all!(@__options)
       end
 
-      def compute_bags!(config, defaults = {})
+      ##
+      # Compute all parameters bags (current, user, system, default and all).
+      #
+      # =| Arguments
+      #  * `config`
+      #    The configuration object used to determine where to find the various
+      #    bag source data. This can be either directly a `Nugrant::Config`
+      #    object or a hash that will be pass to `Nugrant::Config` constructor.
+      #
+      #  * `options`
+      #    An options hash where some customization option can be passed.
+      #    Defaults to an empty hash, see options for specific option default
+      #    values.
+      #
+      # =| Options
+      #  * `:defaults`
+      #    A hash that is used as the initial data for the defaults bag. Defaults
+      #    to an empty hash.
+      #
+      #  * `:key_error`
+      #    This option is passed to Bag.new constructor in it's options hash. See
+      #    Bag.new for details on this options.
+      #
+      def compute_bags!(config, options = {})
         config = config.kind_of?(Nugrant::Config) ? config : Nugrant::Config.new(config)
 
-        @__current = Helper::Bag.read(config.current_path, config.params_format)
-        @__user = Helper::Bag.read(config.user_path, config.params_format)
-        @__system = Helper::Bag.read(config.system_path, config.params_format)
-        @__defaults = Bag.new(defaults)
+        @__options = options
 
-        compute_all!()
+        @__current = Helper::Bag.read(config.current_path, config.params_format, options)
+        @__user = Helper::Bag.read(config.user_path, config.params_format, options)
+        @__system = Helper::Bag.read(config.system_path, config.params_format, options)
+        @__defaults = Bag.new(options[:defaults] || {}, options)
+
+        compute_all!(options)
       end
 
       ##
@@ -61,8 +86,8 @@ module Nugrant
       # bag in the right order and return the result as a Nugrant::Bag
       # object.
       #
-      def compute_all!()
-        @__all = Bag.new()
+      def compute_all!(options = {})
+        @__all = Bag.new({}, options)
         @__all.merge!(@__defaults)
         @__all.merge!(@__system)
         @__all.merge!(@__user)

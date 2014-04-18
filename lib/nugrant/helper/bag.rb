@@ -9,7 +9,7 @@ module Nugrant
       def self.read(filepath, filetype, options = {})
         data = parse_data(filepath, filetype, options)
 
-        return Nugrant::Bag.new(data)
+        return Nugrant::Bag.new(data, options)
       end
 
       def self.restricted_keys()
