@@ -9,6 +9,14 @@ module Nugrant
       end
     end
 
+    def method_missing(method, *args, &block)
+      return self[method]
+    end
+
+    ##
+    ### Hash Overriden Methods (for string & symbol indifferent access)
+    ##
+
     def [](input)
       key = __convert_key(input)
       raise KeyError, "Undefined parameter '#{key}'" if not key?(key)
@@ -20,8 +28,8 @@ module Nugrant
       super(__convert_key(input), value)
     end
 
-    def method_missing(method, *args, &block)
-      return self[method]
+    def key?(key)
+      super(__convert_key(key))
     end
 
     ##
