@@ -2,6 +2,8 @@ require 'nugrant'
 require 'nugrant/helper/env/exporter'
 require 'nugrant/parameters'
 
+EnvExporter = Nugrant::Helper::Env::Exporter
+
 module Nugrant
   module Vagrant
     module V2
@@ -68,7 +70,7 @@ module Nugrant
             parser = create_parser()
             arguments = parse_options(parser)
 
-            return error("Invalid format value '#{@format}'", parser) if not Helper::Env::Exporter.valid?(@format)
+            return error("Invalid format value '#{@format}'", parser) if not EnvExporter.valid?(@format)
             return help(parser) if @show_help
 
             @logger.debug("Nugrant 'Env'")
@@ -81,11 +83,11 @@ module Nugrant
 
               case
               when @format == :script
-                Helper::Env::Exporter.script_exporter(bag, options)
+                EnvExporter.script_exporter(bag, options)
               when @format == :autoenv
-                Helper::Env::Exporter.autoenv_exporter(bag, options)
+                EnvExporter.autoenv_exporter(bag, options)
               when @format == :terminal
-                Helper::Env::Exporter.terminal_exporter(bag, options)
+                EnvExporter.terminal_exporter(bag, options)
               end
 
               # No need to execute for the other VMs
