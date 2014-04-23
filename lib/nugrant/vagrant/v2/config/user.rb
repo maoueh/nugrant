@@ -10,11 +10,15 @@ module Nugrant
           attr_reader :__current, :__user, :__system, :__defaults, :__all
 
           def initialize()
-            compute_bags!({:params_filename => ".vagrantuser"}, options = {
+            setup!({},
+              :params_filename => ".vagrantuser",
               :key_error => Proc.new do |key|
                 raise Errors::ParameterNotFoundError, :key => key.to_s
+              end,
+              :parse_error => Proc.new do |filename, error|
+                raise Errors::VagrantUserParseError, :filename => filename.to_s, :error => error
               end
-            })
+            )
           end
 
           include Mixin::Parameters

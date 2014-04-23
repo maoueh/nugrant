@@ -6,26 +6,24 @@ require 'nugrant/bag'
 module Nugrant
   module Helper
     module Bag
-      def self.read(filepath, filetype, options = {})
-        data = parse_data(filepath, filetype, options)
-
-        return Nugrant::Bag.new(data, options)
+      def self.read(filepath, filetype, config)
+        Nugrant::Bag.new(parse_data(filepath, filetype, config), config)
       end
 
       def self.restricted_keys()
         Nugrant::Bag.instance_methods()
       end
 
-      def self.parse_data(filepath, filetype, options = {})
+      private
+
+      def self.parse_data(filepath, filetype, config)
         return if not File.exists?(filepath)
 
         File.open(filepath, "rb") do |file|
           return send("parse_#{filetype}", file)
         end
       rescue => error
-        if options[:error_handler]
-          options[:error_handler].handle("Could not parse the user #{filetype} parameters file '#{filepath}': #{error}")
-        end
+        config.parse_error.call(filepath, error)
       end
 
       def self.parse_json(io)

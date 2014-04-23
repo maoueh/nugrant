@@ -131,33 +131,33 @@ module Nugrant
     end
 
     def test_merge_array_extend()
-      bag1 = create_bag({"first" => [1, 2]})
+      bag1 = create_bag({"first" => [1, 2]}, :array_merge_strategy => :extend)
       bag2 = create_bag({:first => [2, 3]})
 
-      bag1.merge!(bag2, :array_strategy => :extend);
+      bag1.merge!(bag2);
 
       assert_equal({:first => [1, 2, 3]}, bag1.to_hash())
 
-      bag1 = create_bag({"first" => [1, 2]})
+      bag1 = create_bag({"first" => [1, 2]}, :array_merge_strategy => :extend)
       bag2 = create_bag({:first => "string"})
 
-      bag1.merge!(bag2, :array_strategy => :extend);
+      bag1.merge!(bag2);
 
       assert_equal({:first => "string"}, bag1.to_hash())
     end
 
     def test_merge_array_concat()
-      bag1 = create_bag({"first" => [1, 2]})
+      bag1 = create_bag({"first" => [1, 2]}, :array_merge_strategy => :concat)
       bag2 = create_bag({:first => [2, 3]})
 
-      bag1.merge!(bag2, :array_strategy => :concat);
+      bag1.merge!(bag2);
 
       assert_equal({:first => [1, 2, 2, 3]}, bag1.to_hash())
 
-      bag1 = create_bag({"first" => [1, 2]})
+      bag1 = create_bag({"first" => [1, 2]}, :array_merge_strategy => :concat)
       bag2 = create_bag({:first => "string"})
 
-      bag1.merge!(bag2, :array_strategy => :concat);
+      bag1.merge!(bag2);
 
       assert_equal({:first => "string"}, bag1.to_hash())
     end

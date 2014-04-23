@@ -11,3 +11,14 @@ en:
 
           If you think it should be found, don't hesitate to fill an
           issue @ https://github.com/maoueh/nugrant/issues.
+
+        parse_error: |-
+          Nugrant: Vagrant user file could not be parsed correctly,
+          the file is probably in an invalid state.
+
+           File: %{filename}
+           Error: %{error}
+
+          If you think this is an error, don't hesitate to fill an
+          issue @ https://github.com/maoueh/nugrant/issues.
+

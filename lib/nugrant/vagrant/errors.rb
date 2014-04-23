@@ -7,6 +7,12 @@ module Nugrant
     module Errors
       class NugrantVagrantError < ::Vagrant::Errors::VagrantError
         error_namespace("nugrant.vagrant.errors")
+
+        def compute_context()
+          Helper::Stack.fetch_error_region(caller(), {
+            :matcher => /(.+Vagrantfile):([0-9]+)/
+          })
+        end
       end
 
       class ParameterNotFoundError < NugrantVagrantError
@@ -15,11 +21,13 @@ module Nugrant
         def initialize(options = nil, *args)
           super({:context => compute_context()}.merge(options || {}), *args)
         end
+      end
 
-        def compute_context()
-          Helper::Stack.fetch_error_region(caller(), {
-            :matcher => /(.+Vagrantfile):([0-9]+)/
-          })
+      class VagrantUserParseError < NugrantVagrantError
+        error_key(:parse_error)
+
+        def initialize(options = nil, *args)
+          super(options, *args)
         end
       end
     end

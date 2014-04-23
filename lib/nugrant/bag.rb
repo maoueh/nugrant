@@ -7,49 +7,41 @@ module Nugrant
     # differences with a normal Hash are indifferent access
     # (symbol or string) and method access (via method call).
     #
+    # Hash objects in the map are converted to Bag. This ensure
+    # proper nesting of functionality.
+    #
     # =| Arguments
     #  * `elements`
     #    The initial elements the bag should be built with it.'
     #    Must be an object responding to `each` and accepting
-    #    a block with two arguments: `key, value`.]. Defaults to
+    #    a block with two arguments: `key, value`. Defaults to
     #    the empty hash.
     #
-    #  * `options`
-    #    An options hash where some customization option can be passed.
-    #    Defaults to an empty hash, see options for specific option default
-    #    values.
+    #  * `config`
+    #    A Nugrant::Config object or hash passed to Nugrant::Config
+    #    constructor. Used for `key_error` handler.
     #
-    # =| Options
-    #  * `:key_error`
-    #    A callable object receiving a single parameter `key` that is
-    #    called when a key cannot be found in the Bag. The received key
-    #    is already converted to a symbol. If the callable does not
-    #    raise an exception, the result of it's execution is returned.
-    #    The default value is a callable that throws a KeyError exception.
-    #
-    def initialize(elements = {}, options = {})
+    def initialize(elements = {}, config = {})
       super()
 
-      @__key_error = options[:key_error] || Proc.new do |key|
-        raise KeyError, "Undefined parameter '#{key}'" if not key?(key)
-      end
+      @__config = Config::convert(config)
 
       (elements || {}).each do |key, value|
-        self[key] = value.kind_of?(Hash) ? Bag.new(value, options) : value
+        self[key] = value.kind_of?(Hash) ? Bag.new(value, config) : value
       end
     end
 
     def method_missing(method, *args, &block)
-      return self[method]
+      self[method]
     end
 
     ##
-    ### Hash Overriden Methods (for string & symbol indifferent access)
+    ### Hash Overridden Methods (for string & symbol indifferent access)
     ##
 
     def [](input)
       key = __convert_key(input)
-      return @__key_error.call(key) if not key?(key)
+      return @__config.key_error.call(key) if not key?(key)
 
       super(key)
     end
@@ -63,24 +55,10 @@ module Nugrant
     end
 
     ##
-    # This method first start by converting the `input` parameter
-    # into a bag. It will then *deep* merge current values with
-    # the new ones coming from the `input`.
+    # This method deeply merge two instance together
     #
-    # The array merge strategy is by default to replace current
-    # values with new ones. You can use option `:array_strategy`
-    # to change this default behavior.
     #
-    # +Options+
-    #  * :array_strategy
-    #     * :replace (Default) => Replace current values by new ones
-    #     * :extend => Merge current values with new ones
-    #     * :concat => Append new values to current ones
-    #
-    def merge!(input, options = {})
-      options = {:array_strategy => :replace}.merge(options)
-
-      array_strategy = options[:array_strategy]
+    def merge!(input)
       input.each do |key, value|
         current = __get(key)
         case
@@ -88,10 +66,10 @@ module Nugrant
             self[key] = value
 
           when current.kind_of?(Hash) && value.kind_of?(Hash)
-            current.merge!(value, options)
+            current.merge!(value)
 
           when current.kind_of?(Array) && value.kind_of?(Array)
-            self[key] = send("__#{array_strategy}_array_merge", current, value)
+            self[key] = send("__#{@__config.array_merge_strategy}_array_merge", current, value)
 
           when value != nil
             self[key] = value

@@ -1,5 +1,15 @@
 # 2.0.0 (In progress)
 
+* Better handling in Vagrant of cases where the vagrant user
+  file cannot be parsed correctly. This is now reported
+  as an error in Vagrant an nicely displayed with the path
+  of the offending file and the parser error message.
+
+* Better handling of how global Nugrant options are passed and
+  handled. Everything is now located in the `Nugrant::Config`
+  object and used by everything that need some configuration
+  parameters.
+
 * It is now possible to customize key error handling by passing
   an options hash with key `:key_error` and a `Proc` value.
 

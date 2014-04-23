@@ -39,46 +39,44 @@ module Nugrant
       #  * +elements+ - The new default elements
       #
       def defaults=(elements)
-        @__defaults = Bag.new(elements, @__options)
+        @__defaults = Bag.new(elements, @__config)
 
         # When defaults change, we need to recompute parameters hierarchy
-        compute_all!(@__options)
+        compute_all!()
       end
 
       ##
-      # Compute all parameters bags (current, user, system, default and all).
+      # Setup instance variables of the mixin. It will compute all parameters bags
+      # (current, user, system, default and all) and stored them to these respective
+      # instance variables:
+      #
+      #  * @__current
+      #  * @__user
+      #  * @__system
+      #  * @__defaults
       #
       # =| Arguments
-      #  * `config`
-      #    The configuration object used to determine where to find the various
-      #    bag source data. This can be either directly a `Nugrant::Config`
-      #    object or a hash that will be pass to `Nugrant::Config` constructor.
-      #
-      #  * `options`
-      #    An options hash where some customization option can be passed.
-      #    Defaults to an empty hash, see options for specific option default
-      #    values.
-      #
-      # =| Options
-      #  * `:defaults`
+      #  * `defaults`
       #    A hash that is used as the initial data for the defaults bag. Defaults
       #    to an empty hash.
       #
-      #  * `:key_error`
-      #    This option is passed to Bag.new constructor in it's options hash. See
-      #    Bag.new for details on this options.
+      #  * `config`
+      #    A Nugrant::Config object or hash passed to Nugrant::Config
+      #    constructor. Used to determine where to find the various
+      #    bag data sources.
       #
-      def compute_bags!(config, options = {})
-        config = config.kind_of?(Nugrant::Config) ? config : Nugrant::Config.new(config)
+      #    Passed to nested structures that require nugrant configuration
+      #    parameters like the Bag object and Helper::Bag module.
+      #
+      def setup!(defaults = {}, config = {})
+        @__config = Nugrant::Config::convert(config);
 
-        @__options = options
+        @__current = Helper::Bag.read(@__config.current_path, @__config.params_format, @__config)
+        @__user = Helper::Bag.read(@__config.user_path, @__config.params_format, @__config)
+        @__system = Helper::Bag.read(@__config.system_path, @__config.params_format, @__config)
+        @__defaults = Bag.new(defaults, @__config)
 
-        @__current = Helper::Bag.read(config.current_path, config.params_format, options)
-        @__user = Helper::Bag.read(config.user_path, config.params_format, options)
-        @__system = Helper::Bag.read(config.system_path, config.params_format, options)
-        @__defaults = Bag.new(options[:defaults] || {}, options)
-
-        compute_all!(options)
+        compute_all!()
       end
 
       ##
@@ -86,8 +84,8 @@ module Nugrant
       # bag in the right order and return the result as a Nugrant::Bag
       # object.
       #
-      def compute_all!(options = {})
-        @__all = Bag.new({}, options)
+      def compute_all!()
+        @__all = Bag.new({}, @__config)
         @__all.merge!(@__defaults)
         @__all.merge!(@__system)
         @__all.merge!(@__user)

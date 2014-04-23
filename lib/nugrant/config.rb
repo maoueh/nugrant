@@ -2,10 +2,25 @@ require 'rbconfig'
 
 module Nugrant
   class Config
+    DEFAULT_ARRAY_MERGE_STRATEGY = :replace
     DEFAULT_PARAMS_FILENAME = ".nuparams"
     DEFAULT_PARAMS_FORMAT = :yaml
 
-    attr_reader :params_filename, :params_format, :current_path, :user_path, :system_path
+    SUPPORTED_ARRAY_MERGE_STRATEGIES = [:concat, :extend, :replace]
+    SUPPORTED_PARAMS_FORMATS = [:json, :yaml]
+
+    attr_reader :params_filename, :params_format,
+                :current_path, :user_path, :system_path,
+                :array_merge_strategy,
+                :key_error, :parse_error
+
+    ##
+    # Convenience method to easily accept either a hash that will
+    # be converted to a Nugrant::Config object or directly a config
+    # object.
+    def self.convert(config = {})
+      return config.kind_of?(Nugrant::Config) ? config : Nugrant::Config.new(config)
+    end
 
     ##
     # Return the fully expanded path of the user parameters
@@ -64,18 +79,58 @@ module Nugrant
     #                         parameters should resides. The parameters loaded from this
     #                         location have the third highest precedence.
     #                           Defaults => Default system path depending on OS + @params_filename
+    #  * +:array_merge_strategy+  - This option controls how array values are merged together when merging
+    #                               two Bag instances. Possible values are:
+    #                                 * :replace => Replace current values by new ones
+    #                                 * :extend => Merge current values with new ones
+    #                                 * :concat => Append new values to current ones
+    #                                Defaults => The strategy :replace.
+    #  * +:key_error+     - A callback method receiving one argument, the key as a symbol, and that
+    #                       deal with the error. If the callable does not
+    #                       raise an exception, the result of it's execution is returned.
+    #                         Defaults => A callable that throws a KeyError exception.
+    #  * +:parse_error+   - A callback method receiving two arguments, the offending filename and
+    #                       the error object, that deal with the error. If the callable does not
+    #                       raise an exception, the result of it's execution is returned.
+    #                         Defaults => A callable that returns the empty hash.
     #
     def initialize(options = {})
       @params_filename = options[:params_filename] || DEFAULT_PARAMS_FILENAME
       @params_format = options[:params_format] || DEFAULT_PARAMS_FORMAT
 
-      raise ArgumentError,
-        "Invalid value for :params_format. \
-        The format [#{@params_format}] is currently not supported." if not [:json, :yaml].include?(@params_format)
-
       @current_path = File.expand_path(options[:current_path] || "./#{@params_filename}")
       @user_path = File.expand_path(options[:user_path] || "#{Config.default_user_path()}/#{@params_filename}")
       @system_path = File.expand_path(options[:system_path] || "#{Config.default_system_path()}/#{@params_filename}")
+
+      @array_merge_strategy = options[:array_merge_strategy] || :replace
+
+      @key_error = options[:key_error] || Proc.new do |key|
+        raise KeyError, "Undefined parameter '#{key}'"
+      end
+
+      @parse_error = options[:parse_error] || Proc.new do |filename, error|
+        {}
+      end
+
+      validate()
+    end
+
+    def supported_array_merge_strategy(strategy)
+      SUPPORTED_ARRAY_MERGE_STRATEGIES.include?(strategy)
+    end
+
+    def supported_params_format(format)
+      SUPPORTED_PARAMS_FORMATS.include?(format)
+    end
+
+    def validate()
+      raise ArgumentError,
+        "Invalid value for :params_format. \
+         The format [#{@params_format}] is currently not supported." if not supported_params_format(@params_format)
+
+      raise ArgumentError,
+          "Invalid value for :array_merge_strategy. \
+           The array merge strategy [#{@array_merge_strategy}] is currently not supported." if not supported_array_merge_strategy(@array_merge_strategy)
     end
   end
 end
