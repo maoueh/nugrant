@@ -1,5 +1,13 @@
 # 2.0.0 (In progress)
 
+* Added possibility to change array merge strategy. This can
+  be used in Vagrant by doing `config.user.array_merge_strategy = <strategy>`
+  where valid strategies are:
+
+   * :replace => Replace current values by new ones
+   * :extend => Merge current values with new ones
+   * :concat => Append new values to current ones
+
 * Better handling in Vagrant of cases where the vagrant user
   file cannot be parsed correctly. This is now reported
   as an error in Vagrant an nicely displayed with the path

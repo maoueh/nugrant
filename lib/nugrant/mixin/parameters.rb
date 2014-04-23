@@ -29,6 +29,19 @@ module Nugrant
         @__defaults
       end
 
+      def array_merge_strategy
+        @__config.array_merge_strategy
+      end
+
+      def array_merge_strategy=(strategy)
+        return if not Nugrant::Config.supported_array_merge_strategy(strategy)
+
+        @__config.array_merge_strategy = strategy
+
+        # When array_merge_strategy change, we need to recompute parameters hierarchy
+        compute_all!()
+      end
+
       ##
       # Set the new default values for the
       # various parameters contain by this instance.

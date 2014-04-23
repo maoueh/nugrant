@@ -1,7 +1,7 @@
 This readme give information on how to read resources file
 that test merge possibilities.
 
-Naming convetions
+Naming conventions
 -----------------
 
 The filename uses a specific convention:
@@ -9,7 +9,7 @@ The filename uses a specific convention:
     params_*kind*_*level*.[yml|json]
 
 The kind is one of: [`current`|`user`|`system`] and defines which
-responsability they will hold. The order is `current` overrides
+responsibility they will hold. The order is `current` overrides
 `user` overrides `system`.
 
 Inside file, keys have special meaning. They define how

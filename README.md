@@ -126,6 +126,10 @@ In text, this means that current parameters overrides user
 parameters, user parameters overrides system parameters and
 finally system parameters overrides defaults parameters.
 
+When two keys that are merged together points to Array values,
+the default operation is to replace current Array by
+overriding one. The default merge strategy can be customized.
+
 ### Vagrant
 
 All examples shown here are for Vagrant 1.1+. They have
@@ -322,6 +326,36 @@ user.
 If the user decides to change it, he just has to set it in his
 own `.vagrantuser` and it will override the default value defined
 in the Vagrantfile.
+
+#### Array merge strategies
+
+As stated previously, when two arrays are merged together,
+the default strategy is to replace current array with new one.
+
+However, in some certain circumstances, you may need another
+behavior. That is why we also provide two other strategies
+that can be used.
+
+ * `:concat`
+   With this strategy, new array is appended to the end
+   of current array when merged. The `Array` `+` operator
+   is used to concatenante the two arrays.
+
+ * `:extend`
+   With this strategy, current array is extended with values
+   from new one. The `Array` `|` (union) operator
+   is used to extend the array.
+
+You can use the following snippet directly within your Vagrantfile
+to change the array merge strategy:
+
+    Vagrant.configure("2") do |config|
+      config.user.array_merge_strategy = :extend
+
+      config.ssh.port config.user.vm.ssh_port
+    end
+
+If you specify an unsupported strategy, nothing will happen.
 
 #### Commands
 

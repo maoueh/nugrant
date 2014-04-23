@@ -14,6 +14,8 @@ module Nugrant
                 :array_merge_strategy,
                 :key_error, :parse_error
 
+    attr_writer :array_merge_strategy
+
     ##
     # Convenience method to easily accept either a hash that will
     # be converted to a Nugrant::Config object or directly a config
@@ -40,6 +42,14 @@ module Nugrant
       end
 
       "/etc"
+    end
+
+    def self.supported_array_merge_strategy(strategy)
+      SUPPORTED_ARRAY_MERGE_STRATEGIES.include?(strategy)
+    end
+
+    def self.supported_params_format(format)
+      SUPPORTED_PARAMS_FORMATS.include?(format)
     end
 
     ##
@@ -115,22 +125,14 @@ module Nugrant
       validate()
     end
 
-    def supported_array_merge_strategy(strategy)
-      SUPPORTED_ARRAY_MERGE_STRATEGIES.include?(strategy)
-    end
-
-    def supported_params_format(format)
-      SUPPORTED_PARAMS_FORMATS.include?(format)
-    end
-
     def validate()
       raise ArgumentError,
         "Invalid value for :params_format. \
-         The format [#{@params_format}] is currently not supported." if not supported_params_format(@params_format)
+         The format [#{@params_format}] is currently not supported." if not Config.supported_params_format(@params_format)
 
       raise ArgumentError,
           "Invalid value for :array_merge_strategy. \
-           The array merge strategy [#{@array_merge_strategy}] is currently not supported." if not supported_array_merge_strategy(@array_merge_strategy)
+           The array merge strategy [#{@array_merge_strategy}] is currently not supported." if not Config.supported_array_merge_strategy(@array_merge_strategy)
     end
   end
 end
