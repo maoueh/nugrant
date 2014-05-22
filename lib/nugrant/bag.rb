@@ -90,9 +90,14 @@ module Nugrant
       end]
     end
 
-    ##
-    ### Aliases
-    ##
+    def walk(path = [], &block)
+      each do |key, value|
+        nested_bag = value.kind_of?(Nugrant::Bag)
+
+        value.walk(path + [key], &block) if nested_bag
+        yield path + [key], key, value if not nested_bag
+      end
+    end
 
     alias_method :to_ary, :to_a
 

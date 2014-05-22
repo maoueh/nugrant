@@ -117,7 +117,7 @@ module Nugrant
         # @return (side-effect) Yields each key and value to a block
         #
         # Options:
-        #  * :namer => The namer used to transform bag segments into variable name, default to Namer::default().
+        #  * :namer => The namer used to transform bag parents into variable name, default to Namer::default().
         #  * :override => If true, variable a exported even when the override an existing env key, default to true.
         #
         def self.export(bag, options = {})
@@ -125,8 +125,8 @@ module Nugrant
           override = options.fetch(:override, true)
 
           variables = {}
-          walk_bag(bag) do |segments, key, value|
-            key = namer.call(segments)
+          bag.walk do |path, key, value|
+            key = namer.call(path)
 
             variables[key] = value if override or not ENV[key]
           end
@@ -188,19 +188,6 @@ module Nugrant
         def self.unset_command(key, value, options = {})
           # TODO: Handle platform differently
           "unset #{key}"
-        end
-
-        # FIXME: Move this directly into bag class
-        def self.walk_bag(bag, parents = [], &block)
-          commands = []
-
-          bag.each do |key, value|
-            segments = parents + [key]
-            nested_bag = value.kind_of?(Nugrant::Bag)
-
-            walk_bag(value, segments, &block) if nested_bag
-            yield segments, key, value if not nested_bag
-          end
         end
       end
     end

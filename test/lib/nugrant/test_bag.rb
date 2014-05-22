@@ -223,5 +223,32 @@ module Nugrant
       assert_equal("Some value", bag["invalid_value"])
       assert_equal("Some value", bag[:invalid_value])
     end
+
+    def test_walk_bag
+      bag = create_bag({
+        :first => {
+          :level1 => "value1",
+          :level2 => "value2",
+        },
+        :second => {
+          :level1 => "value3",
+          :level2 => "value4",
+        },
+        :third => "value5"
+      })
+
+      lines = []
+      bag.walk do |path, key, value|
+        lines << "Path (#{path}), Key (#{key}), Value (#{value})"
+      end
+
+      assert_equal([
+        "Path ([:first, :level1]), Key (level1), Value (value1)",
+        "Path ([:first, :level2]), Key (level2), Value (value2)",
+        "Path ([:second, :level1]), Key (level1), Value (value3)",
+        "Path ([:second, :level2]), Key (level2), Value (value4)",
+        "Path ([:third]), Key (third), Value (value5)",
+      ], lines)
+    end
   end
 end
