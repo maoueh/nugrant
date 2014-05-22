@@ -1,3 +1,5 @@
+require 'nugrant/config'
+
 module Nugrant
   class Bag < Hash
 
@@ -27,12 +29,28 @@ module Nugrant
       @__config = Config::convert(config)
 
       (elements || {}).each do |key, value|
+        # This condition change value convertible to Bag into actual Bag.
+        # This trick enable deeply using all Bag functionalities and also
+        # ensures at the same time a deeply preventive copy since a new
+        # instance is created for this nested structure.
         self[key] = value.kind_of?(Hash) ? Bag.new(value, config) : value
       end
     end
 
     def method_missing(method, *args, &block)
       self[method]
+    end
+
+    ##
+    ### Enumerable Overridden Methods (for string & symbol indifferent access)
+    ##
+
+    def count(item)
+      super(__try_convert_item(item))
+    end
+
+    def find_index(item = nil, &block)
+      block_given? ? super(&block) : super(__try_convert_item(item))
     end
 
     ##
@@ -50,14 +68,34 @@ module Nugrant
       super(__convert_key(input), value)
     end
 
+    def assoc(key)
+      super(__convert_key(key))
+    end
+
+    def delete(key)
+      super(__convert_key(key))
+    end
+
+    def fetch(key, default = nil)
+      super(__convert_key(key), default)
+    end
+
+    def has_key?(key)
+      super(__convert_key(key))
+    end
+
+    def include?(item)
+      super(__try_convert_item(item))
+    end
+
     def key?(key)
       super(__convert_key(key))
     end
 
-    ##
-    # This method deeply merge two instance together
-    #
-    #
+    def member?(item)
+      super(__try_convert_item(item))
+    end
+
     def merge!(input)
       input.each do |key, value|
         current = __get(key)
@@ -69,6 +107,10 @@ module Nugrant
             current.merge!(value)
 
           when current.kind_of?(Array) && value.kind_of?(Array)
+            puts "Calling #{@__config.array_merge_strategy}_array_merge"
+            puts "Current #{current}"
+            puts "Value #{value}"
+            puts "Final #{send("__#{@__config.array_merge_strategy}_array_merge", current, value)}"
             self[key] = send("__#{@__config.array_merge_strategy}_array_merge", current, value)
 
           when value != nil
@@ -77,7 +119,12 @@ module Nugrant
       end
     end
 
+    def store(key, value)
+      self[key] = value
+    end
+
     def to_hash(options = {})
+      puts "return"
       return {} if empty?()
 
       use_string_key = options[:use_string_key]
@@ -128,6 +175,14 @@ module Nugrant
 
     def __replace_array_merge(current_array, new_array)
       new_array
+    end
+
+    def __try_convert_item(args)
+      return [__convert_key(args[0]), args[1]] if args.kind_of?(Array)
+
+      __convert_key(args)
+    rescue
+      args
     end
   end
 end

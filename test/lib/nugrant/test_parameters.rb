@@ -273,15 +273,63 @@ module Nugrant
       end
     end
 
-    def test_hash_method_collect()
+    def test_enumerable_method_insensitive()
       parameters = create_parameters(:json, "params_simple", invalid_path, invalid_path)
-      parameters.defaults = {"test" => "override1", :level => "new1"}
+      parameters.defaults = {"test" => "override1", :level => :new1}
 
-      pairs = parameters.collect do |key, value|
-        [key, value]
-      end
+      assert_equal(1, parameters.count([:test, "value"]))
+      assert_equal(1, parameters.count(["test", "value"]))
+      assert_equal(0, parameters.count(["test"]))
+      assert_equal(0, parameters.count([]))
+      assert_equal(0, parameters.count(:a))
+      assert_equal(0, parameters.count(nil))
 
-      assert_equal([[:test, "value"], [:level, "new1"]], pairs)
+      assert_equal(0, parameters.find_index([:test, "value"]))
+      assert_equal(0, parameters.find_index(["test", "value"]))
+      assert_equal(nil, parameters.find_index(["test"]))
+      assert_equal(nil, parameters.find_index([]))
+      assert_equal(nil, parameters.find_index(:a))
+      assert_equal(nil, parameters.find_index(nil))
+      assert_equal(0, parameters.find_index() { |key, value| key == :test and value == "value" })
+
+      assert_equal(false, parameters.include?([:test, "value"]))
+      assert_equal(false, parameters.include?(["test", "value"]))
+    end
+
+    def test_hash_method_insensitive()
+      parameters = create_parameters(:json, "params_simple", invalid_path, invalid_path)
+      parameters.defaults = {"test" => "override1", :level => :new1}
+
+      assert_equal([:test, "value"], parameters.assoc("test"))
+      assert_equal([:test, "value"], parameters.assoc(:test))
+
+      # compare_by_identity ?
+
+      parameters.delete("test")
+      assert_equal(nil, parameters.assoc("test"))
+      assert_equal(nil, parameters.assoc(:test))
+
+      parameters = create_parameters(:json, "params_simple", invalid_path, invalid_path)
+      parameters.defaults = {"test" => "override1", :level => :new1}
+
+      assert_equal([[:test, "value"], [:level,  :new1]], parameters.collect {|key, value| [key, value]})
+
+      assert_equal("value", parameters.fetch("test"))
+      assert_equal("value", parameters.fetch("test", "default"))
+      assert_equal("default", parameters.fetch("unknown", "default"))
+
+      assert_equal(true, parameters.has_key?("test"))
+      assert_equal(true, parameters.has_key?(:test))
+
+      assert_equal(true, parameters.include?("test"))
+      assert_equal(true, parameters.include?(:test))
+
+      assert_equal(true, parameters.member?("test"))
+      assert_equal(true, parameters.member?(:test))
+
+      parameters.store("another", "different")
+      assert_equal(true, parameters.member?("another"))
+      assert_equal(true, parameters.member?(:another))
     end
 
     def formats()

@@ -1,4 +1,3 @@
-require 'nugrant'
 require 'nugrant/mixin/parameters'
 require 'nugrant/vagrant/errors'
 

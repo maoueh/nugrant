@@ -1,6 +1,3 @@
-require 'nugrant/bag'
-require 'nugrant/config'
-require 'nugrant/helper/bag'
 require 'nugrant/mixin/parameters'
 
 module Nugrant
