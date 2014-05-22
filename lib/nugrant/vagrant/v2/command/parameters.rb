@@ -134,8 +134,8 @@ module Nugrant
 
           def print_warning(used_restricted_keys)
             @env.ui.info("", :prefix => false)
-            @env.ui.info(" You are using some restricted keys. Method access will not work with", :prefix => false)
-            @env.ui.info(" the following keys, only array access will:", :prefix => false)
+            @env.ui.info(" You are using some restricted keys. Method access (using .<key>) will", :prefix => false)
+            @env.ui.info(" not work, only array access ([<key>]) will. Offending keys:", :prefix => false)
             @env.ui.info("   #{used_restricted_keys.join(", ")}", :prefix => false)
             @env.ui.info("", :prefix => false)
           end
