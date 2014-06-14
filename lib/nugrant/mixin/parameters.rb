@@ -29,14 +29,14 @@ module Nugrant
         end
       end
 
-      def defaults()
-        @__defaults
-      end
-
       def array_merge_strategy
         @__config.array_merge_strategy
       end
 
+      ##
+      # Change the current array merge strategy for this parameters.
+      #
+      # @param strategy The new strategy to use.
       def array_merge_strategy=(strategy)
         return if not Nugrant::Config.supported_array_merge_strategy(strategy)
 
@@ -44,6 +44,10 @@ module Nugrant
 
         # When array_merge_strategy change, we need to recompute parameters hierarchy
         compute_all!()
+      end
+
+      def defaults()
+        @__defaults
       end
 
       ##

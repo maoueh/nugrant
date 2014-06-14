@@ -29,11 +29,7 @@ module Nugrant
       @__config = Config::convert(config)
 
       (elements || {}).each do |key, value|
-        # This condition change value convertible to Bag into actual Bag.
-        # This trick enable deeply using all Bag functionalities and also
-        # ensures at the same time a deeply preventive copy since a new
-        # instance is created for this nested structure.
-        self[key] = value.kind_of?(Hash) ? Bag.new(value, config) : value
+        self[key] = value
       end
     end
 
@@ -65,7 +61,7 @@ module Nugrant
     end
 
     def []=(input, value)
-      super(__convert_key(input), value)
+      super(__convert_key(input), __convert_value(value))
     end
 
     def assoc(key)
@@ -107,10 +103,6 @@ module Nugrant
             current.merge!(value)
 
           when current.kind_of?(Array) && value.kind_of?(Array)
-            puts "Calling #{@__config.array_merge_strategy}_array_merge"
-            puts "Current #{current}"
-            puts "Value #{value}"
-            puts "Final #{send("__#{@__config.array_merge_strategy}_array_merge", current, value)}"
             self[key] = send("__#{@__config.array_merge_strategy}_array_merge", current, value)
 
           when value != nil
@@ -124,7 +116,6 @@ module Nugrant
     end
 
     def to_hash(options = {})
-      puts "return"
       return {} if empty?()
 
       use_string_key = options[:use_string_key]
@@ -160,13 +151,33 @@ module Nugrant
       raise ArgumentError, "Key cannot be converted to symbol, current value [#{key}] (#{key.class.name})"
     end
 
+    ##
+    # This function change value convertible to Bag into actual Bag.
+    # This trick enable deeply using all Bag functionalities and also
+    # ensures at the same time a deeply preventive copy since a new
+    # instance is created for this nested structure.
+    #
+    # @param value The value to convert to bag if necessary
+    # @return The converted value
+    #
+    def __convert_value(value)
+      value.kind_of?(Hash) ? Bag.new(value, @__config) : value
+    end
+
     def __get(key)
       # Calls Hash method [__convert_key(key)], used internally to retrieve value without raising Undefined parameter
       self.class.superclass.instance_method(:[]).bind(self).call(__convert_key(key))
     end
 
+    ##
+    # The concat order is the reversed compared to others
+    # because we assume that new values have precedence
+    # over current ones. Hence, the are prepended to
+    # current values. This is also logical for parameters
+    # because of the order in which bags are merged.
+    #
     def __concat_array_merge(current_array, new_array)
-      current_array + new_array
+      new_array + current_array
     end
 
     def __extend_array_merge(current_array, new_array)

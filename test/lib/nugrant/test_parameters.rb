@@ -332,6 +332,16 @@ module Nugrant
       assert_equal(true, parameters.member?(:another))
     end
 
+    def test_defaults_not_overwritten_on_array_merge_strategy_change
+      parameters = create_parameters(:json, "params_array", invalid_path, invalid_path)
+      parameters.defaults = {"level1" => {"level2" => ["4", "5", "6"]}}
+
+      parameters.array_merge_strategy = :concat
+
+      assert_equal(["4", "5", "6"], parameters.defaults().level1.level2)
+      assert_equal(["1", "2", "3", "4", "5", "6"], parameters.level1.level2)
+    end
+
     def formats()
       @@FORMATS
     end

@@ -152,7 +152,7 @@ module Nugrant
 
       bag1.merge!(bag2);
 
-      assert_equal({:first => [1, 2, 2, 3]}, bag1.to_hash())
+      assert_equal({:first => [2, 3, 1, 2]}, bag1.to_hash())
 
       bag1 = create_bag({"first" => [1, 2]}, :array_merge_strategy => :concat)
       bag2 = create_bag({:first => "string"})
@@ -160,6 +160,24 @@ module Nugrant
       bag1.merge!(bag2);
 
       assert_equal({:first => "string"}, bag1.to_hash())
+    end
+
+    def test_merge_hash_keeps_indifferent_access
+      bag1 = create_bag({"first" => {:second => [1, 2]}})
+      bag1.merge!({:third => "three", "first" => {:second => [3, 4]}})
+
+      assert_equal({:first => {:second => [3, 4]}, :third => "three"}, bag1.to_hash())
+
+      assert_all_access_equal({:second => [3, 4]}, bag1, :first)
+      assert_all_access_equal([3, 4], bag1["first"], :second)
+    end
+
+    def test_set_a_slot_with_a_hash_keeps_indifferent_access
+      bag1 = create_bag({})
+      bag1["first"] = {:second => [1, 2]}
+
+      assert_all_access_equal({:second => [1, 2]}, bag1, :first)
+      assert_all_access_equal([1, 2], bag1["first"], :second)
     end
 
     def test_nil_key()
