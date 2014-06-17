@@ -20,7 +20,7 @@ Supported platforms:
  * Vagrant 1.x
  * Ruby 1.9.3+
 
-## Overview
+## Quick Start
 
 Using Nugrant as a plug-in provides an easy and hierarchical system to manage
 machine and user specific parameters.
@@ -65,13 +65,26 @@ The order is project `.vagrantuser` overrides `$HOME/.vagrantuser` overrides
 `$SYSTEM/.vagrantuser` where `$HOME` is the user's home directory and `$SYSTEM`
 is the platform dependent folder where system global parameters are set.
 
-We use it in our team to specify the various parameters required for
-Vagrant `chef-solo` provisioner by putting the a `.vagrantuser` in our
-home directory under a key `chef`. It gets merged with the project's
-`.vagrantuser` file (if it exists), so it they can be overridden there.
+Use the command `vagrant user parameters` to see the final merged hierarchy
+seen by Nugrant. This command also prints [restricted keys](#restricted-keys) defined
+in your hierarchy.
 
-Please refer to section [Usage](#usage) for all details and explanations
-needed to fully use and understand Nugrant.
+You can access parameters in your `Vagrantfile` either by method access
+(i.e. `config.user.<key>`) or by array access (i.e. `config.user[<key>]`).
+This support is working for any deepness, only `config.user` is different
+because provided directly by `Vagrant` and not by this plugin.
+
+However, a drawback with method access, not present with array access, is its
+set of [restricted keys](#restricted-keys) for which usage is prohibited. These
+are in facts calls to method defined by the [Bag](lib/nugrant/bag.rb) class
+([Bag](lib/nugrant/bag.rb) extends [Hash](http://ruby-doc.org/core-2.0/Hash.html)).
+It's plain Ruby, use it at your advantage like iterating through a collection
+using the `.each` method.
+
+This is where the quick start end. Continue to section [Installation](#installation)
+if you need so help on how to install Nugrant. Or jump to [Usage](#usage) section
+which describe in greater details all necessary information needed to deeply
+understand Nugrant and use it at its full potential.
 
 ## Installation
 
@@ -274,9 +287,14 @@ is not provided by this plug-in but by Vagrant itself.
 
 Each non-final parameter (i.e a parameter that contains other parameters and
 not a scalar value) is in fact a [Bag](/lib/nugrant/bag.rb)
-object. You can call any defined methods on it. Since this object is also
-[Enumerable](http://ruby-doc.org/core-2.0/Enumerable.html), you can do neat things
-like iterating over your values or filtering them.
+object. You can call any defined methods on it. This object extends
+[Hash](http://ruby-doc.org/core-2.0/Hash.html) (itself including
+module [Enumerable](http://ruby-doc.org/core-2.0/Enumerable.html)). Hence,
+you can do neat things like iterating over your values or filtering them:
+
+    config.user.application.users.each do |key, data|
+      puts "Key #{key}: #{data}"
+    end
 
 ##### Restricted keys
 
