@@ -351,8 +351,11 @@ As stated previously, when two arrays are merged together,
 the default strategy is to replace current array with new one.
 
 However, in some certain circumstances, you may need another
-behavior. That is why we also provide two other strategies
-that can be used.
+behavior. Here the list of strategies that can be used.
+
+ * `:replace` (*default*)
+   With this strategy, the new array completely replace the
+   current one.
 
  * `:concat`
    With this strategy, new array is appended to the end
@@ -372,6 +375,10 @@ to change the array merge strategy:
 
       config.ssh.port config.user.vm.ssh_port
     end
+
+Note that you should change the array merge strategy before
+you access any keys because it's just once set that values
+are computed using the new strategy.
 
 If you specify an unsupported strategy, nothing will happen.
 
