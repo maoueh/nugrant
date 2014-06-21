@@ -79,8 +79,12 @@ module Nugrant
 
             @logger.debug("Nugrant 'Env'")
             with_target_vms(arguments) do |vm|
-              config = vm.config.user
-              parameters = config ? config : Nugrant::Parameters.new()
+              parameters = vm.config.user
+              if not parameters
+                @env.ui.info("# Vm '#{vm.name}' : unable to retrieve `config.user`, report as bug https://github.com/maoueh/nugrant/issues", :prefix => false)
+                next
+              end
+
               bag = parameters.__all
 
               options = {:type => @unset ? :unset : :export}

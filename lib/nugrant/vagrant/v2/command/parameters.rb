@@ -8,7 +8,7 @@ module Nugrant
       module Command
         class Parameters < ::Vagrant.plugin("2", :command)
           def self.synopsis
-            "Prints parameters hierarchy as seen by Nugrant"
+            "prints parameters hierarchy as seen by Nugrant"
           end
 
           def initialize(arguments, environment)
@@ -65,8 +65,11 @@ module Nugrant
 
             @logger.debug("'Parameters' each target VM...")
             with_target_vms(arguments) do |vm|
-              config = vm.config.user
-              parameters = config || Nugrant::Parameters.new()
+              parameters = vm.config.user
+              if not parameters
+                @env.ui.info("# Vm '#{vm.name}' : unable to retrieve `config.user`, report as bug https://github.com/maoueh/nugrant/issues", :prefix => false)
+                next
+              end
 
               @env.ui.info("# Vm '#{vm.name}'", :prefix => false)
 
