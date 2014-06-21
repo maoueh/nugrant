@@ -6,7 +6,7 @@ module Nugrant
     module V2
       module Config
         class User < ::Vagrant.plugin("2", :config)
-          attr_reader :__current, :__user, :__system, :__defaults, :__all
+          attr_reader :__config, :__current, :__user, :__system, :__defaults, :__all
 
           def initialize()
             setup!({},
@@ -18,6 +18,21 @@ module Nugrant
                 raise Errors::VagrantUserParseError, :filename => filename.to_s, :error => error
               end
             )
+          end
+
+          def merge(other)
+            result = Nugrant::Vagrant::V2::Config::User.new
+            result.clone!(self)
+
+            result.__config.merge!(other.__config)
+
+            result.__current.merge!(other.__current)
+            result.__user.merge!(other.__user)
+            result.__system.merge!(other.__system)
+            result.__defaults.merge!(other.__defaults)
+
+            result.compute_all!()
+            result
           end
 
           include Mixin::Parameters

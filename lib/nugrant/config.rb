@@ -125,6 +125,26 @@ module Nugrant
       validate()
     end
 
+    def ==(other)
+      instance_variables.each do |variable|
+        instance_variable_get(variable) == other.instance_variable_get(variable)
+      end
+    end
+
+    def [](key)
+      instance_variable_get("@#{key}")
+    rescue
+      nil
+    end
+
+    def merge!(other)
+      other.instance_variables.each do |variable|
+        next if not instance_variables.include?(variable)
+
+        instance_variable_set(variable, other.instance_variable_get(variable))
+      end
+    end
+
     def validate()
       raise ArgumentError,
         "Invalid value for :params_format. \

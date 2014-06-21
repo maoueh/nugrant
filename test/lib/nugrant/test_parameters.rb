@@ -342,6 +342,19 @@ module Nugrant
       assert_equal(["1", "2", "3", "4", "5", "6"], parameters.level1.level2)
     end
 
+    def test_clone!
+      parameters = create_parameters(:json, "params_array", invalid_path, invalid_path)
+      parameters.defaults = {"level1" => {"level2" => ["4", "5", "6"]}}
+
+      cloned = Parameters.new()
+      cloned.clone!(parameters)
+
+      [:__config, :__current, :__user, :__system, :__defaults, :__all].each do |member|
+        refute_same(parameters.send(member), cloned.send(member))
+        assert_equal(parameters.send(member), cloned.send(member))
+      end
+    end
+
     def formats()
       @@FORMATS
     end

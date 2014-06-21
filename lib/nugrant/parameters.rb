@@ -2,6 +2,8 @@ require 'nugrant/mixin/parameters'
 
 module Nugrant
   class Parameters
+    attr_reader :__config, :__current, :__user, :__system, :__defaults, :__all
+
     ##
     # Create a new parameters object which holds completed
     # merged values. The following precedence is used to decide
@@ -15,7 +17,7 @@ module Nugrant
     #    Passed to Mixin::Parameters setup! method. See method
     #    for further information.
     #
-    def initialize(config)
+    def initialize(config = {})
       setup!({}, config)
     end
 

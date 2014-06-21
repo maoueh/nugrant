@@ -67,6 +67,27 @@ module Nugrant
       end
 
       ##
+      # This copy internal states of object other (expected to be a Parameters)
+      # into self. This is a little bit different than with the Object.clone method
+      # for the reason that this module can included in any class. Hence, we cannot
+      # a new instance since we don't know the concrete class.
+      #
+      # Instead, class including this module implements clone (or dup) and in its
+      # implementation, creates a new instance and call clone! on it.
+      #
+      # @param other The other object from which properties are copied into this object
+      def clone!(other)
+        @__config = Nugrant::Config.new(other.__config)
+
+        @__current = Bag.new(other.__current)
+        @__user = Bag.new(other.__user)
+        @__system = Bag.new(other.__system)
+        @__defaults = Bag.new(other.__defaults)
+
+        @__all = Bag.new(other.__all)
+      end
+
+      ##
       # Setup instance variables of the mixin. It will compute all parameters bags
       # (current, user, system, default and all) and stored them to these respective
       # instance variables:
