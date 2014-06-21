@@ -9,6 +9,10 @@ module Nugrant
     module V2
       module Command
         class Env < ::Vagrant.plugin("2", :command)
+          def self.synopsis
+            "env utilities to export config.user as environment variables in host machine"
+          end
+
           def initialize(arguments, environment)
             super(arguments, environment)
 

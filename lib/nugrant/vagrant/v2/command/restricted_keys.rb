@@ -6,6 +6,10 @@ module Nugrant
     module V2
       module Command
         class RestrictedKeys < ::Vagrant.plugin("2", :command)
+          def self.synopsis
+            "prints list of restricted keys for method access"
+          end
+
           def initialize(arguments, environment)
             super(arguments, environment)
 

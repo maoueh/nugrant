@@ -7,6 +7,10 @@ module Nugrant
     module V2
       module Command
         class Parameters < ::Vagrant.plugin("2", :command)
+          def self.synopsis
+            "Prints parameters hierarchy as seen by Nugrant"
+          end
+
           def initialize(arguments, environment)
             super(arguments, environment)
 

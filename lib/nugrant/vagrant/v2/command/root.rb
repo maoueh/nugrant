@@ -9,6 +9,10 @@ module Nugrant
     module V2
       module Command
         class Root < ::Vagrant.plugin("2", :command)
+          def self.synopsis
+            "manage Nugrant user defined parameters (config.user)"
+          end
+
           def initialize(arguments, environment)
             super(arguments, environment)
 
@@ -36,7 +40,7 @@ module Nugrant
 
           def create_parser()
             return OptionParser.new do |parser|
-              parser.banner = "Usage: vagrant user [-h] [-v] <command> [<args>]"
+              parser.banner = "Usage: vagrant user [-h] [-v] <subcommand> [<args>]"
 
               parser.separator ""
               parser.on("-h", "--help", "Print this help") do
@@ -58,7 +62,7 @@ module Nugrant
               end
 
               parser.separator ""
-              parser.separator "For help on any individual command run `vagrant user COMMAND -h`"
+              parser.separator "For help on any individual command run `vagrant user <subcommand> -h`"
             end
           end
 
