@@ -92,8 +92,17 @@ module Nugrant
       super(__try_convert_item(item))
     end
 
-    def merge!(input)
-      input.each do |key, value|
+    def dup()
+      self.class.new(self, @__config.dup())
+    end
+
+    def merge(other)
+      result = dup()
+      result.merge!(other)
+    end
+
+    def merge!(other)
+      other.each do |key, value|
         current = __get(key)
         case
           when current == nil
@@ -109,6 +118,8 @@ module Nugrant
             self[key] = value
         end
       end
+
+      self
     end
 
     def store(key, value)

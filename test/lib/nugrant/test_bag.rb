@@ -237,9 +237,7 @@ module Nugrant
         "Some value"
       end)
 
-      assert_equal("Some value", bag.invalid_value)
-      assert_equal("Some value", bag["invalid_value"])
-      assert_equal("Some value", bag[:invalid_value])
+      assert_all_access_equal("Some value", bag, :invalid_value)
     end
 
     def test_walk_bag
@@ -267,6 +265,82 @@ module Nugrant
         "Path ([:second, :level2]), Key (level2), Value (value4)",
         "Path ([:third]), Key (third), Value (value5)",
       ], lines)
+    end
+
+    def test_merge
+      bag1 = create_bag({
+        :first => {
+          :level1 => "value1",
+          :level2 => "value2",
+        },
+        :second => {
+          :level1 => "value3",
+          :level2 => "value4",
+        },
+        :third => "value5"
+      })
+
+      bag2 = create_bag({
+        :first => {
+          :level2 => "overriden2",
+        },
+        :second => {
+          :level1 => "value3",
+          :level2 => "value4",
+        },
+        :third => "overriden5"
+      })
+
+      bag3 = bag1.merge(bag2)
+
+      refute_same(bag1, bag3)
+      refute_same(bag2, bag3)
+
+      assert_equal(Nugrant::Bag, bag3.class)
+
+      assert_all_access_equal("value1", bag3['first'], :level1)
+      assert_all_access_equal("overriden2", bag3['first'], :level2)
+      assert_all_access_equal("value3", bag3['second'], :level1)
+      assert_all_access_equal("value4", bag3['second'], :level2)
+      assert_all_access_equal("overriden5", bag3, :third)
+    end
+
+    def test_merge!
+      bag1 = create_bag({
+        :first => {
+          :level1 => "value1",
+          :level2 => "value2",
+        },
+        :second => {
+          :level1 => "value3",
+          :level2 => "value4",
+        },
+        :third => "value5"
+      })
+
+      bag2 = create_bag({
+        :first => {
+          :level2 => "overriden2",
+        },
+        :second => {
+          :level1 => "value3",
+          :level2 => "value4",
+        },
+        :third => "overriden5"
+      })
+
+      bag3 = bag1.merge!(bag2)
+
+      assert_same(bag1, bag3)
+      refute_same(bag2, bag3)
+
+      assert_equal(Nugrant::Bag, bag3.class)
+
+      assert_all_access_equal("value1", bag3['first'], :level1)
+      assert_all_access_equal("overriden2", bag3['first'], :level2)
+      assert_all_access_equal("value3", bag3['second'], :level1)
+      assert_all_access_equal("value4", bag3['second'], :level2)
+      assert_all_access_equal("overriden5", bag3, :third)
     end
   end
 end
