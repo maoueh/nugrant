@@ -126,7 +126,8 @@ module Nugrant
     end
 
     def ==(other)
-      instance_variables.each do |variable|
+      self.class.equal?(other.class) &&
+      instance_variables.all? do |variable|
         instance_variable_get(variable) == other.instance_variable_get(variable)
       end
     end
@@ -137,13 +138,26 @@ module Nugrant
       nil
     end
 
+    def merge(other)
+      result = dup()
+      result.merge!(other)
+    end
+
     def merge!(other)
       other.instance_variables.each do |variable|
-        next if not instance_variables.include?(variable)
-
-        instance_variable_set(variable, other.instance_variable_get(variable))
+        instance_variable_set(variable, other.instance_variable_get(variable)) if instance_variables.include?(variable)
       end
+
+      self
     end
+
+    def to_h()
+      Hash[instance_variables.map do |variable|
+        [variable[1..-1].to_sym, instance_variable_get(variable)]
+      end]
+    end
+
+    alias_method :to_hash, :to_h
 
     def validate()
       raise ArgumentError,

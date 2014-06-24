@@ -119,5 +119,61 @@ module Nugrant
         Nugrant::Config.new({:params_format => :invalid})
       end
     end
+
+    def test_merge
+      config1 = Nugrant::Config.new({
+        :params_filename => ".customparams",
+        :current_path => nil,
+      })
+
+      config2 = Nugrant::Config.new({
+        :params_filename => ".overrideparams",
+        :current_path => "something",
+      })
+
+      config3 = config1.merge(config2)
+
+      refute_same(config1, config3)
+      refute_same(config2, config3)
+
+      assert_equal(Nugrant::Config.new({
+        :params_filename => config2[:params_filename],
+        :params_format => config2[:params_format],
+        :current_path => config2[:current_path],
+        :user_path => config2[:user_path],
+        :system_path => config2[:system_path],
+        :array_merge_strategy => config2[:array_merge_strategy],
+        :key_error => config2[:key_error],
+        :parse_error => config2[:parse_error],
+      }), config3)
+    end
+
+    def test_merge!
+      config1 = Nugrant::Config.new({
+        :params_filename => ".customparams",
+        :current_path => nil,
+      })
+
+      config2 = Nugrant::Config.new({
+        :params_filename => ".overrideparams",
+        :current_path => "something",
+      })
+
+      config3 = config1.merge!(config2)
+
+      assert_same(config1, config3)
+      refute_same(config2, config3)
+
+      assert_equal(Nugrant::Config.new({
+        :params_filename => config2[:params_filename],
+        :params_format => config2[:params_format],
+        :current_path => config2[:current_path],
+        :user_path => config2[:user_path],
+        :system_path => config2[:system_path],
+        :array_merge_strategy => config2[:array_merge_strategy],
+        :key_error => config2[:key_error],
+        :parse_error => config2[:parse_error],
+      }), config3)
+    end
   end
 end
