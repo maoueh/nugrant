@@ -100,12 +100,12 @@ module Nugrant
       self.class.new(self, @__config.dup())
     end
 
-    def merge(other)
+    def merge(other, options = {})
       result = dup()
       result.merge!(other)
     end
 
-    def merge!(other)
+    def merge!(other, options = {})
       other.each do |key, value|
         current = __get(key)
         case
@@ -113,10 +113,15 @@ module Nugrant
             self[key] = value
 
           when current.kind_of?(Hash) && value.kind_of?(Hash)
-            current.merge!(value)
+            current.merge!(value, options)
 
           when current.kind_of?(Array) && value.kind_of?(Array)
-            self[key] = send("__#{@__config.array_merge_strategy}_array_merge", current, value)
+            strategy = options[:array_merge_strategy]
+            if not Nugrant::Config.supported_array_merge_strategy(strategy)
+              strategy = @__config.array_merge_strategy
+            end
+
+            self[key] = send("__#{strategy}_array_merge", current, value)
 
           when value != nil
             self[key] = value

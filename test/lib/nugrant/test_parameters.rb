@@ -10,7 +10,7 @@ module Nugrant
     @@FORMATS = [:json, :yaml]
     @@INVALID_PATH = "impossible_file_path.yamljson.impossible"
 
-    def create_parameters(format, current_filename, user_filename, system_filename)
+    def create_parameters(format, current_filename, user_filename, system_filename, defaults = {}, options = {})
       extension = case
         when format = :json
           "json"
@@ -26,11 +26,12 @@ module Nugrant
       user_path = "#{resource_path}/#{user_filename}.#{extension}" if user_filename
       system_path = "#{resource_path}/#{system_filename}.#{extension}" if system_filename
 
-      return Nugrant::Parameters.new({
+      return Nugrant::Parameters.new(defaults, {
         :format => format,
         :current_path => current_path,
         :user_path => user_path,
         :system_path => system_path,
+        :array_merge_strategy => options[:array_merge_strategy]
       })
     end
 
@@ -342,17 +343,80 @@ module Nugrant
       assert_equal(["1", "2", "3", "4", "5", "6"], parameters.level1.level2)
     end
 
-    def test_clone!
-      parameters = create_parameters(:json, "params_array", invalid_path, invalid_path)
-      parameters.defaults = {"level1" => {"level2" => ["4", "5", "6"]}}
+    def test_merge()
+      parameters1 = create_parameters(:json, "params_current_1", invalid_path, invalid_path, {
+        "0.1.1" => "default",
+        "0.1.0" => "default",
+        "0.0.1" => "default",
+      })
 
-      cloned = Parameters.new()
-      cloned.clone!(parameters)
+      parameters2 = create_parameters(:json, "params_current_1", invalid_path, "params_system_1", {
+        "0.1.0" => "default_overriden",
+      })
 
-      [:__config, :__current, :__user, :__system, :__defaults, :__all].each do |member|
-        refute_same(parameters.send(member), cloned.send(member))
-        assert_equal(parameters.send(member), cloned.send(member))
-      end
+      parameters3 = parameters1.merge(parameters2)
+
+      refute_same(parameters1, parameters3)
+      refute_same(parameters2, parameters3)
+
+      assert_equal(Nugrant::Parameters, parameters3.class)
+
+      assert_level(parameters3, {
+        :'1.1.1' => "current",
+        :'1.1.0' => "current",
+        :'1.0.1' => "current",
+        :'0.1.1' => "system",
+        :'1.0.0' => "current",
+        :'0.1.0' => "default_overriden",
+        :'0.0.1' => "system",
+      })
+    end
+
+    def test_merge!()
+      parameters1 = create_parameters(:json, "params_current_1", invalid_path, invalid_path, {
+        "0.1.1" => "default",
+        "0.1.0" => "default",
+        "0.0.1" => "default",
+      })
+
+      parameters2 = create_parameters(:json, "params_current_1", invalid_path, "params_system_1", {
+        "0.1.0" => "default_overriden",
+      })
+
+      parameters3 = parameters1.merge!(parameters2)
+
+      assert_same(parameters1, parameters3)
+      refute_same(parameters2, parameters3)
+
+      assert_equal(Nugrant::Parameters, parameters3.class)
+
+      assert_level(parameters3, {
+        :'1.1.1' => "current",
+        :'1.1.0' => "current",
+        :'1.0.1' => "current",
+        :'0.1.1' => "system",
+        :'1.0.0' => "current",
+        :'0.1.0' => "default_overriden",
+        :'0.0.1' => "system",
+      })
+    end
+
+    def test_merge_with_different_array_merge_strategy()
+      parameters1 = create_parameters(:json, "params_array", invalid_path, invalid_path, {
+        "level1" => {
+          "level2" => ["3", "4", "5"]
+        }
+      }, :array_merge_strategy => :replace)
+
+      parameters2 = create_parameters(:json, "params_array", invalid_path, invalid_path, {
+        "level1" => {
+          "level2" => ["3", "6", "7"]
+        }
+      }, :array_merge_strategy => :concat)
+
+      parameters3 = parameters1.merge(parameters2)
+
+      assert_equal(["1", "2", "3", "3", "6", "7"], parameters3.level1.level2)
     end
 
     def formats()

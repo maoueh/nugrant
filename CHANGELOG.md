@@ -1,5 +1,10 @@
 # 2.0.0 (In progress)
 
+ * Fixed bad implementation of config class `::Vagrant.plugin("2", :config)`
+   where `merge` was not implemented and was causing errors. Now, all objects
+   (i.e. `Config`, `Bag` and `Parameters` implements `merge` and `merge!`
+   correctly).
+
 * Added possibility to change array merge strategy. This can
   be used in Vagrant by doing `config.user.array_merge_strategy = <strategy>`
   where valid strategies are:

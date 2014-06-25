@@ -2,7 +2,8 @@ require 'nugrant/mixin/parameters'
 
 module Nugrant
   class Parameters
-    attr_reader :__config, :__current, :__user, :__system, :__defaults, :__all
+
+    include Mixin::Parameters
 
     ##
     # Create a new parameters object which holds completed
@@ -13,14 +14,16 @@ module Nugrant
     #      project < user < system < defaults
     #
     # =| Arguments
-    #  * `config`
-    #    Passed to Mixin::Parameters setup! method. See method
-    #    for further information.
+    #  * `defaults`
+    #    Passed to Mixin::Parameters setup! method. See mixin
+    #    module for further information.
     #
-    def initialize(config = {})
-      setup!({}, config)
+    #  * `config`
+    #    Passed to Mixin::Parameters setup! method. See mixin
+    #    module for further information.
+    #
+    def initialize(defaults = {}, config = {}, options = {})
+      setup!(defaults, config, options)
     end
-
-    include Mixin::Parameters
   end
 end

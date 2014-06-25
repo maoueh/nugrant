@@ -6,10 +6,11 @@ module Nugrant
     module V2
       module Config
         class User < ::Vagrant.plugin("2", :config)
-          attr_reader :__config, :__current, :__user, :__system, :__defaults, :__all
 
-          def initialize()
-            setup!({},
+          include Mixin::Parameters
+
+          def initialize(defaults = {}, config = {})
+            setup!(defaults,
               :params_filename => ".vagrantuser",
               :key_error => Proc.new do |key|
                 raise Errors::ParameterNotFoundError, :key => key.to_s
@@ -20,22 +21,7 @@ module Nugrant
             )
           end
 
-          def merge(other)
-            result = Nugrant::Vagrant::V2::Config::User.new
-            result.clone!(self)
 
-            result.__config.merge!(other.__config)
-
-            result.__current.merge!(other.__current)
-            result.__user.merge!(other.__user)
-            result.__system.merge!(other.__system)
-            result.__defaults.merge!(other.__defaults)
-
-            result.compute_all!()
-            result
-          end
-
-          include Mixin::Parameters
         end
       end
     end

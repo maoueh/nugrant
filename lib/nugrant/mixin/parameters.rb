@@ -9,17 +9,32 @@ module Nugrant
     # logic between default Parameters class and Vagrant
     # implementation.
     #
-    # This method delegates method missing to the overall
-    # bag instance. This means that even if the class
+    # This module delegates method missing to the final
+    # bag hierarchy (@__all). This means that even if the class
     # including this module doesn't inherit Bag directly,
     # it act exactly like one.
     #
-    # To initialize the mixin module correctly, you must call
-    # the compute_bags! method at least once to initialize
-    # all variables. You should make this call in including
-    # class' constructor directly.
+    # When including this module, you must respect an important
+    # constraint.
+    #
+    # The including class must call `setup!` before starting using
+    # parameters retrieval. This is usually performed in
+    # the `initialize` method directly but could be in a different place
+    # depending on the including class lifecycle. The call to `setup!` is
+    # important to initialize all required instance variables.
+    #
+    # Here an example where `setup!` is called in constructor. Your constructor
+    # does not need to have these arguments, they are there as an example.
+    #
+    # ```
+    #     def initialize(defaults = {}, config = {}, options = {})
+    #       setup!(defaults, config, options)
+    #     end
+    # ```
     #
     module Parameters
+      attr_reader :__config, :__current, :__user, :__system, :__defaults, :__all
+
       def method_missing(method, *args, &block)
         case
         when @__all.class.method_defined?(method)
@@ -53,7 +68,7 @@ module Nugrant
       ##
       # Set the new default values for the
       # various parameters contain by this instance.
-      # This will call __compute_all() to recompute
+      # This will call `compute_all!` to recompute
       # correct precedences.
       #
       # =| Attributes
@@ -66,25 +81,30 @@ module Nugrant
         compute_all!()
       end
 
-      ##
-      # This copy internal states of object other (expected to be a Parameters)
-      # into self. This is a little bit different than with the Object.clone method
-      # for the reason that this module can included in any class. Hence, we cannot
-      # a new instance since we don't know the concrete class.
-      #
-      # Instead, class including this module implements clone (or dup) and in its
-      # implementation, creates a new instance and call clone! on it.
-      #
-      # @param other The other object from which properties are copied into this object
-      def clone!(other)
-        @__config = Nugrant::Config.new(other.__config)
+      def merge(other)
+        result = dup()
+        result.merge!(other)
+      end
 
-        @__current = Bag.new(other.__current)
-        @__user = Bag.new(other.__user)
-        @__system = Bag.new(other.__system)
-        @__defaults = Bag.new(other.__defaults)
+      def merge!(other)
+        @__config.merge!(other.__config)
 
-        @__all = Bag.new(other.__all)
+        # Updated Bags' config
+        @__current.config = @__config
+        @__user.config = @__config
+        @__system.config = @__config
+        @__defaults.config = @__config
+
+        # Merge other into Bags
+        @__current.merge!(other.__current, :array_merge_strategy => :replace)
+        @__user.merge!(other.__user, :array_merge_strategy => :replace)
+        @__system.merge!(other.__system, :array_merge_strategy => :replace)
+        @__defaults.merge!(other.__defaults, :array_merge_strategy => :replace)
+
+        # Recompute all from merged Bags
+        compute_all!()
+
+        self
       end
 
       ##
@@ -104,19 +124,23 @@ module Nugrant
       #
       #  * `config`
       #    A Nugrant::Config object or hash passed to Nugrant::Config
-      #    constructor. Used to determine where to find the various
-      #    bag data sources.
+      #    convert method. Used to determine where to find the various
+      #    bag data sources and other configuration options.
       #
-      #    Passed to nested structures that require nugrant configuration
-      #    parameters like the Bag object and Helper::Bag module.
+      #    Passed to nested structures that requires a Nugrant::Config object
+      #    like the Bag object and Helper::Bag module.
       #
-      def setup!(defaults = {}, config = {})
+      #  * `options`
+      #    Options hash used by this method exclusively. No options yet, added
+      #    for future improvements.
+      #
+      def setup!(defaults = {}, config = {}, options = {})
         @__config = Nugrant::Config::convert(config);
 
+        @__defaults = Bag.new(defaults, @__config)
         @__current = Helper::Bag.read(@__config.current_path, @__config.params_format, @__config)
         @__user = Helper::Bag.read(@__config.user_path, @__config.params_format, @__config)
         @__system = Helper::Bag.read(@__config.system_path, @__config.params_format, @__config)
-        @__defaults = Bag.new(defaults, @__config)
 
         compute_all!()
       end

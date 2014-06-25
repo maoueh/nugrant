@@ -343,6 +343,33 @@ module Nugrant
       assert_all_access_equal("overriden5", bag3, :third)
     end
 
+    def test_merge_hash()
+      bag1 = create_bag({"first" => {:second => [1, 2]}}, :array_merge_strategy => :extend)
+
+      bag1.merge!({"first" => {:second => [2, 3]}});
+
+      assert_equal({:first => {:second => [1, 2, 3]}}, bag1.to_hash())
+    end
+
+    def test_merge_custom_array_merge_strategy()
+      bag1 = create_bag({"first" => {:second => [1, 2]}}, :array_merge_strategy => :extend)
+
+      bag1.merge!({"first" => {:second => [2, 3]}}, :array_merge_strategy => :replace);
+
+      assert_equal({:first => {:second => [2, 3]}}, bag1.to_hash())
+    end
+
+    def test_merge_custom_invalid_array_merge_strategy()
+      bag1 = create_bag({"first" => {:second => [1, 2]}}, :array_merge_strategy => :extend)
+      bag2 = bag1.merge({"first" => {:second => [2, 3]}}, :array_merge_strategy => nil);
+
+      assert_equal({:first => {:second => [1, 2, 3]}}, bag2.to_hash())
+
+      bag2 = bag1.merge({"first" => {:second => [2, 3]}}, :array_merge_strategy => :invalid);
+
+      assert_equal({:first => {:second => [1, 2, 3]}}, bag2.to_hash())
+    end
+
     def test_change_config
       bag1 = create_bag({"first" => [1, 2]}, :array_merge_strategy => :extend)
       bag2 = create_bag({:first => [2, 3]})
