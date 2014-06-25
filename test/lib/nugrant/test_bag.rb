@@ -342,5 +342,19 @@ module Nugrant
       assert_all_access_equal("value4", bag3['second'], :level2)
       assert_all_access_equal("overriden5", bag3, :third)
     end
+
+    def test_change_config
+      bag1 = create_bag({"first" => [1, 2]}, :array_merge_strategy => :extend)
+      bag2 = create_bag({:first => [2, 3]})
+
+      bag3 = bag1.merge!(bag2);
+      bag3.config = {
+        :array_merge_strategy => :concat
+      }
+
+      bag3.merge!({"first" => [1, 2, 3]})
+
+      assert_equal([1, 2, 3, 1, 2, 3], bag3['first'])
+    end
   end
 end

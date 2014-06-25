@@ -33,6 +33,10 @@ module Nugrant
       end
     end
 
+    def config=(config)
+      @__config = Config::convert(config)
+    end
+
     def method_missing(method, *args, &block)
       self[method]
     end
