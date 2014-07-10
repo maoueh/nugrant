@@ -101,7 +101,7 @@ module Nugrant
           end
 
           def project(parameters)
-            print_bag("Project", parameters.__project)
+            print_bag("Project", parameters.__current)
           end
 
           def all(parameters)
