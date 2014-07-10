@@ -1,3 +1,5 @@
+# 2.0.2 (In progress)
+
 # 2.0.1 (July 10th, 2014)
 
  * Fixed a bug when using the plugin. A require clause was missing,
