@@ -1,5 +1,6 @@
 require 'nugrant/mixin/parameters'
 require 'nugrant/vagrant/errors'
+require 'nugrant/vagrant/v2/helper'
 
 module Nugrant
   module Vagrant

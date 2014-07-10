@@ -1,5 +1,9 @@
 # 2.0.1 (In progress)
 
+ * Fixed a bug when using the plugin. A require clause was missing,
+   it was working when doing commands but not when using Vagrant
+   directly.
+
 # 2.0.0 (July 9th, 2014)
 
  * Fixed retrieval of current directory for `.vagrantuser`. The directory
