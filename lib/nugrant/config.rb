@@ -44,6 +44,30 @@ module Nugrant
       "/etc"
     end
 
+    ##
+    # Method to fix-up a received path. The fix-up do the follows
+    # the following rules:
+    #
+    # 1. If the path is callable, call it to get the value.
+    # 2. If value is nil, return default value.
+    # 3. If value is a directory, return path + params_filename to it.
+    # 4. Otherwise, return value
+    #
+    # @param path The path parameter received.
+    # @param default The default path to use, can be a directory.
+    # @param params_filename The params filename to append if path is a directory
+    #
+    # @return The fix-up path following rules defined above.
+    #
+    def self.fixup_path(path, default, params_filename)
+      path = path.call if path.respond_to?(:call)
+
+      path = File.expand_path(path || default)
+      path = "#{path}/#{params_filename}" if ::File.directory?(path)
+
+      path
+    end
+
     def self.supported_array_merge_strategy(strategy)
       SUPPORTED_ARRAY_MERGE_STRATEGIES.include?(strategy)
     end
@@ -108,9 +132,9 @@ module Nugrant
       @params_filename = options[:params_filename] || DEFAULT_PARAMS_FILENAME
       @params_format = options[:params_format] || DEFAULT_PARAMS_FORMAT
 
-      @current_path = File.expand_path(options[:current_path] || "./#{@params_filename}")
-      @user_path = File.expand_path(options[:user_path] || "#{Config.default_user_path()}/#{@params_filename}")
-      @system_path = File.expand_path(options[:system_path] || "#{Config.default_system_path()}/#{@params_filename}")
+      @current_path = Config.fixup_path(options[:current_path], ".", @params_filename)
+      @user_path = Config.fixup_path(options[:user_path], Config.default_user_path(), @params_filename)
+      @system_path = Config.fixup_path(options[:system_path], Config.default_system_path(), @params_filename)
 
       @array_merge_strategy = options[:array_merge_strategy] || :replace
 

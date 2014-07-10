@@ -54,6 +54,28 @@ module Nugrant
       assert_equal("#{@user_dir}/.currentcustomparams", config.current_path())
     end
 
+    def test_custom_current_path_without_filename
+      config = Nugrant::Config.new({
+        :params_filename => ".customparams",
+        :current_path => "#{@user_dir}"
+      })
+
+      assert_equal(".customparams", config.params_filename())
+      assert_equal("#{@user_dir}/.customparams", config.current_path())
+    end
+
+    def test_custom_current_path_using_callable
+      config = Nugrant::Config.new({
+        :params_filename => ".customparams",
+        :current_path => lambda do ||
+          "#{@user_dir}/"
+        end
+      })
+
+      assert_equal(".customparams", config.params_filename())
+      assert_equal("#{@user_dir}/.customparams", config.current_path())
+    end
+
     def test_custom_user_path
       config = Nugrant::Config.new({
         :params_filename => ".customparams",
