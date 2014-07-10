@@ -1,5 +1,9 @@
 # 2.0.0 (In progress)
 
+ * Fixed retrieval of current directory for `.vagrantuser`. The directory
+   is now that same as the one of the `Vagrantfile`. Rules have been
+   copied for Vagrant's one, hence, the behavior should be the same.
+
  * Fixed bad implementation of config class `::Vagrant.plugin("2", :config)`
    where `merge` was not implemented and was causing errors. Now, all objects
    (i.e. `Config`, `Bag` and `Parameters` implements `merge` and `merge!`

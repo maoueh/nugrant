@@ -30,8 +30,8 @@ Let's start with an example. You need to distribute among your enterprise a
 The `aws_access_key` and `aws_secret_key` should be configurable depending on the user
 running `vagrant up`.
 
-To achieve this, simply create a file named `.vagrantuser` in the project directory with
-the following content:
+To achieve this, simply create a file named `.vagrantuser` that resides in the directory
+as your `Vagrantfile`:
 
     aws:
       access_key: "123456"
@@ -60,16 +60,33 @@ must be filled in, something like:
       access_key: "<ACCESS_KEY_HERE>"
       secret_key: "<SECRET_KEY_HERE>"
 
-Moreover, there is a hierarchy of `.vagrantuser` files that you can leverage.
-The order is project `.vagrantuser` overrides `$HOME/.vagrantuser` overrides
-`$SYSTEM/.vagrantuser` where `$HOME` is the user's home directory and `$SYSTEM`
-is the platform dependent folder where system global parameters are set.
+To find where your project `.vagrantuser` is located, Nugrant uses the directory
+where the `Vagrantfile` is located. It achieves this using the same set of
+rules as Vagrant meaning you can be in a nested directory and parameters
+will still be fetched correctly.
 
-Use the command `vagrant user parameters` to see the final merged hierarchy
-seen by Nugrant. This command also prints [restricted keys](#restricted-keys) defined
-in your hierarchy.
+Moreover, like other similar system, there is a hierarchy of `.vagrantuser` files
+that you can leverage:
 
-You can access parameters in your `Vagrantfile` either by method access
+| Name     | Location             | Priority  | Overrides                |
+| ---------|----------------------|:---------:|--------------------------|
+| Defaults | config.user.defaults | 4         | -                        |
+| System   | $SYSTEM/.vagrantuser | 3         | Defaults                 |
+| User     | ~/.vagrantuser       | 2         | Defaults & System        |
+| Project  | .vagrantuser         | 1         | Defaults & System & User |
+
+
+The project level directory is always the same as the directory where your
+`Vagrantfile` resides and same rules as Vagrant are used to find it.
+The `~` is the user's home directory and `$SYSTEM` is the platform dependent
+folder where system global can be put. Check [Hierarchy](#hierarchy) section
+for where `$SYSTEM` maps exactly.
+
+You can use the command `vagrant user parameters` to see the final merged
+hierarchy seen by Nugrant. This command also prints [restricted keys](#restricted-keys)
+defined in your hierarchy.
+
+Accessing parameters in your `Vagrantfile` can be done either by method access
 (i.e. `config.user.<key>`) or by array access (i.e. `config.user[<key>]`).
 This support is working for any deepness, only `config.user` is different
 because provided directly by `Vagrant` and not by this plugin.
@@ -230,6 +247,8 @@ That would be equivalent to:
       config.vm.synced_folder "/home/user/personal/git", "/personal"
     end
 
+#### Hierarchy
+
 As you can see, the parameters defined in the second `.vagrantuser` file
 (the current one) overrides settings defined in the `.vagrantuser` found
 in the home directory (the user one).
@@ -239,7 +258,7 @@ Here the list of locations where Nugrant looks for parameters:
  1. Defaults (via `config.user.defaults` in `Vagrantfile`)
  2. System (`/etc/.vagrantuser` on Unix, `%PROGRAMDATA%/.vagrantuser` or `%ALLUSERSPROFILE%/.vagrantuser` on Windows)
  3. Home (`~/.vagrantuser`)
- 4. current (`.vagrantuser` within the same folder as the `Vagrantfile`)
+ 4. Project (`.vagrantuser` within the same folder as the `Vagrantfile`)
 
 #### Paths
 
