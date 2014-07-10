@@ -1,4 +1,6 @@
-# 2.0.0 (In progress)
+# 2.0.1 (In progress)
+
+# 2.0.0 (July 9th, 2014)
 
  * Fixed retrieval of current directory for `.vagrantuser`. The directory
    is now that same as the one of the `Vagrantfile`. Rules have been
@@ -91,8 +93,6 @@
 * The `Parameter` class has a new API.
 
 * The `Bag` class has a new API.
-
-# 1.4.3 (In progess)
 
 # 1.4.2 (January 11th, 2014)
 
