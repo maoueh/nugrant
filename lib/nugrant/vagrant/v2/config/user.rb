@@ -12,6 +12,7 @@ module Nugrant
           def initialize(defaults = {}, config = {})
             setup!(defaults,
               :params_filename => ".vagrantuser",
+              :current_path => Helper.find_project_path(),
               :key_error => Proc.new do |key|
                 raise Errors::ParameterNotFoundError, :key => key.to_s
               end,
@@ -20,8 +21,6 @@ module Nugrant
               end
             )
           end
-
-
         end
       end
     end
