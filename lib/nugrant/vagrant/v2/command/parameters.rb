@@ -1,6 +1,6 @@
 require 'nugrant'
 require 'nugrant/helper/yaml'
-require 'nugrant/vagrant/v2/command/helper'
+require 'nugrant/vagrant/v2/helper'
 
 module Nugrant
   module Vagrant
