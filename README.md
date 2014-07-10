@@ -68,13 +68,12 @@ will still be fetched correctly.
 Moreover, like other similar system, there is a hierarchy of `.vagrantuser` files
 that you can leverage:
 
-| Name     | Location             | Priority  | Overrides                |
-| ---------|----------------------|:---------:|--------------------------|
-| Defaults | config.user.defaults | 4         | -                        |
-| System   | $SYSTEM/.vagrantuser | 3         | Defaults                 |
-| User     | ~/.vagrantuser       | 2         | Defaults & System        |
-| Project  | .vagrantuser         | 1         | Defaults & System & User |
-
+| Name     | Location                                | Priority  | Overrides                |
+| ---------|-----------------------------------------|:---------:|--------------------------|
+| Defaults | [config.user.defaults](#default-values) | 4         | -                        |
+| System   | $SYSTEM/.vagrantuser                    | 3         | Defaults                 |
+| User     | ~/.vagrantuser                          | 2         | Defaults & System        |
+| Project  | .vagrantuser                            | 1         | Defaults & System & User |
 
 The project level directory is always the same as the directory where your
 `Vagrantfile` resides and same rules as Vagrant are used to find it.
