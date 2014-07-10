@@ -1,0 +1,24 @@
+en:
+  nugrant:
+    vagrant:
+      errors:
+        parameter_not_found: |-
+          Nugrant: Le paramètre '%{key}' n'a pu être trouvé, est-il définie
+          dans votre fichier .vagrantuser ? Voici où nous pensons que l'erreur
+          se trouve dans votre fichier Vagrantfile:
+
+          %{context}
+
+          Si vous croyez que le paramètre '%{key}' devrait être trouvé, n'hésitez
+          pas à rapporter le problème @ https://github.com/maoueh/nugrant/issues.
+
+        parse_error: |-
+          Nugrant: Le fichier de paramètres Vagrant n'a pu être lu correctement,
+          le fichier contient probablement une erreur de syntaxe.
+
+           File: %{filename}
+           Error: %{error}
+
+          Si vous croyez que ceci est un bug, n'hésitez pas à rapporter le
+          problème @ https://github.com/maoueh/nugrant/issues.
+
