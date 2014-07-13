@@ -1,4 +1,4 @@
-# 2.0.2 (In progress)
+# 2.0.2 (July 13th, 2014)
 
  * Fixed a bug when using some vagrant commands. The code to retrieve
    the Vagrantfile name was not accurate in respect to where it was
