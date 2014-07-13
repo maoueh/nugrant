@@ -20,6 +20,7 @@ module Nugrant
         #
         def self.find_project_path()
           vagrantfile_name = ENV["VAGRANT_VAGRANTFILE"]
+          vagrantfile_name = [vagrantfile_name] if vagrantfile_name && !vagrantfile_name.is_a?(Array)
 
           root_finder = lambda do |path|
             vagrantfile = find_vagrantfile(path, vagrantfile_name)

@@ -1,10 +1,19 @@
 # 2.0.2 (In progress)
 
+ * Fixed a bug when using some vagrant commands. The code to retrieve
+   the Vagrantfile name was not accurate in respect to where it was
+   copied. When the env variable `VAGRANT_VAGRANTFILE` is set, it
+   then must be wrapped inside an array.
+
+   Fixes [issue #21](https://github.com/maoueh/nugrant/issues/21).
+
 # 2.0.1 (July 10th, 2014)
 
  * Fixed a bug when using the plugin. A require clause was missing,
    it was working when doing commands but not when using Vagrant
    directly.
+
+   Fixes [issue #20](https://github.com/maoueh/nugrant/issues/20).
 
 # 2.0.0 (July 9th, 2014)
 
