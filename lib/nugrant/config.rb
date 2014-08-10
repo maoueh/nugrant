@@ -5,16 +5,17 @@ module Nugrant
     DEFAULT_ARRAY_MERGE_STRATEGY = :replace
     DEFAULT_PARAMS_FILENAME = ".nuparams"
     DEFAULT_PARAMS_FORMAT = :yaml
+    DEFAULT_AUTO_EXPORT = false
 
     SUPPORTED_ARRAY_MERGE_STRATEGIES = [:concat, :extend, :replace]
     SUPPORTED_PARAMS_FORMATS = [:json, :yaml]
 
     attr_reader :params_filename, :params_format,
                 :current_path, :user_path, :system_path,
-                :array_merge_strategy,
+                :array_merge_strategy, :auto_export, :auto_export_script_path,
                 :key_error, :parse_error
 
-    attr_writer :array_merge_strategy
+    attr_writer :array_merge_strategy, :auto_export, :auto_export_script_path
 
     ##
     # Convenience method to easily accept either a hash that will
@@ -127,10 +128,14 @@ module Nugrant
     #                       the error object, that deal with the error. If the callable does not
     #                       raise an exception, the result of it's execution is returned.
     #                         Defaults => A callable that returns the empty hash.
+    #  * +:auto_export+               - Automatically export configuration to the specified format :autoenv or :script
+    #  * +:auto_export_script_path+   - The path where to write the export script, defaults to "./nugrant2env.sh"
     #
     def initialize(options = {})
       @params_filename = options[:params_filename] || DEFAULT_PARAMS_FILENAME
       @params_format = options[:params_format] || DEFAULT_PARAMS_FORMAT
+      @auto_export = options[:auto_export] || DEFAULT_AUTO_EXPORT
+      @auto_export_script_path = options[:auto_export_script_path] || false # use default
 
       @current_path = Config.fixup_path(options[:current_path], ".", @params_filename)
       @user_path = Config.fixup_path(options[:user_path], Config.default_user_path(), @params_filename)
