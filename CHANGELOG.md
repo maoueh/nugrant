@@ -1,5 +1,9 @@
 # 2.0.3 (In progress)
 
+ * Added possibility to specify the script path where to generate
+   the environment commands (export/unset) when using the
+   `vagrant user env` command.
+
 * Added possibility to automatically export variables on vagrant provision.
   This can be used by specifying `config.user.auto_export = <format>` in
   your Vagrantfile where <format> can be one of:

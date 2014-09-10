@@ -438,8 +438,8 @@ Usage:
 ##### Env
 
 Sometimes, you would like to have acces to the different values
-stored in your `.vagrantuser` from environment variables. This
-command is meant is exactly for this.
+stored in your `.vagrantuser` from environment variables: this is
+exactly what this section is meant to show you.
 
 By using one of the three methods below, you will be able to export
 (but also unset) environment variables from your current

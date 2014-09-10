@@ -18,6 +18,7 @@ module Nugrant
 
             @unset = false
             @format = :terminal
+            @script_path = false
             @show_help = false
           end
 
@@ -43,12 +44,16 @@ module Nugrant
               parser.separator "Available options:"
               parser.separator ""
 
-              parser.on("-u", "--[no-]unset", "Generates commands needed to unset environment variables, default false") do |unset|
-                @unset = unset
+              parser.on("-u", "--unset", "Generates commands needed to unset environment variables, default false") do
+                @unset = true
               end
 
               parser.on("-f", "--format FORMAT", "Determines in what format variables are output, default to terminal") do |format|
                  @format = format.to_sym()
+              end
+
+              parser.on("-s", "--script-path PATH", "Specifies path of the generated bash script, default to #{EnvExporter::DEFAULT_SCRIPT_PATH}") do |path|
+                 @script_path = path
               end
 
               parser.on("-h", "--help", "Prints this help") do
@@ -87,7 +92,10 @@ module Nugrant
 
               bag = parameters.__all
 
-              options = {:type => @unset ? :unset : :export}
+              options = {
+                :type => @unset ? :unset : :export,
+                :script_path => @script_path
+              }
 
               case
               when @format == :script
