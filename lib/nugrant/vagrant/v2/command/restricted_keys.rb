@@ -24,7 +24,7 @@ module Nugrant
               parser.separator "Available options:"
               parser.separator ""
 
-              parser.on("-h", "--help", "Print this help") do
+              parser.on("-h", "--help", "Prints this help") do
                 @show_help = true
               end
 

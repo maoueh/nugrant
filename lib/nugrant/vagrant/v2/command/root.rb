@@ -43,11 +43,11 @@ module Nugrant
               parser.banner = "Usage: vagrant user [-h] [-v] <subcommand> [<args>]"
 
               parser.separator ""
-              parser.on("-h", "--help", "Print this help") do
+              parser.on("-h", "--help", "Prints this help") do
                 @show_help = true
               end
 
-              parser.on("-v", "--version", "Print plugin version and exit.") do
+              parser.on("-v", "--version", "Prints plugin version and exit.") do
                 @show_version = true
               end
 
