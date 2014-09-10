@@ -7,10 +7,10 @@ module Nugrant
   module Helper
     module Env
       module Exporter
-        @@DEFAULT_AUTOENV_PATH = "./.env"
-        @@DEFAULT_SCRIPT_PATH = "./nugrant2env.sh"
+        DEFAULT_AUTOENV_PATH = "./.env"
+        DEFAULT_SCRIPT_PATH = "./nugrant2env.sh"
 
-        @@VALID_EXPORTERS = [:autoenv, :script, :terminal]
+        VALID_EXPORTERS = [:autoenv, :script, :terminal]
 
         ##
         # Returns true if the exporter name received is a valid
@@ -20,7 +20,7 @@ module Nugrant
         #
         # @return true if exporter is valid, false otherwise.
         def self.valid?(exporter)
-          @@VALID_EXPORTERS.include?(exporter)
+          VALID_EXPORTERS.include?(exporter)
         end
 
         ##
@@ -43,7 +43,7 @@ module Nugrant
         #  * :type => The type of command, default to :export.
         #
         def self.autoenv_exporter(bag, options = {})
-          io = options[:io] || (File.open(File.expand_path(options[:autoenv_path] || @@DEFAULT_AUTOENV_PATH), "w"))
+          io = options[:io] || (File.open(File.expand_path(options[:autoenv_path] || DEFAULT_AUTOENV_PATH), "w"))
 
           terminal_exporter(bag, options.merge({:io => io}))
         ensure
@@ -70,7 +70,7 @@ module Nugrant
         #  * :type => The type of command, default to :export.
         #
         def self.script_exporter(bag, options = {})
-          io = options[:io] || (File.open(File.expand_path(options[:script_path] || @@DEFAULT_SCRIPT_PATH), "w"))
+          io = options[:io] || (File.open(File.expand_path(options[:script_path] || DEFAULT_SCRIPT_PATH), "w"))
 
           io.puts("#!/bin/env sh")
           io.puts()
