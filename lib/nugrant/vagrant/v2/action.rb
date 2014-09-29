@@ -1,4 +1,4 @@
-require 'nugrant/vagrant/v2/action/auto-export'
+require 'nugrant/vagrant/v2/action/auto_export'
 
 module Nugrant
   module Vagrant
@@ -6,9 +6,9 @@ module Nugrant
       module Action
         class << self
           # Export in config in file before provision
-          def autoExport
-            @autoExport ||= ::Vagrant::Action::Builder.new.tap do |b|
-              b.use Nugrant::Vagrant::V2::Action::AutoExport
+          def auto_export
+            @auto_export ||= ::Vagrant::Action::Builder.new.tap do |builder|
+              builder.use Nugrant::Vagrant::V2::Action::AutoExport
             end
           end
         end

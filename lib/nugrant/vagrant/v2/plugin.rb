@@ -1,4 +1,5 @@
 require 'nugrant/vagrant/v2/action'
+
 module Nugrant
   module Vagrant
     module V2
@@ -10,7 +11,7 @@ module Nugrant
 
         class << self
           def provision(hook)
-            hook.before(::Vagrant::Action::Builtin::Provision, Nugrant::Vagrant::V2::Action.autoExport)
+            hook.before(::Vagrant::Action::Builtin::Provision, Nugrant::Vagrant::V2::Action.auto_export)
           end
         end
 
@@ -31,4 +32,3 @@ module Nugrant
     end
   end
 end
-

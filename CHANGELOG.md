@@ -1,17 +1,16 @@
 # 2.0.3 (In progress)
-* Added possibility to automatically export variables on provision to env file.
-  This can be used in Vagrant by doing `config.user.auto_export = :format`
-  where valid format are:
+* Added possibility to automatically export variable to env file on provision.
+  This can be used in Vagrant by doing `config.user.auto_export = <format>`
+  where valid formats are:
 
-   * false => Default value, disable auto export
-   * :autoenv => Export in [autoenv] format
-   * :script => Export to a script file
-     * The default generated script path is "./nugrant2env.sh". 
-       Change it by doing in Vagrant
-       `config.user.auto_export_script_path = "./script/exemple.sh`
+   * `false` => Default value, disable auto export
+   * `:autoenv` => Export in [autoenv] format
+   * `:script` => Export to a script file
    * `[:autoenv, :script]` export both format
-         
-   
+
+  The default generated script path is "./nugrant2env.sh".
+  Change it by doing in Vagrant `config.user.auto_export_script_path = "./script/exemple.sh`
+
 # 2.0.2 (July 13th, 2014)
 
  * Fixed a bug when using some vagrant commands. The code to retrieve
