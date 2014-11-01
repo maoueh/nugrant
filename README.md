@@ -458,10 +458,6 @@ export command:
 
     export DB_USER=root
 
-And the unset command:
-
-    unset DB_USER
-
 The value are escaped so it is possible to define value containing
 spaces for example.
 
@@ -473,9 +469,13 @@ would be overwritten by an export command.
 Add flag `-h` (or `--help`) for description of the command and a
 list of available options.
 
+It's possible to export variables automatically on when Vagrant
+provision your VM. Refer to [Automatic Exporting section](#automatic-exporting)
+for more information.
+
 ###### Method #1
 
-If you plan to use frequently this feature, our best suggestion
+If you plan to frequently use this feature, our best suggestion
 is to create a little bash script that will simply delegates
 to the real command. By having a bash script that calls the
 command, you will be able to easily export environment variables
@@ -546,23 +546,38 @@ available in your environment.
 Using `vagrant user env -u --format autoenv` will instead generate
 the autoenv file that will unset the environment variables.
 
+#### Automatic Exporting
 
-#### Automatic Env file
+Running the right command each time variables change can be repetive
+for nothing. Why not let the computer do the hard work for us, they
+have been created for this after all.
 
-Sometimes, you prefer generate the env file automatically before each provision.
+You can achieve this using the `config.user.auto_export` parameter.
+Defaulting to `false`, you can use it to export the variables
+to your desired format. When set to a valid value, each time
+vagrant will provision your VM, Nugrant will automatically
+export variables for your.
 
-The following configuration option generate the [autoenv] file
+Use the following configuration to export to [autoenv](https://github.com/kennethreitz/autoenv)
+script format.
 
-    config.user.auto_export = :env
+    config.user.auto_export = :autoenv
 
-The following configuration option generate a base script
+Use the following configuration to export to bash script.
 
-    config.user.auto_export_script_path = "./script/env.sh" # optional, default "./nugrant2env.sh"
     config.user.auto_export = :script
 
-To export on same time `:script` and `:env` use the following 
+You can also pass an array of formats if you would like to export to
+multiple formats at the same time.
 
-    config.user.auto_export = [:script, :env]
+    config.user.auto_export = [:autoenv, :script]
+
+
+The default filename for bash script (i.e. when using `:script` value) is
+`./nugrant2env.sh`. You can control this by using parameter
+`config.user.auto_export_script_path`:
+
+    config.user.auto_export_script_path = "./script/env.sh"
 
 ### Library
 

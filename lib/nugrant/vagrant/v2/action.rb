@@ -5,7 +5,6 @@ module Nugrant
     module V2
       module Action
         class << self
-          # Export in config in file before provision
           def auto_export
             @auto_export ||= ::Vagrant::Action::Builder.new.tap do |builder|
               builder.use Nugrant::Vagrant::V2::Action::AutoExport
