@@ -1,3 +1,5 @@
+# 2.1.1 (In progress)
+
 # 2.1.0 (November 1st, 2014)
 
  * Added possibility to specify the script path where to generate
