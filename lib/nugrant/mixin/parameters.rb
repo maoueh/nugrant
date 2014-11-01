@@ -48,6 +48,14 @@ module Nugrant
         @__config.array_merge_strategy
       end
 
+      def auto_export
+        @__config.auto_export
+      end
+
+      def auto_export_script_path
+        @__config.auto_export_script_path
+      end
+
       ##
       # Change the current array merge strategy for this parameters.
       #
@@ -59,6 +67,14 @@ module Nugrant
 
         # When array_merge_strategy change, we need to recompute parameters hierarchy
         compute_all!()
+      end
+
+      def auto_export=(auto_export)
+        @__config.auto_export = auto_export
+      end
+
+      def auto_export_script_path=(path)
+        @__config.auto_export_script_path = path
       end
 
       def defaults()

@@ -546,6 +546,24 @@ available in your environment.
 Using `vagrant user env -u --format autoenv` will instead generate
 the autoenv file that will unset the environment variables.
 
+
+#### Automatic Env file
+
+Sometimes, you prefer generate the env file automatically before each provision.
+
+The following configuration option generate the [autoenv] file
+
+    config.user.auto_export = :env
+
+The following configuration option generate a base script
+
+    config.user.auto_export_script_path = "./script/env.sh" # optional, default "./nugrant2env.sh"
+    config.user.auto_export = :script
+
+To export on same time `:script` and `:env` use the following 
+
+    config.user.auto_export = [:script, :env]
+
 ### Library
 
 Using Nugrant as a library to handle parameters from various
