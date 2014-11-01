@@ -1,4 +1,4 @@
-# 2.1.0 (In progress)
+# 2.1.0 (November 1st, 2014)
 
  * Added possibility to specify the script path where to generate
    the environment commands (export/unset) when using the
