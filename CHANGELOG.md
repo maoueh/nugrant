@@ -1,5 +1,10 @@
 # 2.1.1 (In progress)
 
+ * Removed old code that was switching YAML engine to `syck` when
+   it was available.
+
+   Fixes [issue #14](https://github.com/maoueh/nugrant/issues/14) again.
+
  * Fixed auto export variables on `vagrant provision` feature. The
    initial release is not working correctly.
 
