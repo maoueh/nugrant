@@ -1,4 +1,4 @@
-# 2.1.1 (In progress)
+# 2.1.1 (December 2nd, 2014)
 
  * Permit numeric keys in bag. They are converted to symbol
    like others.
