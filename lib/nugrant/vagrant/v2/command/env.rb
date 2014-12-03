@@ -2,13 +2,13 @@ require 'nugrant'
 require 'nugrant/helper/env/exporter'
 require 'nugrant/parameters'
 
-EnvExporter = Nugrant::Helper::Env::Exporter
-
 module Nugrant
   module Vagrant
     module V2
       module Command
         class Env < ::Vagrant.plugin("2", :command)
+          EnvExporter = Nugrant::Helper::Env::Exporter
+
           def self.synopsis
             "env utilities to export config.user as environment variables in host machine"
           end
@@ -34,13 +34,6 @@ module Nugrant
                                "Changing the format will also change where they are displayed.\n"
               parser.separator ""
 
-              parser.separator "Available formats:"
-              parser.separator "  autoenv  => Write commands to a file named `.env` in the current directory.\n" +
-                               "               See https://github.com/kennethreitz/autoenv for more info."
-              parser.separator "  terminal => Display commands to terminal so they can be sourced."
-              parser.separator "  script   => Write commands to a bash script named `nugrant2env.sh` so it can be sourced."
-              parser.separator ""
-
               parser.separator "Available options:"
               parser.separator ""
 
@@ -59,6 +52,14 @@ module Nugrant
               parser.on("-h", "--help", "Prints this help") do
                 @show_help = true
               end
+
+              parser.separator ""
+              parser.separator "Available formats:"
+              parser.separator "    autoenv   Write commands to a file named `.env` in the current directory."
+              parser.separator "              See https://github.com/kennethreitz/autoenv for more info."
+              parser.separator "    terminal  Write commands to terminal so they can be sourced."
+              parser.separator "    script    Write commands to a bash script named `nugrant2env.sh` so it can be sourced."
+              parser.separator ""
             end
           end
 

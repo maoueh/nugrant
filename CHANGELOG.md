@@ -1,5 +1,13 @@
 # 2.1.1 (In progress)
 
+ * Fixed auto export variables on `vagrant provision` feature. The
+   initial release is not working correctly.
+
+ * Changed how module shortcut is defined. The shortcut is now defined
+   inside the class using it to avoid already defined warnings.
+
+   Fixes [issue #24](https://github.com/maoueh/nugrant/issues/24).
+
 # 2.1.0 (November 1st, 2014)
 
  * Added possibility to specify the script path where to generate
