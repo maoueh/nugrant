@@ -11,10 +11,10 @@ module Nugrant
     @@INVALID_PATH = "impossible_file_path.yamljson.impossible"
 
     def create_parameters(format, current_filename, user_filename, system_filename, defaults = {}, options = {})
-      extension = case
-        when format = :json
+      extension = case format
+        when :json
           "json"
-        when format = :yaml
+        when :yml, :yaml
           "yml"
         else
           raise ArgumentError, "Format [#{format}] is currently not supported"
@@ -417,6 +417,12 @@ module Nugrant
       parameters3 = parameters1.merge(parameters2)
 
       assert_equal(["1", "2", "3", "3", "6", "7"], parameters3.level1.level2)
+    end
+
+    def test_numeric_key_in_yaml_converted_to_symbol()
+      parameters = create_parameters(:yaml, "params_numeric_key", invalid_path, invalid_path)
+
+      assert_equal("value1", parameters.servers[:'1'])
     end
 
     def formats()

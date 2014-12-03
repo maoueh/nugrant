@@ -166,8 +166,9 @@ module Nugrant
     private
 
     def __convert_key(key)
-      return key.to_sym() if key.respond_to?(:to_sym)
+      return key.to_s().to_sym() if !key.nil? && key.respond_to?(:to_s)
 
+      raise ArgumentError, "Key cannot be nil" if key.nil?
       raise ArgumentError, "Key cannot be converted to symbol, current value [#{key}] (#{key.class.name})"
     end
 

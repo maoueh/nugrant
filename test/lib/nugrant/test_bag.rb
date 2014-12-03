@@ -214,6 +214,12 @@ module Nugrant
       end
     end
 
+    def test_numeric_keys_converted_to_string
+      bag1 = create_bag({1 => "value1"})
+
+      assert_all_access_equal("value1", bag1, :'1')
+    end
+
     def test_custom_key_error_handler
       bag = create_bag({:value => "one"}, :key_error => Proc.new do |key|
         raise IndexError
