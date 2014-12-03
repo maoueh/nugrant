@@ -1,5 +1,10 @@
 # 2.1.1 (In progress)
 
+ * Permit numeric keys in bag. They are converted to symbol
+   like others.
+
+   Fixes [issue #26](https://github.com/maoueh/nugrant/issues/26) again.
+
  * Removed old code that was switching YAML engine to `syck` when
    it was available.
 
