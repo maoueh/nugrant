@@ -142,7 +142,7 @@ module Nugrant
 
       Hash[map do |key, value|
         key = use_string_key ? key.to_s() : key
-        value = value.kind_of?(Bag) ? value.to_hash(options) : value
+        value = __convert_value_to_hash(value, options)
 
         [key, value]
       end]
@@ -178,11 +178,55 @@ module Nugrant
     # ensures at the same time a deeply preventive copy since a new
     # instance is created for this nested structure.
     #
+    # In addition, it also transforms array elements of type Hash into
+    # Bag instance also. This enable indifferent access inside arrays
+    # also.
+    #
     # @param value The value to convert to bag if necessary
     # @return The converted value
     #
     def __convert_value(value)
-      value.kind_of?(Hash) ? Bag.new(value, @__config) : value
+      case
+      # Converts Hash to Bag instance
+      when value.kind_of?(Hash)
+        Bag.new(value, @__config)
+
+      # Converts Array elements to Bag instances if needed
+      when value.kind_of?(Array)
+        value.map(&self.method(:__convert_value))
+
+      # Keeps as-is other elements
+      else
+        value
+      end
+    end
+
+    ##
+    # This function does the reversion of value conversion to Bag
+    # instances. It transforms Bag instances to Hash (using to_hash)
+    # and array Bag elements to Hash (using to_hash).
+    #
+    # The options parameters are pass to the to_hash function
+    # when invoked.
+    #
+    # @param value The value to convert to hash
+    # @param options The options passed to the to_hash function
+    # @return The converted value
+    #
+    def __convert_value_to_hash(value, options = {})
+      case
+      # Converts Bag instance to Hash
+      when value.kind_of?(Bag)
+        value.to_hash(options)
+
+      # Converts Array elements to Hash instances if needed
+      when value.kind_of?(Array)
+        value.map { |value| __convert_value_to_hash(value, options) }
+
+      # Keeps as-is other elements
+      else
+        value
+      end
     end
 
     def __get(key)

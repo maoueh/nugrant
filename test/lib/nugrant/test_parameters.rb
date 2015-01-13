@@ -10,51 +10,6 @@ module Nugrant
     @@FORMATS = [:json, :yaml]
     @@INVALID_PATH = "impossible_file_path.yamljson.impossible"
 
-    def create_parameters(format, current_filename, user_filename, system_filename, defaults = {}, options = {})
-      extension = case format
-        when :json
-          "json"
-        when :yml, :yaml
-          "yml"
-        else
-          raise ArgumentError, "Format [#{format}] is currently not supported"
-      end
-
-      resource_path = File.expand_path("#{File.dirname(__FILE__)}/../../resources/#{format}")
-
-      current_path = "#{resource_path}/#{current_filename}.#{extension}" if current_filename
-      user_path = "#{resource_path}/#{user_filename}.#{extension}" if user_filename
-      system_path = "#{resource_path}/#{system_filename}.#{extension}" if system_filename
-
-      return Nugrant::Parameters.new(defaults, {
-        :format => format,
-        :current_path => current_path,
-        :user_path => user_path,
-        :system_path => system_path,
-        :array_merge_strategy => options[:array_merge_strategy]
-      })
-    end
-
-    def assert_all_access_equal(expected, parameters, key)
-      assert_equal(expected, parameters.method_missing(key.to_sym), "parameters.#{key.to_s}")
-      assert_equal(expected, parameters[key.to_s], "parameters[#{key.to_s}]")
-      assert_equal(expected, parameters[key.to_sym], "parameters[#{key.to_sym}]")
-    end
-
-    def assert_level(parameters, results)
-      results.each do |key, value|
-        assert_all_access_equal(value, parameters, key)
-      end
-
-      assert_key_error(parameters, "0.0.0")
-    end
-
-    def assert_key_error(parameters, key)
-      assert_raises(KeyError) do
-        parameters[key]
-      end
-    end
-
     def test_params_level_1()
       formats.each do |format|
         parameters = create_parameters(format, "params_current_1", "params_user_1", "params_system_1")
@@ -423,6 +378,53 @@ module Nugrant
       parameters = create_parameters(:yaml, "params_numeric_key", invalid_path, invalid_path)
 
       assert_equal("value1", parameters.servers[:'1'])
+    end
+
+    ## Helpers & Assertions
+
+    def create_parameters(format, current_filename, user_filename, system_filename, defaults = {}, options = {})
+      extension = case format
+        when :json
+          "json"
+        when :yml, :yaml
+          "yml"
+        else
+          raise ArgumentError, "Format [#{format}] is currently not supported"
+      end
+
+      resource_path = File.expand_path("#{File.dirname(__FILE__)}/../../resources/#{format}")
+
+      current_path = "#{resource_path}/#{current_filename}.#{extension}" if current_filename
+      user_path = "#{resource_path}/#{user_filename}.#{extension}" if user_filename
+      system_path = "#{resource_path}/#{system_filename}.#{extension}" if system_filename
+
+      return Nugrant::Parameters.new(defaults, {
+        :format => format,
+        :current_path => current_path,
+        :user_path => user_path,
+        :system_path => system_path,
+        :array_merge_strategy => options[:array_merge_strategy]
+      })
+    end
+
+    def assert_all_access_equal(expected, parameters, key)
+      assert_equal(expected, parameters.method_missing(key.to_sym), "parameters.#{key.to_s}")
+      assert_equal(expected, parameters[key.to_s], "parameters[#{key.to_s}]")
+      assert_equal(expected, parameters[key.to_sym], "parameters[#{key.to_sym}]")
+    end
+
+    def assert_level(parameters, results)
+      results.each do |key, value|
+        assert_all_access_equal(value, parameters, key)
+      end
+
+      assert_key_error(parameters, "0.0.0")
+    end
+
+    def assert_key_error(parameters, key)
+      assert_raises(KeyError) do
+        parameters[key]
+      end
     end
 
     def formats()

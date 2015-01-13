@@ -1,11 +1,17 @@
 # 2.1.2 (In progress)
 
+ * Fixed indifferent access inside arrays. Array elements of type `Hash`
+   are now converted to `Bag` instances (recursively). This fix the
+   indifferent access of `Bag` elements inside arrays.
+
+   Fixes [issue #27](https://github.com/maoueh/nugrant/issues/27).
+
 # 2.1.1 (December 2nd, 2014)
 
  * Permit numeric keys in bag. They are converted to symbol
    like others.
 
-   Fixes [issue #26](https://github.com/maoueh/nugrant/issues/26) again.
+   Fixes [issue #26](https://github.com/maoueh/nugrant/issues/26).
 
  * Removed old code that was switching YAML engine to `syck` when
    it was available.

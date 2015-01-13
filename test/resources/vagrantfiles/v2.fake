@@ -2,14 +2,28 @@ Vagrant.configure("2") do |config|
   config.user.defaults = {
     'local' => {
         'first' => "value1",
-        'second' => "value2"
+    },
+    'array' => {
+      'level1' => [1, 2]
+    },
+    'application' => {
+      'users' => {
+        "joe" => {
+          :full => "Joe Plumber"
+        },
+        "jane" => {
+          :full => "Jane Cook"
+        },
+      }
     }
   }
 
-  config.user.local.each do |name, value|
-    puts "Parameters #{name}: #{value}"
+  config.user.application.users.each do |key, data|
+    puts "Key #{key}: #{data}"
   end
 
-  puts "User has local (symbol)" if config.user.has?(:local)
-  puts "User has local (string)" if config.user.has?("local")
+  config.user.array_merge_strategy = :concat
+  config.user.auto_export = [:autoenv, :script]
+
+  config.vm.box = "opscode_centos-7.0_x86-64"
 end

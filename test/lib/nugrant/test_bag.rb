@@ -5,39 +5,10 @@ require 'nugrant/helper/bag'
 
 module Nugrant
   class TestBag < ::Minitest::Test
-    def create_bag(elements, options = {})
-      return Bag.new(elements, options)
-    end
-
-    def assert_all_access_equal(expected, bag, key)
-      assert_equal(expected, bag.method_missing(key.to_sym), "bag.#{key.to_sym}")
-      assert_equal(expected, bag[key.to_s], "bag[#{key.to_s}]")
-      assert_equal(expected, bag[key.to_sym], "bag[#{key.to_sym}]")
-    end
-
-    def assert_all_access_bag(expected, bag, key)
-      assert_bag(expected, bag.method_missing(key.to_sym))
-      assert_bag(expected, bag[key.to_s])
-      assert_bag(expected, bag[key.to_sym])
-    end
-
-    def assert_bag(expected, bag)
-      assert_kind_of(Bag, bag)
-
-      expected.each do |key, expected_value|
-        if not expected_value.kind_of?(Hash)
-          assert_all_access_equal(expected_value, bag, key)
-          next
-        end
-
-        assert_all_access_bag(expected_value, bag, key)
-      end
-    end
-
     def run_test_bag(parameters)
       bag = create_bag(parameters)
 
-      assert_bag(parameters, bag)
+      assert_bag_equal(parameters, bag)
     end
 
     def test_bag()
@@ -101,16 +72,44 @@ module Nugrant
     def test_to_hash()
       hash = create_bag({}).to_hash()
 
-      assert_kind_of(Hash, hash)
+      assert_is_hash_exclusive(hash)
       assert_equal({}, hash)
 
       hash = create_bag({"value" => {:one => "value", "two" => "value"}}).to_hash()
 
-      assert_kind_of(Hash, hash)
-      assert_kind_of(Hash, hash[:value])
+      assert_is_hash_exclusive(hash)
+      assert_is_hash_exclusive(hash[:value])
       assert_kind_of(String, hash[:value][:one])
       assert_kind_of(String, hash[:value][:two])
       assert_equal({:value => {:one => "value", :two => "value"}}, hash)
+    end
+
+    def test_to_hash_array_with_bag()
+      hash = create_bag({:a => [{:b => "1", :c => [{"d" => "2"}]}]}).to_hash()
+
+      assert_is_hash_exclusive(hash)
+      assert_kind_of(Array, hash[:a])
+      assert_is_hash_exclusive(hash[:a][0])
+      assert_kind_of(String, hash[:a][0][:b])
+      assert_kind_of(Array, hash[:a][0][:c])
+      assert_is_hash_exclusive(hash[:a][0][:c][0])
+      assert_kind_of(String, hash[:a][0][:c][0][:d])
+
+      assert_equal({:a => [{:b => "1", :c => [{:d => "2"}]}]}, hash)
+    end
+
+    def test_to_hash_array_with_bag_string_key()
+      hash = create_bag({:a => [{:b => "1", :c => [{"d" => "2"}]}]}).to_hash(use_string_key: true)
+
+      assert_is_hash_exclusive(hash)
+      assert_kind_of(Array, hash["a"])
+      assert_is_hash_exclusive(hash["a"][0])
+      assert_kind_of(String, hash["a"][0]["b"])
+      assert_kind_of(Array, hash["a"][0]["c"])
+      assert_is_hash_exclusive(hash["a"][0]["c"][0])
+      assert_kind_of(String, hash["a"][0]["c"][0]["d"])
+
+      assert_equal({"a" => [{"b" => "1", "c" => [{"d" => "2"}]}]}, hash)
     end
 
     def test_merge_array_replace()
@@ -168,16 +167,16 @@ module Nugrant
 
       assert_equal({:first => {:second => [3, 4]}, :third => "three"}, bag1.to_hash())
 
-      assert_all_access_equal({:second => [3, 4]}, bag1, :first)
-      assert_all_access_equal([3, 4], bag1["first"], :second)
+      assert_indifferent_access_equal({:second => [3, 4]}, bag1, :first)
+      assert_indifferent_access_equal([3, 4], bag1["first"], :second)
     end
 
     def test_set_a_slot_with_a_hash_keeps_indifferent_access
       bag1 = create_bag({})
       bag1["first"] = {:second => [1, 2]}
 
-      assert_all_access_equal({:second => [1, 2]}, bag1, :first)
-      assert_all_access_equal([1, 2], bag1["first"], :second)
+      assert_indifferent_access_equal({:second => [1, 2]}, bag1, :first)
+      assert_indifferent_access_equal([1, 2], bag1["first"], :second)
     end
 
     def test_nil_key()
@@ -217,7 +216,7 @@ module Nugrant
     def test_numeric_keys_converted_to_string
       bag1 = create_bag({1 => "value1"})
 
-      assert_all_access_equal("value1", bag1, :'1')
+      assert_indifferent_access_equal("value1", bag1, :'1')
     end
 
     def test_custom_key_error_handler
@@ -243,7 +242,7 @@ module Nugrant
         "Some value"
       end)
 
-      assert_all_access_equal("Some value", bag, :invalid_value)
+      assert_indifferent_access_equal("Some value", bag, :invalid_value)
     end
 
     def test_walk_bag
@@ -304,11 +303,11 @@ module Nugrant
 
       assert_equal(Nugrant::Bag, bag3.class)
 
-      assert_all_access_equal("value1", bag3['first'], :level1)
-      assert_all_access_equal("overriden2", bag3['first'], :level2)
-      assert_all_access_equal("value3", bag3['second'], :level1)
-      assert_all_access_equal("value4", bag3['second'], :level2)
-      assert_all_access_equal("overriden5", bag3, :third)
+      assert_indifferent_access_equal("value1", bag3['first'], :level1)
+      assert_indifferent_access_equal("overriden2", bag3['first'], :level2)
+      assert_indifferent_access_equal("value3", bag3['second'], :level1)
+      assert_indifferent_access_equal("value4", bag3['second'], :level2)
+      assert_indifferent_access_equal("overriden5", bag3, :third)
     end
 
     def test_merge!
@@ -342,11 +341,11 @@ module Nugrant
 
       assert_equal(Nugrant::Bag, bag3.class)
 
-      assert_all_access_equal("value1", bag3['first'], :level1)
-      assert_all_access_equal("overriden2", bag3['first'], :level2)
-      assert_all_access_equal("value3", bag3['second'], :level1)
-      assert_all_access_equal("value4", bag3['second'], :level2)
-      assert_all_access_equal("overriden5", bag3, :third)
+      assert_indifferent_access_equal("value1", bag3['first'], :level1)
+      assert_indifferent_access_equal("overriden2", bag3['first'], :level2)
+      assert_indifferent_access_equal("value3", bag3['second'], :level1)
+      assert_indifferent_access_equal("value4", bag3['second'], :level2)
+      assert_indifferent_access_equal("overriden5", bag3, :third)
     end
 
     def test_merge_hash()
@@ -388,6 +387,64 @@ module Nugrant
       bag3.merge!({"first" => [1, 2, 3]})
 
       assert_equal([1, 2, 3, 1, 2, 3], bag3['first'])
+    end
+
+    def test_indifferent_access_in_array
+      bag = create_bag({:a => [{:b => 1, :c => [{"d" => 1}]}]})
+
+      assert_indifferent_access_equal(1, bag['a'][0]['c'][0], :d)
+    end
+
+    ## Helpers & Assertions
+
+    def create_bag(elements, options = {})
+      return Bag.new(elements, options)
+    end
+
+    def assert_is_hash_exclusive(input)
+      assert_equal(true, input.kind_of?(Hash), "#{input} should be a kind of Hash")
+      assert_equal(false, input.kind_of?(Bag), "#{input} should not be a kind of Bag")
+    end
+
+    def assert_indifferent_access_equal(expected, bag, key)
+      assert_symbol_access_equal(expected, bag, key)
+      assert_string_access_equal(expected, bag, key)
+    end
+
+    def assert_string_access_equal(expected, bag, key)
+      assert_equal(expected, bag[key.to_s], "bag[#{key.to_s}]")
+    end
+
+    def assert_symbol_access_equal(expected, bag, key)
+      assert_equal(expected, bag.method_missing(key.to_sym), "bag.#{key.to_sym}")
+      assert_equal(expected, bag[key.to_sym], "bag[#{key.to_sym}]")
+    end
+
+    def assert_indifferent_access_bag_equal(expected, bag, key)
+      assert_string_access_bag_equal(expected, bag, key)
+      assert_symbol_access_bag_equal(expected, bag, key)
+    end
+
+    def assert_string_access_bag_equal(expected, bag, key)
+      assert_bag_equal(expected, bag[key.to_s])
+    end
+
+    def assert_symbol_access_bag_equal(expected, bag, key)
+      assert_bag_equal(expected, bag.method_missing(key.to_sym))
+      assert_bag_equal(expected, bag[key.to_sym])
+    end
+
+    def assert_bag_equal(expected, bag)
+      assert_kind_of(Bag, bag)
+
+      expected.each do |key, expected_value|
+        if not expected_value.kind_of?(Hash)
+          assert_indifferent_access_equal(expected_value, bag, key)
+          next
+        end
+
+        assert_indifferent_access_bag_equal(expected_value, bag, key)
+      end
     end
   end
 end
