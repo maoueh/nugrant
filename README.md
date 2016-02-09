@@ -210,7 +210,7 @@ version control system so it is to committed with the project.
 
 Additionally, you can also have a `.vagrantuser` under your user home
 directory. This way, you can set parameters that will be
-available to all your `Vagrantfiles`. The `.vagrantuser` located
+available to all your `Vagrantfile` files. The `.vagrantuser` located
 within the same folder as the `Vagrantfile` file will overrides
 parameters defined in the `.vagrantuser` file defined in the user
 home directory.
