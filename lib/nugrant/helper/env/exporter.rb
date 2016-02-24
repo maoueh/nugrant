@@ -43,7 +43,7 @@ module Nugrant
         #  * :type => The type of command, default to :export.
         #
         def self.autoenv_exporter(bag, options = {})
-          io = options[:io] || (File.open(File.expand_path(options[:autoenv_path] || DEFAULT_AUTOENV_PATH), "w"))
+          io = options[:io] || (File.open(File.expand_path(options[:autoenv_path] || DEFAULT_AUTOENV_PATH), "wb"))
 
           terminal_exporter(bag, options.merge({:io => io}))
         ensure
@@ -70,7 +70,7 @@ module Nugrant
         #  * :type => The type of command, default to :export.
         #
         def self.script_exporter(bag, options = {})
-          io = options[:io] || (File.open(File.expand_path(options[:script_path] || DEFAULT_SCRIPT_PATH), "w"))
+          io = options[:io] || (File.open(File.expand_path(options[:script_path] || DEFAULT_SCRIPT_PATH), "wb"))
 
           io.puts("#!/bin/env sh")
           io.puts()
