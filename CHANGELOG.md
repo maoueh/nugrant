@@ -1,5 +1,8 @@
 # 2.1.3 (In progress)
 
+ * Ensures Unix line ending are used when generating env scripts
+   (`autoenv` and `bash`).
+
 # 2.1.2 (January 12th, 2015)
 
  * Fixed indifferent access inside arrays. Array elements of type `Hash`
