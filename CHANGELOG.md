@@ -1,3 +1,5 @@
+# 2.1.4 (In progress)
+
 # 2.1.3 (February 24th, 2016)
 
  * Ensures Unix line ending are used when generating env scripts
