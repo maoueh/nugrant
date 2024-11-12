@@ -17,7 +17,7 @@ module Nugrant
       private
 
       def self.parse_data(filepath, filetype, config)
-        return if not File.exists?(filepath)
+        return if not File.exist?(filepath)
 
         File.open(filepath, "rb") do |file|
           return send("parse_#{filetype}", file)
