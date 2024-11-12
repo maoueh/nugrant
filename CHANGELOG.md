@@ -1,3 +1,5 @@
+# 2.1.5 (In Progress)
+
 # 2.1.4 (November 12th, 2024)
 
 * Remove usage of `File.exists?` that has been removed and replace with `File.exist?`.
